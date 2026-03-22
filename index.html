@@ -1,0 +1,1556 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>MathRupiah Pro | Premium Math Quiz & Earn</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3.4.1/dist/fp.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        :root {
+            --bg-gradient-start: #0f172a;
+            --bg-gradient-end: #020617;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #0a0f1a;
+            --card-bg: rgba(30, 41, 59, 0.85);
+            --card-border: rgba(99, 102, 241, 0.4);
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --accent: #6366f1;
+            --accent-dark: #4f46e5;
+            --accent-glow: rgba(99, 102, 241, 0.3);
+            --input-bg: rgba(51, 65, 85, 0.9);
+            --input-border: #334155;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body.light-mode {
+            --bg-gradient-start: #fef9e8;
+            --bg-gradient-end: #fff5e6;
+            --bg-primary: #fff9f0;
+            --bg-secondary: #fff3e6;
+            --bg-tertiary: #ffefdd;
+            --card-bg: rgba(255, 250, 240, 0.95);
+            --card-border: rgba(99, 102, 241, 0.5);
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --input-bg: #ffffff;
+            --input-border: #e2e8f0;
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            min-height: 100vh;
+            padding: 1.5rem;
+            transition: background 0.4s ease, color 0.2s ease;
+            color: var(--text-primary);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 2rem;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--accent);
+        }
+
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.25s;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .loading-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(99, 102, 241, 0.2);
+            border-top: 4px solid var(--accent);
+            border-right: 4px solid var(--accent-dark);
+            border-radius: 50%;
+            animation: spin 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Maintenance Page Styles */
+        .maintenance-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .maintenance-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 2.5rem;
+            padding: 3rem 2rem;
+            max-width: 550px;
+            text-align: center;
+            border: 1px solid var(--card-border);
+            box-shadow: var(--shadow-lg);
+            animation: fadeInUp 0.5s ease;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .maintenance-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(145deg, var(--accent), var(--accent-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 3rem;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .maintenance-card h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .auth-container {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 2.5rem;
+            padding: 2rem;
+            max-width: 500px;
+            margin: 2rem auto;
+            border: 1px solid var(--card-border);
+            box-shadow: var(--shadow-lg);
+        }
+        .auth-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(145deg, var(--accent), var(--accent-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 2.2rem;
+            color: white;
+            box-shadow: 0 10px 20px var(--accent-glow);
+        }
+        .auth-header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            text-align: center;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .auth-tabs {
+            display: flex;
+            gap: 0.8rem;
+            margin: 2rem 0;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 80px;
+            padding: 0.35rem;
+        }
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 0.9rem;
+            cursor: pointer;
+            font-weight: 700;
+            color: var(--text-secondary);
+            border-radius: 60px;
+            background: transparent;
+            border: none;
+            transition: var(--transition);
+        }
+        .auth-tab.active {
+            background: linear-gradient(105deg, var(--accent), var(--accent-dark));
+            color: white;
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
+        .input-field {
+            position: relative;
+            margin-bottom: 1.2rem;
+        }
+        .input-field input {
+            width: 100%;
+            padding: 14px 18px 14px 48px;
+            background: var(--input-bg);
+            border: 1.5px solid var(--input-border);
+            border-radius: 60px;
+            font-size: 1rem;
+            color: var(--text-primary);
+            transition: var(--transition);
+        }
+        .input-field input:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        .input-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+        .auth-btn {
+            width: 100%;
+            background: linear-gradient(105deg, var(--accent), var(--accent-dark));
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 60px;
+            font-weight: 800;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        .auth-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px var(--accent-glow);
+        }
+
+        .wallet-card {
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            border-radius: 2rem;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 1.8rem;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+        .wallet-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        .balance {
+            font-size: 2rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .btn-outline {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 18px;
+            border-radius: 40px;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.6rem;
+            border-radius: 80px;
+            margin-bottom: 1.8rem;
+        }
+        .nav-btn {
+            flex: 1;
+            text-align: center;
+            padding: 12px 0;
+            border-radius: 60px;
+            font-weight: 700;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            transition: var(--transition);
+        }
+        .nav-btn.active {
+            background: linear-gradient(105deg, var(--accent), var(--accent-dark));
+            color: white;
+        }
+
+        .jenjang-btn, .kelas-btn {
+            padding: 10px 26px;
+            border-radius: 60px;
+            font-weight: 700;
+            cursor: pointer;
+            background: rgba(31, 41, 55, 0.7);
+            border: 1px solid #4b5563;
+            color: #e2e8f0;
+            transition: var(--transition);
+        }
+        .jenjang-btn.active, .kelas-btn.active {
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: white;
+            border-color: transparent;
+        }
+        .play-btn {
+            width: 100%;
+            background: linear-gradient(95deg, var(--accent), var(--accent-dark));
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 60px;
+            font-weight: 800;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .play-btn.stop-mode {
+            background: linear-gradient(95deg, #ef4444, #dc2626);
+        }
+
+        .timer-display {
+            font-size: 2rem;
+            font-weight: 800;
+            font-family: monospace;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 0.2rem 1rem;
+            border-radius: 60px;
+            color: var(--accent);
+        }
+        .opt-btn {
+            background: var(--input-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 60px;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 12px;
+        }
+        .opt-btn:hover:not(:disabled) {
+            background: var(--accent-glow);
+            transform: translateX(8px);
+            border-color: var(--accent);
+        }
+        .opt-prefix {
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            width: 34px;
+            height: 34px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 34px;
+            font-weight: 800;
+            color: white;
+        }
+        .next-btn {
+            background: linear-gradient(105deg, var(--accent), var(--accent-dark));
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, var(--accent), var(--accent-dark));
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
+            border-radius: 30px;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(145deg, var(--accent), var(--accent-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 2.8rem;
+            color: white;
+        }
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .withdraw-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .status-summary-card {
+            background: rgba(0, 0, 0, 0.35);
+            border-radius: 1.2rem;
+            padding: 14px;
+            text-align: center;
+        }
+        .amount-card {
+            background: rgba(31, 41, 55, 0.8);
+            border-radius: 32px;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: var(--transition);
+            text-align: center;
+        }
+        .amount-card.selected {
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: white;
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.2s;
+        }
+        .modal.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        .modal-content {
+            background: var(--card-bg);
+            max-width: 450px;
+            width: 90%;
+            border-radius: 2rem;
+            padding: 1.8rem;
+            border: 1px solid var(--card-border);
+        }
+
+        .toast-msg {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent);
+            backdrop-filter: blur(20px);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 60px;
+            z-index: 1000;
+            transition: 0.2s;
+            pointer-events: none;
+            font-weight: 600;
+            box-shadow: var(--shadow-md);
+        }
+
+        .theme-toggle {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 1000;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border-radius: 60px;
+            padding: 12px 22px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            border: 1px solid var(--card-border);
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            border-color: var(--accent);
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Welcome Modal Creator Styles */
+        .welcome-modal .modal-content {
+            text-align: center;
+            max-width: 400px;
+        }
+        .creator-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(145deg, var(--accent), var(--accent-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 2.5rem;
+            color: white;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+        .creator-name {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        .creator-role {
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .creator-desc {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        .heart-icon {
+            color: #ef4444;
+            animation: heartbeat 1.5s ease infinite;
+        }
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        .welcome-btn {
+            background: linear-gradient(105deg, var(--accent), var(--accent-dark));
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 60px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .welcome-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px var(--accent-glow);
+        }
+
+        @media (max-width: 640px) {
+            body { padding: 1rem; }
+            .balance { font-size: 1.5rem; }
+            .wallet-card { flex-direction: column; gap: 12px; text-align: center; }
+            .action-buttons { justify-content: center; }
+            .nav-tabs { gap: 5px; }
+            .nav-btn { font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div id="loadingOverlay" class="loading-overlay"><div class="spinner"></div><div style="color:white">Memuat...</div></div>
+    <div class="theme-toggle" id="themeToggleBtn"><i class="fas fa-moon"></i> <span>Mode Gelap</span></div>
+    
+    <!-- Welcome Modal - Created by Husni Aljalil -->
+    <div id="welcomeModal" class="modal welcome-modal">
+        <div class="modal-content">
+            <div class="creator-avatar">
+                <i class="fas fa-code"></i>
+            </div>
+            <div class="creator-name">MathRupiah Pro</div>
+            <div class="creator-role">
+                <i class="fas fa-crown"></i> Premium Educational Platform
+            </div>
+            <div class="creator-desc">
+                <p>✨ <strong>Husni Aljalil</strong> ✨</p>
+                <p>Web Developer & Creator</p>
+                <p style="margin-top: 12px; font-size: 0.9rem;">
+                    <i class="fas fa-graduation-cap"></i> Platform belajar matematika interaktif<br>
+                    <i class="fas fa-money-bill-wave"></i> Jawab soal, dapatkan penghasilan<br>
+                    <i class="fas fa-rocket"></i> Dirancang untuk memudahkan belajar sambil earning
+                </p>
+                <p style="margin-top: 15px; font-size: 0.85rem; border-top: 1px solid rgba(99,102,241,0.3); padding-top: 12px;">
+                    <i class="fas fa-heart heart-icon"></i> Made with passion by Husni Aljalil
+                </p>
+            </div>
+            <button id="closeWelcomeModal" class="welcome-btn">
+                <i class="fas fa-play"></i> Mulai Belajar
+            </button>
+        </div>
+    </div>
+    
+    <!-- Maintenance Page -->
+    <div id="maintenancePage" style="display: none;">
+        <div class="maintenance-container">
+            <div class="maintenance-card">
+                <div class="maintenance-icon">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <h1>Sedang dalam Pemeliharaan</h1>
+                <div id="maintenanceMessageContent" class="maintenance-message" style="background: rgba(99,102,241,0.15); border-radius: 1rem; padding: 1rem; margin: 1.5rem 0;">
+                    <i class="fas fa-info-circle"></i> <span id="maintenanceMessageText">Mohon bersabar, kami sedang meningkatkan kualitas layanan.</span>
+                </div>
+                <p><i class="fas fa-clock"></i> Kami akan segera kembali dengan pengalaman yang lebih baik!</p>
+                <div class="maintenance-progress" style="margin: 2rem 0;">
+                    <div class="progress-bar-bg" style="background: rgba(255,255,255,0.2); border-radius: 30px; height: 8px; overflow: hidden;">
+                        <div class="progress-bar-fill" style="background: linear-gradient(90deg, var(--accent), var(--accent-dark)); width: 0%; height: 100%; border-radius: 30px; animation: loading 2s ease-in-out infinite;"></div>
+                    </div>
+                    <div class="maintenance-timer" id="maintenanceTimer" style="margin-top: 1rem; font-size: 0.9rem;">
+                        <i class="fas fa-sync-alt"></i> Status diperbarui secara realtime
+                    </div>
+                </div>
+                <div class="maintenance-footer" style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid rgba(99,102,241,0.3); font-size: 0.8rem;">
+                    <i class="fas fa-envelope"></i> Hubungi support: support@mathrupiah.com
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="mainContent" style="display: none;">
+        <div class="container">
+            <div class="wallet-card">
+                <div>
+                    <div class="balance"><i class="fas fa-coins"></i> <span id="balanceAmount">0</span> Rupiah</div>
+                    <div style="color: rgba(255,255,255,0.9);"><i class="fas fa-crown"></i> <span id="userNameDisplay"></span></div>
+                </div>
+                <div class="action-buttons">
+                    <button id="withdrawNavBtnHeader" class="btn-outline"><i class="fas fa-hand-holding-usd"></i> Tarik</button>
+                    <button id="profileNavBtnHeader" class="btn-outline"><i class="fas fa-id-card"></i> Profil</button>
+                    <button id="logoutBtn" class="btn-outline"><i class="fas fa-sign-out-alt"></i> Keluar</button>
+                </div>
+            </div>
+            
+            <div class="nav-tabs">
+                <button id="navQuizBtn" class="nav-btn active"><i class="fas fa-brain"></i> Kuis</button>
+                <button id="navProfileBtn" class="nav-btn"><i class="fas fa-user-astronaut"></i> Profil</button>
+                <button id="navHistoryBtn" class="nav-btn"><i class="fas fa-receipt"></i> Riwayat</button>
+            </div>
+            
+            <div id="quizSection">
+                <div class="glass-card" style="padding:1.5rem; margin-bottom:1.5rem;">
+                    <h3><i class="fas fa-chalkboard-user"></i> Pilih Jenjang & Kelas</h3>
+                    <div class="jenjang-buttons" style="display:flex; gap:12px; justify-content:center; margin:1rem 0; flex-wrap:wrap;">
+                        <button class="jenjang-btn active" data-jenjang="sd">🏫 SD</button>
+                        <button class="jenjang-btn" data-jenjang="smp">📘 SMP</button>
+                        <button class="jenjang-btn" data-jenjang="smk">🎓 SMK</button>
+                    </div>
+                    <div id="kelasButtons" class="kelas-buttons" style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;"></div>
+                    <div class="current-level-badge" style="margin-top:12px; background:var(--accent-glow); border-radius:60px; padding:8px; text-align:center;">
+                        <i class="fas fa-star-of-life"></i> Level aktif: <strong id="selectedLevelName">SD Kelas 1</strong> (+Rp300/soal)
+                    </div>
+                </div>
+                
+                <button id="playQuizBtn" class="play-btn"><i class="fas fa-play"></i> MULAI KUIS & EARN</button>
+                
+                <div id="quizContent" style="display: none; margin-top: 1rem;">
+                    <div class="glass-card" style="display:flex; justify-content:space-between; align-items:center; padding:0.8rem 1.5rem; margin-bottom:1rem;">
+                        <span><i class="fas fa-hourglass-half"></i> Batas waktu</span>
+                        <span class="timer-display" id="timerDisplay">00:00</span>
+                        <span><i class="fas fa-bolt"></i> Kilat = Bonus!</span>
+                    </div>
+                    <div class="glass-card" style="padding:1.8rem;">
+                        <div class="question-text" id="questionText" style="font-size:1.4rem; font-weight:700; text-align:center; background:rgba(0,0,0,0.2); border-radius:1.5rem; padding:1rem;"></div>
+                        <div class="options-grid" id="optionsContainer" style="margin-top:1.2rem;"></div>
+                        <div id="feedbackMsg" style="margin:10px 0; text-align:center;"></div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div><i class="fas fa-gem"></i> <span id="rewardHint">+300/soal + bonus</span></div>
+                            <button id="nextButton" class="next-btn" disabled>Soal Berikutnya →</button>
+                        </div>
+                        <div class="progress-bar" style="margin-top:16px; background:rgba(255,255,255,0.15); border-radius:30px; height:6px;">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="profileSection" style="display: none;">
+                <div class="glass-card" style="padding:2rem; text-align:center;">
+                    <div class="profile-avatar"><i class="fas fa-crown"></i></div>
+                    <div class="profile-name" id="profileFullname" style="font-size:1.6rem; font-weight:800;"></div>
+                    <div class="profile-username" id="profileUsername" style="color:var(--text-secondary);"></div>
+                    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin:1.5rem 0;">
+                        <div><div class="stat-value" id="statTotalAnswered">0</div><div>Soal Dijawab</div></div>
+                        <div><div class="stat-value" id="statCorrect">0</div><div>Benar</div></div>
+                        <div><div class="stat-value" id="statAccuracy">0%</div><div>Akurasi</div></div>
+                    </div>
+                    <button id="editProfileBtn" class="auth-btn" style="width:auto; padding:12px 32px;"><i class="fas fa-user-pen"></i> Edit Profil</button>
+                </div>
+            </div>
+            
+            <div id="historySection" style="display: none;">
+                <div class="glass-card" style="padding:1.5rem;">
+                    <h3><i class="fas fa-history"></i> Status Penarikan</h3>
+                    <div id="withdrawSummary" class="withdraw-summary"></div>
+                    <h4 style="margin-top:1rem;">📋 Riwayat Penarikan</h4>
+                    <div id="withdrawHistoryList" style="max-height:400px; overflow-y:auto;"></div>
+                </div>
+            </div>
+            
+            <footer style="text-align:center; margin-top:2rem; font-size:0.7rem; opacity:0.7;">✨ Jawab benar + bonus waktu cepat! Minimal tarik Rp10.000 | Rp10.000 hanya 1x/minggu ✨</footer>
+        </div>
+    </div>
+    
+    <div id="authContainer">
+        <div class="auth-container">
+            <div class="auth-header">
+                <div class="auth-logo"><i class="fas fa-calculator"></i></div>
+                <h1>MathRupiah Pro</h1>
+                <p style="color:var(--text-secondary); text-align:center;">🎓 Asah matematika, dapatkan penghasilan</p>
+            </div>
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login"><i class="fas fa-sign-in-alt"></i> Masuk</button>
+                <button class="auth-tab" data-tab="register"><i class="fas fa-user-plus"></i> Daftar</button>
+            </div>
+            <div id="loginForm" class="auth-form">
+                <div class="input-field"><i class="fas fa-user input-icon"></i><input type="text" id="loginUsername" placeholder="Username"></div>
+                <div class="input-field"><i class="fas fa-key input-icon"></i><input type="password" id="loginPassword" placeholder="Kata Sandi"></div>
+                <div id="loginError" class="error-msg" style="color:#f87171; font-size:0.75rem;"></div>
+                <button id="loginBtn" class="auth-btn"><i class="fas fa-arrow-right-to-bracket"></i> Masuk Sekarang</button>
+                <div class="auth-footer" style="text-align:center; margin-top:1rem;">Belum punya akun? <a id="switchToRegister" style="color:var(--accent); cursor:pointer;">Daftar sekarang</a></div>
+            </div>
+            <div id="registerForm" class="auth-form" style="display:none;">
+                <div class="input-field"><i class="fas fa-user input-icon"></i><input type="text" id="regUsername" placeholder="Username (min 3)"></div>
+                <div class="input-field"><i class="fas fa-lock input-icon"></i><input type="password" id="regPassword" placeholder="Kata Sandi (min 4)"></div>
+                <div class="input-field"><i class="fas fa-id-card input-icon"></i><input type="text" id="regName" placeholder="Nama Lengkap"></div>
+                <div id="registerError" class="error-msg" style="color:#f87171;"></div>
+                <div id="registerSuccess" class="success-msg" style="color:#4ade80;"></div>
+                <button id="registerBtn" class="auth-btn"><i class="fas fa-user-check"></i> Daftar Sekarang</button>
+                <div class="auth-footer">Sudah punya akun? <a id="switchToLogin" style="color:var(--accent); cursor:pointer;">Masuk di sini</a></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="editProfileModal" class="modal"><div class="modal-content"><h3><i class="fas fa-user-edit"></i> Edit Profil</h3><input type="text" id="editFullname" placeholder="Nama Lengkap" style="width:100%; padding:12px; border-radius:60px; margin:10px 0;"><div style="display:flex; gap:12px;"><button id="saveProfileBtn" class="auth-btn" style="flex:1;">Simpan</button><button id="cancelEditBtn" class="btn-outline" style="flex:1;">Batal</button></div></div></div>
+<div id="withdrawModal" class="modal"><div class="modal-content"><h3><i class="fas fa-hand-holding-usd"></i> Ajukan Penarikan</h3><p>Saldo: <strong id="modalBalance">0</strong> Rupiah</p><div id="withdrawWarningMsg" class="withdraw-warning" style="display:none;"></div><div id="weeklyLimitInfo" class="withdraw-limit-info" style="margin:10px 0;"></div><div class="withdraw-amount-cards" style="display:flex; flex-wrap:wrap; gap:12px; margin:15px 0;"><div class="amount-card" data-amount="10000">Rp10.000 <span class="badge-warning" style="background:#ef4444; color:white; border-radius:20px; padding:2px 8px; font-size:0.65rem; margin-left:6px;">1x/minggu</span></div><div class="amount-card" data-amount="20000">Rp20.000</div><div class="amount-card" data-amount="50000">Rp50.000</div><div class="amount-card" data-amount="100000">Rp100.000</div></div><input type="text" id="withdrawAccount" placeholder="Nomor rekening / e-wallet" style="width:100%; padding:12px; border-radius:60px;"><select id="withdrawMethod" style="width:100%; padding:12px; border-radius:60px; margin:10px 0;"><option>Bank Transfer</option><option>DANA</option><option>OVO</option><option>GoPay</option></select><div style="display:flex; gap:12px;"><button id="confirmWithdrawBtn" class="auth-btn" style="flex:1;">Ajukan</button><button id="closeModalBtn" class="btn-outline" style="flex:1;">Batal</button></div></div></div>
+<div id="toastMsg" class="toast-msg" style="opacity:0;"></div>
+
+<script type="importmap">
+    {
+        "imports": {
+            "firebase/app": "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js",
+            "firebase/firestore": "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js",
+            "./soal.js": "./soal.js"
+        }
+    }
+</script>
+<script type="module">
+    import { initializeApp } from "firebase/app";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, query, where, getDocs, onSnapshot } from "firebase/firestore";
+    import { getQuestionsForLevel, getRewardByJenjang } from "./soal.js";
+    
+    const firebaseConfig = {
+        apiKey: "AIzaSyBCaLABpKTIQhPJcJKN8dXSrk_cCLtTmQE",
+        authDomain: "math-rupiah.firebaseapp.com",
+        projectId: "math-rupiah",
+        storageBucket: "math-rupiah.firebasestorage.app",
+        messagingSenderId: "146629665060",
+        appId: "1:146629665060:web:4207c18f4739f7688a53b1"
+    };
+    
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    
+    let currentUser = null;
+    let currentJenjang = "sd", currentKelas = "1", currentLevelKey = "sd1";
+    let currentQuestionsList = [], currentQuestionIndex = 0, answered = false, timerInterval = null, timeRemaining = 30, isQuizActive = false;
+    const TIME_LIMIT = 30, TIME_BONUS_THRESHOLD = 10;
+    
+    let maintenanceUnsubscribe = null;
+    let isMaintenanceActive = false;
+    let welcomeModalShown = false;
+    
+    // ========== MAINTENANCE MODE CHECK WITH REALTIME ==========
+    const checkMaintenanceMode = async () => {
+        try {
+            const maintenanceRef = doc(db, "settings", "maintenance");
+            const maintenanceDoc = await getDoc(maintenanceRef);
+            if (maintenanceDoc.exists() && maintenanceDoc.data().enabled === true) {
+                return {
+                    enabled: true,
+                    message: maintenanceDoc.data().message || "Sedang dalam pemeliharaan. Mohon tunggu.",
+                    estimatedTime: maintenanceDoc.data().estimatedTime || null
+                };
+            }
+            return { enabled: false };
+        } catch (e) {
+            console.error("Error checking maintenance mode:", e);
+            return { enabled: false };
+        }
+    };
+    
+    const setupRealtimeMaintenance = () => {
+        if (maintenanceUnsubscribe) maintenanceUnsubscribe();
+        const maintenanceRef = doc(db, "settings", "maintenance");
+        maintenanceUnsubscribe = onSnapshot(maintenanceRef, (docSnap) => {
+            if (docSnap.exists() && docSnap.data().enabled === true) {
+                const data = docSnap.data();
+                isMaintenanceActive = true;
+                showMaintenancePage({
+                    enabled: true,
+                    message: data.message,
+                    estimatedTime: data.estimatedTime
+                });
+            } else {
+                if (isMaintenanceActive) {
+                    isMaintenanceActive = false;
+                    hideMaintenancePage();
+                    if (currentUser) {
+                        location.reload();
+                    }
+                }
+            }
+        }, (error) => {
+            console.error("Realtime maintenance listener error:", error);
+        });
+    };
+    
+    const showMaintenancePage = (data) => {
+        document.getElementById("maintenancePage").style.display = "block";
+        document.getElementById("authContainer").style.display = "none";
+        document.getElementById("mainContent").style.display = "none";
+        
+        if (data.message) {
+            const msgElement = document.getElementById("maintenanceMessageText");
+            if (msgElement) msgElement.innerText = data.message;
+        }
+        
+        if (isQuizActive) {
+            stopQuiz();
+        }
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+    };
+    
+    const hideMaintenancePage = () => {
+        document.getElementById("maintenancePage").style.display = "none";
+    };
+    
+    // Show welcome modal function
+    const showWelcomeModal = () => {
+        if (!welcomeModalShown && currentUser) {
+            setTimeout(() => {
+                document.getElementById("welcomeModal").classList.add("active");
+                welcomeModalShown = true;
+            }, 500);
+        }
+    };
+    // ========== END MAINTENANCE MODE CHECK ==========
+    
+    const showToast = (msg, isError = false) => {
+        const toast = document.getElementById("toastMsg");
+        toast.style.backgroundColor = isError ? "#dc2626" : "var(--accent)";
+        toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-triangle' : 'fa-circle-check'}"></i> ${msg}`;
+        toast.style.opacity = "1";
+        setTimeout(() => toast.style.opacity = "0", 2600);
+    };
+    
+    const showLoading = (show) => document.getElementById("loadingOverlay").classList.toggle("active", show);
+    
+    const getDeviceFingerprint = async () => { 
+        try { 
+            const fp = await FingerprintJS.load(); 
+            const result = await fp.get(); 
+            return result.visitorId; 
+        } catch(e) { 
+            return "device_" + Math.random().toString(36).substr(2, 10); 
+        } 
+    };
+    
+    const getCurrentReward = () => {
+        const rewards = { sd: 300, smp: 400, smk: 500 };
+        return rewards[currentJenjang] || 300;
+    };
+    
+    const shuffleArray = (arr) => { 
+        for(let i=arr.length-1; i>0; i--) { 
+            const j=Math.floor(Math.random()*(i+1)); 
+            [arr[i],arr[j]]=[arr[j],arr[i]]; 
+        } 
+        return arr; 
+    };
+    
+    const shuffleQuestion = (q) => { 
+        const opts=[...q.options]; 
+        const newIdx=Math.floor(Math.random()*opts.length); 
+        [opts[q.correct],opts[newIdx]]=[opts[newIdx],opts[q.correct]]; 
+        return {...q, options:opts, correct:newIdx}; 
+    };
+    
+    const loadQuestions = () => { 
+        const raw=getQuestionsForLevel(currentLevelKey); 
+        if(!raw) return []; 
+        return shuffleArray(raw.slice(0,100).map(q=>shuffleQuestion(q))); 
+    };
+    
+    const formatTime = (s) => `${Math.floor(s/60).toString().padStart(2,'0')}:${(s%60).toString().padStart(2,'0')}`;
+    
+    const getTimeBonus = () => { 
+        const used=TIME_LIMIT-timeRemaining; 
+        if(used<=TIME_BONUS_THRESHOLD && used>=0) return Math.min(Math.floor((TIME_BONUS_THRESHOLD-used+1)*50),500); 
+        return 0; 
+    };
+    
+    const getWeekStart = () => {
+        const now = new Date();
+        const dayOfWeek = now.getDay();
+        const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+        const monday = new Date(now);
+        monday.setDate(now.getDate() - diffToMonday);
+        monday.setHours(0, 0, 0, 0);
+        return monday;
+    };
+    
+    const canWithdrawTenThousand = async (username) => {
+        try {
+            if (!db || !username) return true;
+            const weekStart = getWeekStart();
+            const q = query(
+                collection(db, "withdraw_requests"),
+                where("username", "==", username),
+                where("amount", "==", 10000)
+            );
+            const snap = await getDocs(q);
+            const thisWeekWithdrawals = snap.docs.filter(doc => {
+                const data = doc.data();
+                const createdAt = new Date(data.createdAt);
+                const isThisWeek = createdAt >= weekStart;
+                const isPendingOrSuccess = data.status === "pending" || data.status === "success";
+                return isThisWeek && isPendingOrSuccess;
+            });
+            return thisWeekWithdrawals.length === 0;
+        } catch(e) {
+            console.error("Error checking withdraw limit:", e);
+            return true;
+        }
+    };
+    
+    const loadWithdrawHistory = async (username) => {
+        if(!db) return [];
+        try {
+            const q = query(collection(db, "withdraw_requests"), where("username", "==", username));
+            const snap = await getDocs(q);
+            const res = [];
+            snap.forEach(doc => res.push({id: doc.id, ...doc.data()}));
+            return res.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        } catch(e) {
+            console.error("Error loading withdraw history:", e);
+            return [];
+        }
+    };
+    
+    const addWithdrawRequest = async (username, amount, account, method) => { 
+        try { 
+            await addDoc(collection(db, "withdraw_requests"), {
+                username, amount, account, method, status: "pending", createdAt: new Date().toISOString()
+            }); 
+            return true; 
+        } catch(e){ 
+            console.error("Error adding withdraw request:", e);
+            return false; 
+        } 
+    };
+    
+    const updateUserBalance = async (username, balance) => { 
+        try { 
+            await updateDoc(doc(db, "users", username), {balance}); 
+            return true;
+        } catch(e) {
+            console.error("Error updating balance:", e);
+            return false;
+        } 
+    };
+    
+    const updateUserStats = async (username, ans, corr) => { 
+        try { 
+            await updateDoc(doc(db, "users", username), {totalAnswered: ans, totalCorrect: corr}); 
+            return true;
+        } catch(e) {
+            console.error("Error updating stats:", e);
+            return false;
+        } 
+    };
+    
+    const login = async (username, password) => {
+        showLoading(true);
+        try {
+            const ref = doc(db, "users", username);
+            const snap = await getDoc(ref);
+            if(!snap.exists()) return {success:false, msg:"Username tidak ditemukan"};
+            const data = snap.data();
+            if(data.password !== password) return {success:false, msg:"Password salah"};
+            const devId = await getDeviceFingerprint();
+            if(data.deviceId && data.deviceId !== devId) return {success:false, msg:"Akun terdaftar di perangkat lain"};
+            if(!data.deviceId) await updateDoc(ref, {deviceId: devId});
+            await updateDoc(ref, {lastActive: new Date().toISOString()});
+            return {success:true, user:data};
+        } catch(e) { 
+            console.error("Login error:", e);
+            return {success:false, msg:e.message}; 
+        } finally { 
+            showLoading(false); 
+        }
+    };
+    
+    const register = async (username, password, fullname) => {
+        if(username.length < 3) return {success:false, msg:"Username minimal 3 karakter"};
+        if(password.length < 4) return {success:false, msg:"Password minimal 4 karakter"};
+        showLoading(true);
+        try {
+            const ref = doc(db, "users", username);
+            if((await getDoc(ref)).exists()) return {success:false, msg:"Username sudah terdaftar"};
+            const devId = await getDeviceFingerprint();
+            const newUser = {
+                username, password, fullname: fullname || username, balance: 0, deviceId: devId, 
+                totalAnswered: 0, totalCorrect: 0, createdAt: new Date().toISOString(), lastActive: new Date().toISOString()
+            };
+            await setDoc(ref, newUser);
+            return {success:true, user:newUser};
+        } catch(e) { 
+            console.error("Register error:", e);
+            return {success:false, msg:e.message}; 
+        } finally { 
+            showLoading(false); 
+        }
+    };
+    
+    const stopTimer = () => { if(timerInterval) { clearInterval(timerInterval); timerInterval = null; } };
+    
+    const startTimer = () => {
+        if(timerInterval) clearInterval(timerInterval);
+        timeRemaining = TIME_LIMIT;
+        const td = document.getElementById("timerDisplay");
+        td.innerText = formatTime(timeRemaining);
+        timerInterval = setInterval(() => {
+            if(answered || !isQuizActive) return;
+            if(timeRemaining <= 1) { 
+                clearInterval(timerInterval); 
+                timerInterval = null; 
+                handleTimeout(); 
+            } else { 
+                timeRemaining--; 
+                td.innerText = formatTime(timeRemaining); 
+            }
+        }, 1000);
+    };
+    
+    const handleTimeout = async () => {
+        if(answered || !currentUser || !isQuizActive) return;
+        answered = true;
+        stopTimer();
+        const q = currentQuestionsList[currentQuestionIndex];
+        document.getElementById("feedbackMsg").innerHTML = `<span style="color:#f87171;"><i class="fas fa-hourglass-end"></i> Waktu habis! Jawaban: ${q.options[q.correct]}</span>`;
+        if(db && currentUser) {
+            await updateUserStats(currentUser.username, (currentUser.totalAnswered || 0) + 1, currentUser.totalCorrect || 0);
+            currentUser.totalAnswered = (currentUser.totalAnswered || 0) + 1;
+        }
+        document.querySelectorAll(".opt-btn").forEach((btn, i) => { 
+            btn.disabled = true; 
+            if(i === q.correct) btn.style.background = "#2e6b47"; 
+        });
+        document.getElementById("nextButton").disabled = false;
+        showToast("⏰ Waktu habis!", true);
+    };
+    
+    const handleAnswer = async (selIdx) => {
+        if(answered || !currentUser || !isQuizActive) return;
+        stopTimer();
+        const q = currentQuestionsList[currentQuestionIndex];
+        const isCorrect = (selIdx === q.correct);
+        answered = true;
+        const baseReward = getCurrentReward();
+        const bonus = isCorrect ? getTimeBonus() : 0;
+        const total = baseReward + bonus;
+        const fb = document.getElementById("feedbackMsg");
+        if(isCorrect) {
+            fb.innerHTML = `<span style="color:#6ee7b7;"><i class="fas fa-check-circle"></i> Benar! +Rp ${baseReward}${bonus > 0 ? ` + bonus ${bonus}` : ""}</span>`;
+            if(db) {
+                const newBalance = currentUser.balance + total;
+                await updateUserBalance(currentUser.username, newBalance);
+                currentUser.balance = newBalance;
+                const newAns = (currentUser.totalAnswered || 0) + 1;
+                const newCor = (currentUser.totalCorrect || 0) + 1;
+                await updateUserStats(currentUser.username, newAns, newCor);
+                currentUser.totalAnswered = newAns;
+                currentUser.totalCorrect = newCor;
+                document.getElementById("balanceAmount").innerText = newBalance.toLocaleString('id-ID');
+                showToast(`+Rp ${total} | Kilat!`);
+                updateProfileUI();
+            }
+        } else {
+            fb.innerHTML = `<span style="color:#f87171;"><i class="fas fa-times-circle"></i> Salah! Jawaban: ${q.options[q.correct]}</span>`;
+            if(db) {
+                await updateUserStats(currentUser.username, (currentUser.totalAnswered || 0) + 1, currentUser.totalCorrect || 0);
+                currentUser.totalAnswered = (currentUser.totalAnswered || 0) + 1;
+            }
+        }
+        document.querySelectorAll(".opt-btn").forEach((btn, i) => { 
+            btn.disabled = true; 
+            if(i === q.correct) btn.style.background = "#2e6b47"; 
+            if(i === selIdx && !isCorrect) btn.style.background = "#8b3a3a"; 
+        });
+        document.getElementById("nextButton").disabled = false;
+    };
+    
+    const renderQuestion = () => {
+        if(!currentQuestionsList.length) return;
+        const q = currentQuestionsList[currentQuestionIndex];
+        document.getElementById("questionText").innerHTML = `<i class="fas fa-brain"></i> ${q.text}`;
+        const letters = ["A", "B", "C", "D"];
+        let html = "";
+        q.options.forEach((opt, i) => { 
+            html += `<div class="opt-btn" data-idx="${i}"><span class="opt-prefix">${letters[i]}</span><span>${opt}</span></div>`; 
+        });
+        document.getElementById("optionsContainer").innerHTML = html;
+        document.querySelectorAll(".opt-btn").forEach(btn => { 
+            btn.onclick = () => handleAnswer(parseInt(btn.dataset.idx)); 
+            btn.disabled = false; 
+        });
+        answered = false;
+        document.getElementById("nextButton").disabled = true;
+        document.getElementById("feedbackMsg").innerHTML = "";
+        if(isQuizActive) startTimer();
+        const percent = ((currentQuestionIndex + 1) / currentQuestionsList.length) * 100;
+        document.getElementById("progressFill").style.width = `${percent}%`;
+        document.getElementById("rewardHint").innerHTML = `+Rp ${getCurrentReward()}/soal + bonus`;
+    };
+    
+    const nextQuestion = () => { 
+        if(!answered) { 
+            showToast("Jawab dulu!"); 
+            return; 
+        } 
+        let next = currentQuestionIndex + 1; 
+        if(next >= currentQuestionsList.length) next = 0; 
+        currentQuestionIndex = next; 
+        renderQuestion(); 
+    };
+    
+    const startQuiz = () => {
+        if(isQuizActive) { showToast("Kuis sedang berjalan!"); return; }
+        currentQuestionsList = loadQuestions();
+        if(!currentQuestionsList.length) { showToast("Gagal memuat soal!", true); return; }
+        currentQuestionIndex = 0;
+        isQuizActive = true;
+        document.getElementById("quizContent").style.display = "block";
+        const btn = document.getElementById("playQuizBtn");
+        btn.innerHTML = '<i class="fas fa-stop"></i> STOP - Hentikan Kuis';
+        btn.classList.add("stop-mode");
+        renderQuestion();
+        showToast(`🎮 Kuis dimulai! Reward +Rp ${getCurrentReward()}/soal`);
+    };
+    
+    const stopQuiz = () => {
+        if(!isQuizActive) return;
+        isQuizActive = false;
+        stopTimer();
+        document.getElementById("quizContent").style.display = "none";
+        const btn = document.getElementById("playQuizBtn");
+        btn.innerHTML = '<i class="fas fa-play"></i> MULAI KUIS & EARN';
+        btn.classList.remove("stop-mode");
+        showToast("⏸️ Kuis dihentikan");
+    };
+    
+    const toggleQuiz = () => { if(isQuizActive) stopQuiz(); else startQuiz(); };
+    
+    const updateKelasButtons = () => {
+        const container = document.getElementById("kelasButtons");
+        let list = [];
+        if(currentJenjang === "sd") list = [1, 2, 3, 4, 5, 6];
+        else if(currentJenjang === "smp") list = [7, 8, 9];
+        else list = [10, 11, 12];
+        container.innerHTML = list.map(k => `<button class="kelas-btn ${currentKelas == k ? 'active' : ''}" data-kelas="${k}">Kelas ${k}</button>`).join('');
+        document.querySelectorAll('.kelas-btn').forEach(btn => {
+            btn.onclick = () => { 
+                if(isQuizActive){ 
+                    showToast("Selesaikan kuis dulu!", true); 
+                    return; 
+                } 
+                currentKelas = btn.dataset.kelas; 
+                currentLevelKey = `${currentJenjang}${currentKelas}`; 
+                updateKelasButtons(); 
+                const names = {sd:"SD", smp:"SMP", smk:"SMK"}; 
+                document.getElementById("selectedLevelName").innerHTML = `${names[currentJenjang]} Kelas ${currentKelas} (+Rp${getCurrentReward()}/soal)`; 
+                showToast(`Kelas ${currentKelas} dipilih | Reward +Rp${getCurrentReward()}/soal`); 
+            };
+        });
+    };
+    
+    const changeJenjang = (jenjang) => {
+        if(isQuizActive){ 
+            showToast("Selesaikan kuis dulu!", true); 
+            return; 
+        }
+        currentJenjang = jenjang;
+        if(jenjang === "sd") currentKelas = "1";
+        else if(jenjang === "smp") currentKelas = "7";
+        else currentKelas = "10";
+        currentLevelKey = `${currentJenjang}${currentKelas}`;
+        document.querySelectorAll(".jenjang-btn").forEach(btn => { 
+            if(btn.dataset.jenjang === jenjang) btn.classList.add("active"); 
+            else btn.classList.remove("active"); 
+        });
+        updateKelasButtons();
+        const names = {sd:"SD", smp:"SMP", smk:"SMK"};
+        document.getElementById("selectedLevelName").innerHTML = `${names[currentJenjang]} Kelas ${currentKelas} (+Rp${getCurrentReward()}/soal)`;
+        showToast(`Jenjang ${jenjang.toUpperCase()} dipilih`);
+    };
+    
+    const updateProfileUI = () => {
+        if(!currentUser) return;
+        document.getElementById("profileFullname").innerText = currentUser.fullname || currentUser.username;
+        document.getElementById("profileUsername").innerText = `@${currentUser.username}`;
+        document.getElementById("statTotalAnswered").innerText = currentUser.totalAnswered || 0;
+        document.getElementById("statCorrect").innerText = currentUser.totalCorrect || 0;
+        const acc = currentUser.totalAnswered ? Math.round((currentUser.totalCorrect / currentUser.totalAnswered) * 100) : 0;
+        document.getElementById("statAccuracy").innerText = `${acc}%`;
+    };
+    
+    const displayWithdrawHistory = async () => {
+        if(!currentUser) return;
+        const listDiv = document.getElementById("withdrawHistoryList");
+        const summaryDiv = document.getElementById("withdrawSummary");
+        
+        listDiv.innerHTML = '<div style="text-align:center; padding:20px;"><i class="fas fa-spinner fa-pulse"></i> Memuat riwayat...</div>';
+        
+        try {
+            const reqs = await loadWithdrawHistory(currentUser.username);
+            const pending = reqs.filter(r => r.status === "pending").length;
+            const success = reqs.filter(r => r.status === "success").length;
+            const rejected = reqs.filter(r => r.status === "rejected").length;
+            
+            if(summaryDiv) {
+                summaryDiv.innerHTML = `
+                    <div class="status-summary-card"><i class="fas fa-clock"></i><div class="stat-value" style="font-size:1.5rem;">${pending}</div><div>Menunggu</div></div>
+                    <div class="status-summary-card"><i class="fas fa-check-circle"></i><div class="stat-value" style="font-size:1.5rem;">${success}</div><div>Berhasil</div></div>
+                    <div class="status-summary-card"><i class="fas fa-times-circle"></i><div class="stat-value" style="font-size:1.5rem;">${rejected}</div><div>Ditolak</div></div>
+                `;
+            }
+            
+            if(reqs.length === 0) {
+                listDiv.innerHTML = '<div style="text-align:center; padding:30px;"><i class="fas fa-inbox"></i><p>Belum ada riwayat penarikan</p></div>';
+            } else {
+                listDiv.innerHTML = "";
+                reqs.forEach(r => {
+                    const statusText = r.status === "pending" ? "Menunggu" : (r.status === "success" ? "Berhasil" : "Ditolak");
+                    const dateStr = r.createdAt ? new Date(r.createdAt).toLocaleString('id-ID') : "Tanggal tidak tersedia";
+                    listDiv.innerHTML += `<div class="history-item"><div><strong>Rp ${(r.amount || 0).toLocaleString('id-ID')}</strong><div style="font-size:0.7rem;">${r.method || '-'} - ${r.account || '-'}</div><div style="font-size:0.65rem; opacity:0.7;">${dateStr}</div></div><span>${statusText}</span></div>`;
+                });
+            }
+        } catch(e) {
+            console.error("Error in displayWithdrawHistory:", e);
+            listDiv.innerHTML = '<div style="text-align:center; padding:30px; color:#f87171;"><i class="fas fa-exclamation-triangle"></i><p>Gagal memuat riwayat.</p></div>';
+        }
+    };
+    
+    const processWithdraw = async () => {
+        const account = document.getElementById("withdrawAccount").value.trim();
+        const method = document.getElementById("withdrawMethod").value;
+        const selected = document.querySelector(".amount-card.selected");
+        let amount = selected ? parseInt(selected.dataset.amount) : null;
+        
+        if(!amount) { showToast("Pilih jumlah penarikan terlebih dahulu!", true); return; }
+        if(amount < 10000) { showToast("Minimal penarikan Rp10.000!", true); return; }
+        if(amount > currentUser.balance) { showToast("Saldo tidak cukup!", true); return; }
+        if(!account) { showToast("Masukkan nomor rekening/e-wallet", true); return; }
+        
+        if(amount === 10000) {
+            const canWithdraw = await canWithdrawTenThousand(currentUser.username);
+            if(!canWithdraw) {
+                showToast(`❌ Penarikan Rp10.000 hanya bisa 1x dalam 1 minggu!`, true);
+                return;
+            }
+        }
+        
+        showLoading(true);
+        const ok = await addWithdrawRequest(currentUser.username, amount, account, method);
+        if(ok) {
+            const newBalance = currentUser.balance - amount;
+            await updateDoc(doc(db, "users", currentUser.username), {balance: newBalance});
+            currentUser.balance = newBalance;
+            document.getElementById("balanceAmount").innerText = newBalance.toLocaleString('id-ID');
+            showToast(`✅ Penarikan Rp ${amount.toLocaleString('id-ID')} diajukan!`);
+            document.getElementById("withdrawModal").classList.remove("active");
+            document.getElementById("withdrawAccount").value = "";
+            document.querySelectorAll(".amount-card").forEach(c => c.classList.remove("selected"));
+            if(document.getElementById("historySection").style.display !== "none") await displayWithdrawHistory();
+            updateProfileUI();
+        } else {
+            showToast("Gagal mengajukan penarikan!", true);
+        }
+        showLoading(false);
+    };
+    
+    const updateWithdrawModal = async () => {
+        document.getElementById("modalBalance").innerText = currentUser.balance.toLocaleString('id-ID');
+        const canWithdraw10k = await canWithdrawTenThousand(currentUser.username);
+        const tenKCard = document.querySelector(".amount-card[data-amount='10000']");
+        const warningDiv = document.getElementById("withdrawWarningMsg");
+        const weeklyLimitInfo = document.getElementById("weeklyLimitInfo");
+        
+        if(!canWithdraw10k) {
+            tenKCard.style.opacity = "0.5";
+            tenKCard.style.cursor = "not-allowed";
+            tenKCard.onclick = () => showToast(`Rp10.000 sudah Anda gunakan minggu ini!`, true);
+            if(warningDiv) {
+                warningDiv.style.display = "block";
+                warningDiv.innerHTML = `<i class="fas fa-calendar-week"></i> ⚠️ Anda sudah melakukan penarikan Rp10.000 minggu ini. Penarikan Rp10.000 hanya bisa 1x per minggu.`;
+            }
+            if(weeklyLimitInfo) {
+                weeklyLimitInfo.innerHTML = `<i class="fas fa-exclamation-triangle" style="color:#f59e0b;"></i> Limit Rp10.000 mingguan sudah digunakan. Silakan pilih nominal lain.`;
+            }
+        } else {
+            tenKCard.style.opacity = "1";
+            tenKCard.style.cursor = "pointer";
+            tenKCard.onclick = () => {
+                document.querySelectorAll(".amount-card").forEach(cc => cc.classList.remove("selected"));
+                tenKCard.classList.add("selected");
+            };
+            if(warningDiv) warningDiv.style.display = "none";
+            if(weeklyLimitInfo) {
+                weeklyLimitInfo.innerHTML = `<i class="fas fa-check-circle" style="color:#10b981;"></i> Rp10.000 tersedia! Anda bisa tarik minggu ini.`;
+            }
+        }
+        
+        document.querySelectorAll(".amount-card:not([data-amount='10000'])").forEach(c => {
+            c.onclick = () => {
+                document.querySelectorAll(".amount-card").forEach(cc => cc.classList.remove("selected"));
+                c.classList.add("selected");
+            };
+        });
+    };
+    
+    const showSection = (section) => {
+        document.getElementById("quizSection").style.display = section === "quiz" ? "block" : "none";
+        document.getElementById("profileSection").style.display = section === "profile" ? "block" : "none";
+        document.getElementById("historySection").style.display = section === "history" ? "block" : "none";
+        document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+        if(section === "quiz") document.getElementById("navQuizBtn").classList.add("active");
+        if(section === "profile") document.getElementById("navProfileBtn").classList.add("active");
+        if(section === "history") document.getElementById("navHistoryBtn").classList.add("active");
+        if(section === "profile") updateProfileUI();
+        if(section === "history") displayWithdrawHistory();
+        if(section !== "quiz" && isQuizActive) stopQuiz();
+    };
+    
+    const setupMainUI = async () => {
+        document.getElementById("mainContent").style.display = "block";
+        document.getElementById("authContainer").style.display = "none";
+        document.getElementById("userNameDisplay").innerText = currentUser.fullname || currentUser.username;
+        document.getElementById("balanceAmount").innerText = (currentUser.balance || 0).toLocaleString('id-ID');
+        
+        document.getElementById("logoutBtn").onclick = () => { 
+            stopTimer(); 
+            if(isQuizActive) stopQuiz(); 
+            localStorage.removeItem("mathrupiah_session"); 
+            currentUser = null; 
+            document.getElementById("mainContent").style.display = "none"; 
+            document.getElementById("authContainer").style.display = "block"; 
+            showToast("Logout berhasil"); 
+            welcomeModalShown = false;
+        };
+        document.getElementById("profileNavBtnHeader").onclick = () => showSection("profile");
+        document.getElementById("withdrawNavBtnHeader").onclick = async () => { 
+            await updateWithdrawModal(); 
+            document.getElementById("withdrawModal").classList.add("active"); 
+        };
+        document.getElementById("navQuizBtn").onclick = () => showSection("quiz");
+        document.getElementById("navProfileBtn").onclick = () => showSection("profile");
+        document.getElementById("navHistoryBtn").onclick = () => showSection("history");
+        document.getElementById("closeModalBtn").onclick = () => document.getElementById("withdrawModal").classList.remove("active");
+        document.getElementById("playQuizBtn").onclick = toggleQuiz;
+        document.getElementById("nextButton").onclick = nextQuestion;
+        document.querySelectorAll(".jenjang-btn").forEach(btn => btn.onclick = () => changeJenjang(btn.dataset.jenjang));
+        document.getElementById("editProfileBtn").onclick = () => { 
+            document.getElementById("editFullname").value = currentUser.fullname || ""; 
+            document.getElementById("editProfileModal").classList.add("active"); 
+        };
+        document.getElementById("saveProfileBtn").onclick = async () => { 
+            const newName = document.getElementById("editFullname").value.trim(); 
+            if(newName && db) { 
+                await updateDoc(doc(db, "users", currentUser.username), {fullname: newName}); 
+                currentUser.fullname = newName; 
+                document.getElementById("userNameDisplay").innerText = newName; 
+                document.getElementById("profileFullname").innerText = newName; 
+                showToast("Profil diperbarui!"); 
+            } 
+            document.getElementById("editProfileModal").classList.remove("active"); 
+        };
+        document.getElementById("cancelEditBtn").onclick = () => document.getElementById("editProfileModal").classList.remove("active");
+        document.getElementById("confirmWithdrawBtn").onclick = processWithdraw;
+        updateKelasButtons();
+        document.getElementById("selectedLevelName").innerHTML = "SD Kelas 1 (+Rp300/soal)";
+        showSection("quiz");
+        updateProfileUI();
+        
+        // Show welcome modal after login
+        showWelcomeModal();
+        
+        // Close welcome modal event
+        document.getElementById("closeWelcomeModal").onclick = () => {
+            document.getElementById("welcomeModal").classList.remove("active");
+        };
+    };
+    
+    const initTheme = () => {
+        const saved = localStorage.getItem('mathrupiah_theme');
+        const btn = document.getElementById("themeToggleBtn");
+        if(saved === 'light') { 
+            document.body.classList.add('light-mode'); 
+            btn.innerHTML = '<i class="fas fa-sun"></i> <span>Mode Terang</span>'; 
+        } else { 
+            btn.innerHTML = '<i class="fas fa-moon"></i> <span>Mode Gelap</span>'; 
+        }
+        btn.onclick = () => { 
+            document.body.classList.toggle('light-mode'); 
+            const isLight = document.body.classList.contains('light-mode'); 
+            localStorage.setItem('mathrupiah_theme', isLight ? 'light' : 'dark'); 
+            btn.innerHTML = isLight ? '<i class="fas fa-sun"></i> <span>Mode Terang</span>' : '<i class="fas fa-moon"></i> <span>Mode Gelap</span>'; 
+        };
+    };
+    
+    const initAuth = () => {
+        document.querySelectorAll(".auth-tab").forEach(tab => {
+            tab.onclick = () => {
+                document.querySelectorAll(".auth-tab").forEach(t => t.classList.remove("active"));
+                tab.classList.add("active");
+                document.getElementById("loginForm").style.display = tab.dataset.tab === "login" ? "block" : "none";
+                document.getElementById("registerForm").style.display = tab.dataset.tab === "register" ? "block" : "none";
+            };
+        });
+        document.getElementById("switchToRegister").onclick = () => document.querySelector(".auth-tab[data-tab='register']").click();
+        document.getElementById("switchToLogin").onclick = () => document.querySelector(".auth-tab[data-tab='login']").click();
+        
+        document.getElementById("loginBtn").onclick = async () => {
+            const res = await login(document.getElementById("loginUsername").value.trim(), document.getElementById("loginPassword").value);
+            if(res.success) { 
+                currentUser = res.user; 
+                localStorage.setItem("mathrupiah_session", currentUser.username); 
+                await setupMainUI(); 
+            } else { 
+                document.getElementById("loginError").innerHTML = `<i class="fas fa-exclamation-circle"></i> ${res.msg}`; 
+                showToast(res.msg, true); 
+            }
+        };
+        
+        document.getElementById("registerBtn").onclick = async () => {
+            const res = await register(document.getElementById("regUsername").value.trim(), document.getElementById("regPassword").value, document.getElementById("regName").value.trim());
+            if(res.success) { 
+                document.getElementById("registerSuccess").innerHTML = "✅ Pendaftaran berhasil! Silakan login."; 
+                showToast("Registrasi berhasil!"); 
+                setTimeout(() => { 
+                    document.querySelector(".auth-tab[data-tab='login']").click(); 
+                    document.getElementById("loginUsername").value = document.getElementById("regUsername").value; 
+                }, 1500); 
+            } else { 
+                document.getElementById("registerError").innerHTML = `<i class="fas fa-exclamation-circle"></i> ${res.msg}`; 
+                showToast(res.msg, true); 
+            }
+        };
+    };
+    
+    const init = async () => {
+        initTheme();
+        
+        setupRealtimeMaintenance();
+        
+        const maintenance = await checkMaintenanceMode();
+        if (maintenance.enabled) {
+            showMaintenancePage(maintenance);
+            return;
+        }
+        
+        hideMaintenancePage();
+        
+        const devId = await getDeviceFingerprint();
+        const session = localStorage.getItem("mathrupiah_session");
+        if(session && db) {
+            try {
+                const snap = await getDoc(doc(db, "users", session));
+                if(snap.exists() && snap.data().deviceId === devId) { 
+                    currentUser = snap.data(); 
+                    await setupMainUI(); 
+                    return; 
+                }
+            } catch(e) {
+                console.error("Session error:", e);
+            }
+        }
+        document.getElementById("mainContent").style.display = "none";
+        document.getElementById("authContainer").style.display = "block";
+        initAuth();
+    };
+    
+    init();
+</script>
+</body>
+</html>

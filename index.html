@@ -209,6 +209,21 @@
             margin: 0.5rem 0;
         }
         
+        .warning-inapp {
+            background: rgba(239, 68, 68, 0.2);
+            border-left: 4px solid #ef4444;
+            padding: 0.75rem;
+            margin: 1rem 0;
+            border-radius: 0.75rem;
+            text-align: left;
+            font-size: 0.8rem;
+        }
+        
+        .warning-inapp i {
+            color: #ef4444;
+            margin-right: 8px;
+        }
+        
         .download-chrome-btn {
             display: inline-flex;
             align-items: center;
@@ -232,6 +247,25 @@
         .download-chrome-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(66, 133, 244, 0.4);
+        }
+        
+        .open-in-chrome-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(105deg, #4285f4, #34a853);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 280px;
         }
         
         .footer-note {
@@ -959,12 +993,27 @@
         .hidden {
             display: none !important;
         }
+        
+        .copy-link-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: rgba(66, 133, 244, 0.2);
+            color: #4285f4;
+            border: 1px solid rgba(66, 133, 244, 0.3);
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
 <div id="app">
     <!-- Chrome Block Page - FULLY RESPONSIVE -->
-    <div id="chromeBlockPage" class="chrome-block-container">
+    <div id="chromeBlockPage" class="chrome-block-container" style="display: none;">
         <div class="chrome-block-card">
             <div class="chrome-icon">
                 <i class="fab fa-chrome"></i>
@@ -977,6 +1026,10 @@
                 <strong>MathRupiah Pro</strong> hanya dapat diakses menggunakan <strong style="color: #4285f4;">Google Chrome</strong> 
                 untuk pengalaman terbaik dan keamanan maksimal.
             </p>
+            <div id="inAppWarning" class="warning-inapp" style="display: none;">
+                <i class="fas fa-exclamation-circle"></i> <strong>Perhatian!</strong> Anda mengakses melalui browser dalam aplikasi (Facebook/Instagram/WhatsApp). 
+                Silakan buka tautan ini menggunakan Google Chrome.
+            </div>
             <div class="browser-list">
                 <h4><i class="fas fa-list"></i> Daftar Browser</h4>
                 <div class="browser-list-grid">
@@ -1015,6 +1068,9 @@
             <a href="https://www.google.com/chrome/" target="_blank" class="download-chrome-btn">
                 <i class="fab fa-chrome"></i> Download Google Chrome
             </a>
+            <button id="openInChromeBtn" class="open-in-chrome-btn" style="display: none;">
+                <i class="fab fa-chrome"></i> Buka dengan Chrome
+            </button>
             <p class="footer-note">
                 <i class="fas fa-shield-alt"></i> Demi keamanan dan performa terbaik, kami hanya mendukung Google Chrome
             </p>
@@ -1224,20 +1280,33 @@
     import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, query, where, getDocs, onSnapshot } from "firebase/firestore";
     import { getQuestionsForLevel } from "./soal.js";
     
-    // ========== CHROME DETECTION - IMPROVED ==========
+    // ========== CHROME DETECTION - IMPROVED FOR MOBILE ==========
     const detectBrowser = () => {
         const userAgent = navigator.userAgent.toLowerCase();
         
-        const isChrome = /chrome/i.test(userAgent) && !/edg/i.test(userAgent) && !/opr/i.test(userAgent) && !/opera/i.test(userAgent);
+        // Deteksi in-app browser (Facebook, Instagram, WhatsApp, dll)
+        const isInAppBrowser = /fbav|instagram|line|twitter|snapchat|whatsapp|micromessenger/i.test(userAgent);
+        
+        // Deteksi Chrome yang lebih akurat
+        const isChrome = /chrome/i.test(userAgent) && 
+                        !/edg/i.test(userAgent) &&
+                        !/opr/i.test(userAgent) &&
+                        !/opera/i.test(userAgent) &&
+                        !/samsung/i.test(userAgent) &&
+                        !/ucbrowser/i.test(userAgent);
+        
+        // Deteksi browser lain
         const isEdge = /edg/i.test(userAgent);
         const isFirefox = /firefox/i.test(userAgent);
         const isSafari = /safari/i.test(userAgent) && !/chrome/i.test(userAgent);
         const isOpera = /opr/i.test(userAgent) || /opera/i.test(userAgent);
         const isSamsung = /samsung/i.test(userAgent);
+        const isUCBrowser = /ucbrowser/i.test(userAgent);
         
         let browserName = "Unknown";
         let isChromeBrowser = false;
         
+        // Prioritas deteksi
         if (isEdge) {
             browserName = "Microsoft Edge";
             isChromeBrowser = false;
@@ -1253,23 +1322,52 @@
         } else if (isSamsung) {
             browserName = "Samsung Internet";
             isChromeBrowser = false;
+        } else if (isUCBrowser) {
+            browserName = "UC Browser";
+            isChromeBrowser = false;
         } else if (isChrome) {
             browserName = "Google Chrome";
             isChromeBrowser = true;
         } else {
-            browserName = navigator.userAgent.split('/')[0] || "Browser Lainnya";
-            isChromeBrowser = false;
+            // Deteksi tambahan
+            if (userAgent.includes('crios')) {
+                browserName = "Chrome on iOS";
+                isChromeBrowser = true;
+            } else if (userAgent.includes('android') && userAgent.includes('webkit')) {
+                browserName = "Browser Android Default";
+                isChromeBrowser = false;
+            } else {
+                browserName = userAgent.split('/')[0] || "Browser Lainnya";
+                isChromeBrowser = false;
+            }
         }
         
-        return { name: browserName, isChrome: isChromeBrowser };
+        return { 
+            name: browserName, 
+            isChrome: isChromeBrowser,
+            isInAppBrowser: isInAppBrowser
+        };
     };
     
-    const showChromeBlockPage = (browserName) => {
+    const showChromeBlockPage = (browserName, isInAppBrowser = false) => {
         const blockPage = document.getElementById("chromeBlockPage");
         const detectedSpan = document.getElementById("detectedBrowserName");
+        const inAppWarning = document.getElementById("inAppWarning");
+        const openInChromeBtn = document.getElementById("openInChromeBtn");
+        
         if (detectedSpan) {
             detectedSpan.innerText = browserName;
         }
+        
+        // Tampilkan peringatan khusus untuk in-app browser
+        if (isInAppBrowser) {
+            if (inAppWarning) inAppWarning.style.display = "block";
+            if (openInChromeBtn) openInChromeBtn.style.display = "inline-flex";
+        } else {
+            if (inAppWarning) inAppWarning.style.display = "none";
+            if (openInChromeBtn) openInChromeBtn.style.display = "none";
+        }
+        
         blockPage.style.display = "flex";
         
         document.getElementById("mainContent").classList.add("hidden");
@@ -1279,6 +1377,29 @@
     
     const hideChromeBlockPage = () => {
         document.getElementById("chromeBlockPage").style.display = "none";
+    };
+    
+    // Fungsi untuk membuka di Chrome
+    const openInChrome = () => {
+        const currentUrl = window.location.href;
+        // Untuk Android
+        if (/android/i.test(navigator.userAgent)) {
+            window.location.href = `googlechrome://${currentUrl.replace(/^https?:\/\//, '')}`;
+            // Fallback
+            setTimeout(() => {
+                window.location.href = "https://play.google.com/store/apps/details?id=com.android.chrome";
+            }, 500);
+        } 
+        // Untuk iOS
+        else if (/iphone|ipad|ipod/i.test(navigator.userAgent)) {
+            window.location.href = `googlechrome://${currentUrl.replace(/^https?:\/\//, '')}`;
+            setTimeout(() => {
+                window.location.href = "https://apps.apple.com/app/google-chrome/id535886823";
+            }, 500);
+        }
+        else {
+            window.location.href = "https://www.google.com/chrome/";
+        }
     };
     
     // ========== FIREBASE CONFIG ==========
@@ -1889,7 +2010,6 @@
         // Close banned modal
         document.getElementById("closeBannedModalBtn").onclick = () => {
             hideBannedModal();
-            // Clear login fields
             document.getElementById("loginUsername").value = "";
             document.getElementById("loginPassword").value = "";
         };
@@ -1897,8 +2017,10 @@
     
     const init = async () => {
         const browser = detectBrowser();
+        
+        // Cek apakah menggunakan Chrome
         if (!browser.isChrome) {
-            showChromeBlockPage(browser.name);
+            showChromeBlockPage(browser.name, browser.isInAppBrowser);
             return;
         }
         
@@ -1920,7 +2042,6 @@
                 const snap = await getDoc(doc(db, "users", session));
                 if(snap.exists()) {
                     const userData = snap.data();
-                    // Check if user is banned during session restore
                     if (userData.banned === true) {
                         localStorage.removeItem("mathrupiah_session");
                         showBannedModal(userData.banReason || "Akun Anda telah di-banned.");
@@ -1944,6 +2065,9 @@
         document.getElementById("authContainer").classList.remove("hidden");
         initAuth();
     };
+    
+    // Setup open in chrome button
+    document.getElementById("openInChromeBtn")?.addEventListener("click", openInChrome);
     
     init();
 </script>

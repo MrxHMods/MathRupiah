@@ -61,7 +61,6 @@
             color: var(--text-primary);
         }
 
-        /* Chrome Block Page */
         .chrome-block-container {
             position: fixed;
             top: 0;
@@ -121,13 +120,11 @@
             font-size: 0.9rem;
             cursor: pointer;
             text-decoration: none;
-            transition: all 0.3s ease;
             width: 100%;
             max-width: 280px;
             margin-top: 10px;
         }
 
-        /* Loading Overlay */
         .loading-overlay {
             position: fixed;
             inset: 0;
@@ -158,7 +155,6 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Maintenance Page */
         .maintenance-container {
             min-height: 100vh;
             display: flex;
@@ -203,7 +199,6 @@
             border-radius: 0.75rem;
         }
 
-        /* Main App Styles */
         .container {
             max-width: 1000px;
             margin: 0 auto;
@@ -603,7 +598,6 @@
 </head>
 <body>
 <div id="app">
-    <!-- Chrome Block Page -->
     <div id="chromeBlockPage" class="chrome-block-container" style="display: none;">
         <div class="chrome-block-card">
             <div class="chrome-icon"><i class="fab fa-chrome"></i></div>
@@ -614,13 +608,10 @@
         </div>
     </div>
     
-    <!-- Loading Overlay -->
     <div id="loadingOverlay" class="loading-overlay"><div class="spinner"></div><div style="color:white">Memuat...</div></div>
     
-    <!-- Theme Toggle -->
     <div class="theme-toggle" id="themeToggleBtn"><i class="fas fa-moon"></i> <span>Mode Gelap</span></div>
     
-    <!-- Welcome Modal -->
     <div id="welcomeModal" class="modal">
         <div class="modal-content" style="text-align: center;">
             <div class="profile-avatar" style="margin: 0 auto 1rem;"><i class="fas fa-code"></i></div>
@@ -632,7 +623,6 @@
         </div>
     </div>
     
-    <!-- Banned Modal -->
     <div id="bannedModal" class="modal">
         <div class="modal-content" style="text-align: center;">
             <div class="banned-icon"><i class="fas fa-ban"></i></div>
@@ -649,7 +639,6 @@
         </div>
     </div>
     
-    <!-- Maintenance Page -->
     <div id="maintenancePage" class="hidden">
         <div class="maintenance-container">
             <div class="maintenance-card">
@@ -667,7 +656,6 @@
         </div>
     </div>
     
-    <!-- Main Content -->
     <div id="mainContent" class="hidden">
         <div class="container">
             <div class="wallet-card">
@@ -688,7 +676,6 @@
                 <button id="navHistoryBtn" class="nav-btn"><i class="fas fa-receipt"></i> Riwayat</button>
             </div>
             
-            <!-- Quiz Section -->
             <div id="quizSection">
                 <div class="glass-card" style="padding: 1.5rem; margin-bottom: 1.5rem;">
                     <h3><i class="fas fa-chalkboard-user"></i> Pilih Jenjang & Kelas</h3>
@@ -726,7 +713,6 @@
                 </div>
             </div>
             
-            <!-- Profile Section -->
             <div id="profileSection" style="display: none;">
                 <div class="glass-card" style="padding: 2rem; text-align: center;">
                     <div class="profile-avatar"><i class="fas fa-crown"></i></div>
@@ -741,7 +727,6 @@
                 </div>
             </div>
             
-            <!-- History Section -->
             <div id="historySection" style="display: none;">
                 <div class="glass-card" style="padding: 1.5rem;">
                     <h3><i class="fas fa-history"></i> Status Penarikan</h3>
@@ -753,14 +738,13 @@
         </div>
     </div>
     
-    <!-- Auth Container -->
     <div id="authContainer" class="hidden">
         <div class="auth-container">
             <div class="auth-header">
                 <div class="auth-logo"><i class="fas fa-calculator"></i></div>
                 <h1 style="text-align: center;">MathRupiah Pro</h1>
                 <p style="color: var(--text-secondary); text-align: center;">🎓 Asah matematika, dapatkan penghasilan</p>
-                <div class="security-warning"><i class="fas fa-shield-alt"></i> Sistem anti-VPN & anti-Proxy aktif</div>
+                <div class="security-warning"><i class="fas fa-shield-alt"></i> Sistem keamanan aktif</div>
             </div>
             <div class="auth-tabs">
                 <button class="auth-tab active" data-tab="login"><i class="fas fa-sign-in-alt"></i> Masuk</button>
@@ -786,7 +770,6 @@
     </div>
 </div>
 
-<!-- Modals -->
 <div id="editProfileModal" class="modal">
     <div class="modal-content">
         <h3><i class="fas fa-user-edit"></i> Edit Profil</h3>
@@ -835,10 +818,9 @@
 </script>
 <script type="module">
     import { initializeApp } from "firebase/app";
-    import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, query, getDocs, onSnapshot } from "firebase/firestore";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, query, getDocs, onSnapshot, where } from "firebase/firestore";
     import { getQuestionsForLevel } from "./soal.js";
     
-    // ==================== FIREBASE CONFIG ====================
     const firebaseConfig = {
         apiKey: "AIzaSyBCaLABpKTIQhPJcJKN8dXSrk_cCLtTmQE",
         authDomain: "math-rupiah.firebaseapp.com",
@@ -851,7 +833,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     
-    // ==================== GLOBAL VARIABLES ====================
     let currentUser = null;
     let currentJenjang = "sd";
     let currentKelas = "1";
@@ -868,101 +849,157 @@
     const TIME_LIMIT = 30;
     const PENALTY_AMOUNT = 200;
     
-    // ==================== DNS, VPN & EXTENSION DETECTION ====================
+    // ==================== IMPROVED VPN/DNS DETECTION ====================
+    // Menggunakan deteksi yang lebih akurat dan mengurangi false positive
+    
     const detectVPNandDNS = async () => {
         const detectionResults = {
             isUsingVPN: false,
             isUsingProxy: false,
             isUsingCustomDNS: false,
-            detectedExtensions: [],
+            confidence: 0, // 0-100, hanya ban jika confidence tinggi
             reason: ""
         };
         
-        // 1. Detect VPN via WebRTC IP leak
+        let riskScore = 0;
+        const reasons = [];
+        
+        // 1. Detect VPN via WebRTC IP leak - hanya jika ada multiple IP addresses
         try {
             const pc = new RTCPeerConnection({ iceServers: [] });
             pc.createDataChannel("");
-            pc.createOffer().then(offer => pc.setLocalDescription(offer));
+            const offer = await pc.createOffer();
+            await pc.setLocalDescription(offer);
+            
+            const ips = new Set();
             pc.onicecandidate = (event) => {
                 if (event.candidate) {
                     const candidate = event.candidate.candidate;
-                    if (candidate.includes("srflx") || candidate.includes("relay")) {
-                        detectionResults.isUsingVPN = true;
-                        detectionResults.reason = "WebRTC VPN/Proxy terdeteksi";
+                    // Deteksi relay (TURN) yang biasanya menandakan VPN
+                    if (candidate.includes("relay")) {
+                        riskScore += 60;
+                        reasons.push("WebRTC relay terdeteksi (VPN)");
                     }
-                    pc.close();
+                    // Ekstrak IP
+                    const ipMatch = candidate.match(/([0-9]{1,3}\.){3}[0-9]{1,3}/);
+                    if (ipMatch) ips.add(ipMatch[0]);
                 }
+                pc.close();
             };
-            setTimeout(() => pc.close(), 1000);
+            await new Promise(resolve => setTimeout(resolve, 500));
+            pc.close();
+            
+            // Jika ada lebih dari 2 IP berbeda, kemungkinan VPN
+            if (ips.size > 2) {
+                riskScore += 30;
+                reasons.push("Multiple IP addresses terdeteksi");
+            }
         } catch(e) {}
         
-        // 2. Detect VPN via timezone vs IP mismatch (using external API)
+        // 2. Detect VPN via timezone vs IP - hanya menggunakan API yang lebih reliable
         try {
-            const timezoneResponse = await fetch('https://worldtimeapi.org/api/ip', { signal: AbortSignal.timeout(3000) });
-            if (timezoneResponse.ok) {
-                const tzData = await timezoneResponse.json();
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
+            const response = await fetch('https://ipapi.co/json/', { signal: controller.signal });
+            clearTimeout(timeoutId);
+            
+            if (response.ok) {
+                const data = await response.json();
                 const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-                if (tzData.timezone && !tzData.timezone.includes(userTimezone.replace('/', '_'))) {
-                    detectionResults.isUsingVPN = true;
-                    detectionResults.reason = "Timezone mismatch terdeteksi (VPN)";
+                
+                // Daftar timezone yang umum dan tidak mencurigakan
+                const commonTimezones = [
+                    'Asia/Jakarta', 'Asia/Makassar', 'Asia/Jayapura', 
+                    'Asia/Singapore', 'Asia/Bangkok', 'Asia/Ho_Chi_Minh'
+                ];
+                
+                // Jika timezone sangat berbeda dari lokasi IP (hanya jika confidence tinggi)
+                if (data.timezone && !commonTimezones.includes(data.timezone) && 
+                    !userTimezone.includes(data.timezone.split('/')[1])) {
+                    // Ini hanya indikasi lemah, tidak langsung dianggap VPN
+                    riskScore += 20;
+                    reasons.push("Timezone mismatch (kemungkinan VPN)");
+                }
+                
+                // Deteksi ISP yang dikenal sebagai VPN provider
+                const vpnProviders = ['VPN', 'Proxy', 'M247', 'DigitalOcean', 'Linode', 'Vultr'];
+                if (data.org && vpnProviders.some(provider => data.org.includes(provider))) {
+                    riskScore += 50;
+                    reasons.push(`ISP terdeteksi sebagai VPN provider: ${data.org}`);
                 }
             }
         } catch(e) {}
         
-        // 3. Detect custom DNS via DNS over HTTPS detection
+        // 3. Deteksi ekstensi VPN yang dikenal - hanya ekstensi yang benar-benar VPN
+        const knownVPNExtensions = [
+            "bdcfajkppmheejcknpfbankcgiomemem", // NordVPN
+            "fjoaledfpmneenckfbpdfhkmimnjocfa", // ExpressVPN
+            "hpglfhgfnhbgpjdenjgmdgoeiappafln"   // CyberGhost
+        ];
+        
+        const detectedExtensions = [];
+        for (const id of knownVPNExtensions) {
+            if (document.querySelector(`[src*="${id}"]`) || document.querySelector(`[href*="${id}"]`)) {
+                detectedExtensions.push(id);
+            }
+        }
+        
+        if (detectedExtensions.length > 0) {
+            riskScore += 80;
+            reasons.push("VPN extension terdeteksi");
+        }
+        
+        // 4. Deteksi proxy via navigator properties - lebih akurat
         try {
-            const testDomain = "www.google.com";
-            const startTime = performance.now();
-            await fetch(`https://dns.google/resolve?name=${testDomain}&type=A`, { mode: 'cors', signal: AbortSignal.timeout(2000) });
-            const dnsTime = performance.now() - startTime;
-            if (dnsTime < 50) {
-                detectionResults.isUsingCustomDNS = true;
-                detectionResults.reason = "Custom DNS/DoH terdeteksi";
+            // Cek WebDriver (automation tools sering digunakan dengan proxy)
+            if (navigator.webdriver === true) {
+                riskScore += 40;
+                reasons.push("WebDriver terdeteksi");
+            }
+            
+            // Cek plugins length yang tidak normal
+            if (navigator.plugins && navigator.plugins.length === 0) {
+                riskScore += 10;
+                reasons.push("No plugins detected (mungkin headless browser)");
             }
         } catch(e) {}
         
-        // 4. Detect common VPN browser extensions
-        const extensionDetection = () => {
-            const extensionIds = [
-                "bdcfajkppmheejcknpfbankcgiomemem", // NordVPN
-                "fjoaledfpmneenckfbpdfhkmimnjocfa", // ExpressVPN
-                "hpglfhgfnhbgpjdenjgmdgoeiappafln", // CyberGhost
-                "majdfhpaihoncoakbjgbdhglocklcgno", // TunnelBear
-                "padekgcemlokbadohgkifijomclgjgif", // Hola VPN
-                "gighmmpiobklfepjocnamgkkbiglidom"  // AdBlock Plus
-            ];
-            const detected = [];
-            for (const id of extensionIds) {
-                if (document.querySelector(`[src*="${id}"]`) || document.querySelector(`[href*="${id}"]`)) {
-                    detected.push(id);
-                }
+        // 5. Cek DNS melalui multiple methods - hanya ambil yang jelas mencurigakan
+        try {
+            // Cek apakah DNS menggunakan DoH/DoT yang mencurigakan
+            const dnsTestStart = performance.now();
+            await fetch('https://www.google.com/favicon.ico', { 
+                mode: 'no-cors',
+                cache: 'no-store',
+                signal: AbortSignal.timeout(3000)
+            });
+            const dnsTime = performance.now() - dnsTestStart;
+            
+            // DNS terlalu cepat (di bawah 10ms) bisa menandakan DNS cache yang tidak normal
+            // Tapi ini tidak langsung dianggap sebagai pelanggaran
+            if (dnsTime < 5) {
+                // Ini hanya indikasi sangat lemah
+                riskScore += 5;
             }
-            return detected;
+        } catch(e) {}
+        
+        // Tentukan apakah terbukti menggunakan VPN (hanya jika risk score tinggi)
+        const isConfirmedVPN = riskScore >= 70;
+        
+        return {
+            isUsingVPN: isConfirmedVPN,
+            isUsingProxy: isConfirmedVPN && reasons.some(r => r.includes('proxy')),
+            isUsingCustomDNS: false, // Dinonaktifkan untuk mengurangi false positive
+            confidence: Math.min(riskScore, 100),
+            reason: isConfirmedVPN ? reasons.join(', ') : ""
         };
-        
-        detectionResults.detectedExtensions = extensionDetection();
-        if (detectionResults.detectedExtensions.length > 0) {
-            detectionResults.isUsingVPN = true;
-            detectionResults.reason = "VPN/Proxy extension terdeteksi";
-        }
-        
-        // 5. Detect via connection properties
-        if (navigator.connection) {
-            const conn = navigator.connection;
-            if (conn.type === 'vpn' || conn.type === 'proxy') {
-                detectionResults.isUsingVPN = true;
-                detectionResults.reason = "Koneksi VPN/proxy terdeteksi";
-            }
-        }
-        
-        return detectionResults;
     };
     
     const applyBanForViolation = async (username, reason) => {
         if (!username) return false;
         try {
             const banExpiry = new Date();
-            banExpiry.setDate(banExpiry.getDate() + 1); // 1 day ban
+            banExpiry.setDate(banExpiry.getDate() + 1);
             
             await updateDoc(doc(db, "users", username), {
                 banned: true,
@@ -979,6 +1016,7 @@
                 
                 if (isQuizActive) stopQuiz();
                 if (timerInterval) clearInterval(timerInterval);
+                if (securityCheckInterval) clearInterval(securityCheckInterval);
                 
                 showToast(`Akun diblokir 1 hari: ${reason}`, true);
                 
@@ -1003,19 +1041,25 @@
         if (!username) return { passed: true };
         try {
             const detection = await detectVPNandDNS();
-            if (detection.isUsingVPN || detection.isUsingProxy || detection.isUsingCustomDNS || detection.detectedExtensions.length > 0) {
-                const reason = detection.reason || "Penggunaan VPN/Proxy/DNS custom terdeteksi";
+            
+            // Log untuk debugging (opsional, bisa dihapus)
+            console.log(`Security check for ${username}: risk score ${detection.confidence}, VPN: ${detection.isUsingVPN}`);
+            
+            if (detection.isUsingVPN && detection.confidence >= 70) {
+                const reason = detection.reason || "Penggunaan VPN/Proxy terdeteksi dengan confidence tinggi";
                 await applyBanForViolation(username, reason);
                 return { passed: false, reason: reason };
             }
             return { passed: true };
         } catch(e) {
+            console.error("Security check error:", e);
             return { passed: true };
         }
     };
     
     const startPeriodicSecurityCheck = (username) => {
         if (securityCheckInterval) clearInterval(securityCheckInterval);
+        // Kurangi frekuensi pengecekan menjadi setiap 2 menit untuk mengurangi beban
         securityCheckInterval = setInterval(async () => {
             if (currentUser && currentUser.username === username && !currentUser.banned) {
                 const result = await performSecurityCheck(username);
@@ -1024,7 +1068,7 @@
                     securityCheckInterval = null;
                 }
             }
-        }, 30000); // Check every 30 seconds
+        }, 120000); // Check every 2 minutes
     };
     
     // ==================== UTILITY FUNCTIONS ====================
@@ -1070,7 +1114,6 @@
         return shuffleArray([...raw]);
     };
     
-    // ==================== CHECK BAN STATUS ====================
     const checkAndShowBanModal = (userData) => {
         if (userData.banned === true) {
             const isTempBan = userData.banType === 'temporary';
@@ -1107,7 +1150,6 @@
         return false;
     };
     
-    // ==================== MAINTENANCE FUNCTIONS ====================
     const checkMaintenanceMode = async () => {
         try {
             const maintenanceRef = doc(db, "settings", "maintenance");
@@ -1156,11 +1198,9 @@
         document.getElementById("maintenancePage").classList.add("hidden");
     };
     
-    // ==================== AUTH FUNCTIONS ====================
     const login = async (username, password) => {
         showLoading(true);
         try {
-            // Security check before login
             const securityResult = await performSecurityCheck(username);
             if (!securityResult.passed) {
                 return { success: false, msg: "banned", banReason: securityResult.reason, banType: 'temporary' };
@@ -1203,7 +1243,6 @@
         if (username.length < 3) return { success: false, msg: "Username minimal 3 karakter" };
         if (password.length < 4) return { success: false, msg: "Password minimal 4 karakter" };
         
-        // Security check before registration
         const securityResult = await performSecurityCheck(username);
         if (!securityResult.passed) {
             return { success: false, msg: `Pendaftaran ditolak: ${securityResult.reason}` };
@@ -1228,7 +1267,6 @@
         }
     };
     
-    // ==================== QUIZ FUNCTIONS ====================
     const stopTimer = () => {
         if (timerInterval) {
             clearInterval(timerInterval);
@@ -1395,7 +1433,6 @@
         else startQuiz();
     };
     
-    // ==================== UI UPDATE FUNCTIONS ====================
     const updateKelasButtons = () => {
         const container = document.getElementById("kelasButtons");
         let list = [];
@@ -1475,6 +1512,7 @@
                 });
             }
         } catch (e) {
+            console.error("Error loading withdraw history:", e);
             listDiv.innerHTML = '<div style="text-align:center; padding:30px;"><i class="fas fa-exclamation-triangle"></i><p>Gagal memuat riwayat.</p></div>';
         }
     };
@@ -1562,14 +1600,12 @@
         if (section !== "quiz" && isQuizActive) stopQuiz();
     };
     
-    // ==================== MAIN UI SETUP ====================
     const setupMainUI = async () => {
         document.getElementById("mainContent").classList.remove("hidden");
         document.getElementById("authContainer").classList.add("hidden");
         document.getElementById("userNameDisplay").innerText = currentUser.fullname || currentUser.username;
         document.getElementById("balanceAmount").innerText = (currentUser.balance || 0).toLocaleString('id-ID');
         
-        // Start periodic security checks
         startPeriodicSecurityCheck(currentUser.username);
         
         document.getElementById("logoutBtn").onclick = () => {
@@ -1629,7 +1665,6 @@
         };
     };
     
-    // ==================== AUTH UI SETUP ====================
     const initAuth = () => {
         document.querySelectorAll(".auth-tab").forEach(tab => {
             tab.onclick = () => {
@@ -1684,7 +1719,6 @@
         };
     };
     
-    // ==================== THEME INIT ====================
     const initTheme = () => {
         const saved = localStorage.getItem('mathrupiah_theme');
         const btn = document.getElementById("themeToggleBtn");
@@ -1702,7 +1736,6 @@
         };
     };
     
-    // ==================== BROWSER DETECTION ====================
     const detectBrowser = () => {
         const ua = navigator.userAgent.toLowerCase();
         const isChrome = /chrome/i.test(ua) && !/edg|opr|samsung|ucbrowser/i.test(ua);
@@ -1715,7 +1748,6 @@
         document.getElementById("authContainer").classList.add("hidden");
     };
     
-    // ==================== INITIALIZATION ====================
     const init = async () => {
         const browser = detectBrowser();
         if (!browser.isChrome) {

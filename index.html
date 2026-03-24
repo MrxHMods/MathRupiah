@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>MathRupiah Pro | Premium Math Quiz & Earn</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3.4.1/dist/fp.min.js"></script>
     <style>
@@ -91,9 +91,6 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             animation: fadeInUp 0.5s ease;
         }
-        body.light-mode .chrome-block-card {
-            background: rgba(255, 250, 240, 0.95);
-        }
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
@@ -109,60 +106,6 @@
             margin: 0 auto 1rem;
             font-size: 2.5rem;
             color: white;
-            box-shadow: 0 10px 30px rgba(66, 133, 244, 0.4);
-        }
-        .chrome-block-card h1 {
-            font-size: 1.5rem;
-            font-weight: 800;
-            margin-bottom: 0.75rem;
-            background: linear-gradient(135deg, #4285f4, #ea4335);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        .browser-detection-badge {
-            background: rgba(66, 133, 244, 0.2);
-            border-radius: 40px;
-            padding: 8px 16px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin: 0.75rem 0;
-            font-size: 0.85rem;
-            font-weight: 600;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .browser-list {
-            background: rgba(239, 68, 68, 0.1);
-            border-radius: 1rem;
-            padding: 1rem;
-            margin: 1rem 0;
-        }
-        .browser-list-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.5rem;
-        }
-        .browser-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.8rem;
-            padding: 6px 8px;
-            border-radius: 8px;
-            background: rgba(0, 0, 0, 0.2);
-        }
-        .browser-item.supported i { color: #10b981; }
-        .browser-item.unsupported i { color: #ef4444; }
-        .warning-inapp {
-            background: rgba(239, 68, 68, 0.2);
-            border-left: 4px solid #ef4444;
-            padding: 0.75rem;
-            margin: 1rem 0;
-            border-radius: 0.75rem;
-            text-align: left;
-            font-size: 0.8rem;
         }
         .download-chrome-btn, .open-in-chrome-btn {
             display: inline-flex;
@@ -181,37 +124,10 @@
             transition: all 0.3s ease;
             width: 100%;
             max-width: 280px;
-        }
-        .footer-note {
-            margin-top: 1.5rem;
-            font-size: 0.65rem;
-            opacity: 0.7;
-        }
-        @media (max-width: 480px) {
-            .chrome-block-card { padding: 1.5rem 1rem; }
-            .chrome-icon { width: 65px; height: 65px; font-size: 2rem; }
-            .browser-list-grid { grid-template-columns: 1fr; }
+            margin-top: 10px;
         }
 
-        /* Main App Styles */
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 1.5rem;
-        }
-        .glass-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--card-border);
-            border-radius: 2rem;
-            box-shadow: var(--shadow-md);
-            transition: var(--transition);
-        }
-        .glass-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--accent);
-        }
+        /* Loading Overlay */
         .loading-overlay {
             position: fixed;
             inset: 0;
@@ -258,6 +174,7 @@
             max-width: 550px;
             text-align: center;
             border: 1px solid var(--card-border);
+            animation: fadeInUp 0.5s ease;
         }
         .maintenance-icon {
             width: 100px;
@@ -271,8 +188,39 @@
             font-size: 3rem;
             color: white;
         }
+        .maintenance-message-box {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 1rem;
+            border-left: 4px solid var(--warning);
+            text-align: left;
+        }
+        .maintenance-estimate-box {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: rgba(99, 102, 241, 0.15);
+            border-radius: 0.75rem;
+        }
 
-        /* Wallet Card */
+        /* Main App Styles */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 2rem;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+        .glass-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent);
+        }
         .wallet-card {
             background: linear-gradient(135deg, var(--accent), var(--accent-dark));
             border-radius: 2rem;
@@ -282,7 +230,6 @@
             align-items: center;
             flex-wrap: wrap;
             margin-bottom: 1.8rem;
-            box-shadow: var(--shadow-md);
         }
         .balance {
             font-size: 2rem;
@@ -307,8 +254,6 @@
             background: rgba(255, 255, 255, 0.25);
             transform: translateY(-2px);
         }
-
-        /* Navigation Tabs */
         .nav-tabs {
             display: flex;
             gap: 10px;
@@ -333,25 +278,6 @@
             background: linear-gradient(105deg, var(--accent), var(--accent-dark));
             color: white;
         }
-
-        /* Level Selection Buttons */
-        .jenjang-btn, .kelas-btn {
-            padding: 10px 26px;
-            border-radius: 60px;
-            font-weight: 700;
-            cursor: pointer;
-            background: rgba(31, 41, 55, 0.7);
-            border: 1px solid #4b5563;
-            color: #e2e8f0;
-            transition: var(--transition);
-        }
-        .jenjang-btn.active, .kelas-btn.active {
-            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-            color: white;
-            border-color: transparent;
-        }
-
-        /* Quiz Components */
         .play-btn {
             width: 100%;
             background: linear-gradient(95deg, var(--accent), var(--accent-dark));
@@ -428,8 +354,6 @@
             color: #f87171;
             margin-left: 8px;
         }
-
-        /* Profile Section */
         .profile-avatar {
             width: 100px;
             height: 100px;
@@ -447,8 +371,6 @@
             font-weight: 800;
             color: var(--accent);
         }
-
-        /* Withdraw Section */
         .withdraw-summary {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -474,8 +396,6 @@
             background: linear-gradient(135deg, var(--accent), var(--accent-dark));
             color: white;
         }
-
-        /* Modal */
         .modal {
             position: fixed;
             inset: 0;
@@ -501,8 +421,6 @@
             padding: 1.8rem;
             border: 1px solid var(--card-border);
         }
-
-        /* Toast Message */
         .toast-msg {
             position: fixed;
             bottom: 30px;
@@ -517,10 +435,7 @@
             transition: 0.2s;
             pointer-events: none;
             font-weight: 600;
-            box-shadow: var(--shadow-md);
         }
-
-        /* Theme Toggle */
         .theme-toggle {
             position: fixed;
             bottom: 25px;
@@ -536,10 +451,7 @@
             cursor: pointer;
             border: 1px solid var(--card-border);
             font-weight: 600;
-            transition: var(--transition);
         }
-
-        /* History Item */
         .history-item {
             display: flex;
             justify-content: space-between;
@@ -547,8 +459,6 @@
             padding: 12px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        /* Auth Container */
         .auth-container {
             background: var(--card-bg);
             backdrop-filter: blur(20px);
@@ -557,7 +467,6 @@
             max-width: 500px;
             margin: 2rem auto;
             border: 1px solid var(--card-border);
-            box-shadow: var(--shadow-lg);
         }
         .auth-logo {
             width: 80px;
@@ -589,7 +498,6 @@
             border-radius: 60px;
             background: transparent;
             border: none;
-            transition: var(--transition);
         }
         .auth-tab.active {
             background: linear-gradient(105deg, var(--accent), var(--accent-dark));
@@ -607,7 +515,6 @@
             border-radius: 60px;
             font-size: 1rem;
             color: var(--text-primary);
-            transition: var(--transition);
         }
         .input-field input:focus {
             border-color: var(--accent);
@@ -631,28 +538,57 @@
             font-weight: 800;
             cursor: pointer;
             font-size: 1rem;
-            transition: var(--transition);
         }
-        .auth-btn:hover {
-            transform: scale(1.02);
-            box-shadow: 0 8px 20px var(--accent-glow);
-        }
-
-        /* Utility Classes */
         .hidden { display: none !important; }
+        .jenjang-btn, .kelas-btn {
+            padding: 10px 26px;
+            border-radius: 60px;
+            font-weight: 700;
+            cursor: pointer;
+            background: rgba(31, 41, 55, 0.7);
+            border: 1px solid #4b5563;
+            color: #e2e8f0;
+        }
+        .jenjang-btn.active, .kelas-btn.active {
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: white;
+            border-color: transparent;
+        }
+        .banned-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(145deg, #ef4444, #dc2626);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 2.5rem;
+            color: white;
+        }
+        .ban-reason-box {
+            background: rgba(239, 68, 68, 0.15);
+            border-radius: 1rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-left: 4px solid #ef4444;
+            text-align: left;
+        }
+        .temp-ban-info {
+            background: rgba(245, 158, 11, 0.15);
+            border-radius: 1rem;
+            padding: 0.75rem;
+            margin: 1rem 0;
+            border-left: 4px solid var(--warning);
+            text-align: left;
+        }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .container { padding: 1rem; }
             .balance { font-size: 1.5rem; }
             .wallet-card { flex-direction: column; gap: 12px; text-align: center; }
-            .action-buttons { justify-content: center; }
-            .nav-tabs { gap: 5px; }
-            .nav-btn { font-size: 0.8rem; padding: 8px 0; }
             .timer-display { font-size: 1.5rem; }
-            .opt-btn { padding: 10px 14px; font-size: 0.9rem; }
             .stat-value { font-size: 1.2rem; }
-            .profile-avatar { width: 70px; height: 70px; font-size: 2rem; }
         }
     </style>
 </head>
@@ -663,13 +599,9 @@
         <div class="chrome-block-card">
             <div class="chrome-icon"><i class="fab fa-chrome"></i></div>
             <h1><i class="fas fa-exclamation-triangle"></i> Browser Tidak Didukung</h1>
-            <div class="browser-detection-badge"><i class="fas fa-search"></i> Browser Anda: <strong id="detectedBrowserName">Mendeteksi...</strong></div>
-            <p class="warning-text"><strong>MathRupiah Pro</strong> hanya dapat diakses menggunakan <strong style="color: #4285f4;">Google Chrome</strong> untuk pengalaman terbaik.</p>
-            <div id="inAppWarning" class="warning-inapp" style="display: none;"><i class="fas fa-exclamation-circle"></i> <strong>Perhatian!</strong> Anda mengakses melalui browser dalam aplikasi. Buka menggunakan Chrome.</div>
-            <div class="browser-list"><h4><i class="fas fa-list"></i> Daftar Browser</h4><div class="browser-list-grid"><div class="browser-item supported"><i class="fas fa-check-circle"></i> Google Chrome ✅</div><div class="browser-item unsupported"><i class="fas fa-times-circle"></i> Browser Lainnya ❌</div></div></div>
+            <p>MathRupiah Pro hanya dapat diakses menggunakan <strong>Google Chrome</strong> untuk pengalaman terbaik.</p>
             <a href="https://www.google.com/chrome/" target="_blank" class="download-chrome-btn"><i class="fab fa-chrome"></i> Download Google Chrome</a>
             <button id="openInChromeBtn" class="open-in-chrome-btn" style="display: none;"><i class="fab fa-chrome"></i> Buka dengan Chrome</button>
-            <p class="footer-note"><i class="fas fa-shield-alt"></i> Demi keamanan dan performa terbaik</p>
         </div>
     </div>
     
@@ -680,26 +612,29 @@
     <div class="theme-toggle" id="themeToggleBtn"><i class="fas fa-moon"></i> <span>Mode Gelap</span></div>
     
     <!-- Welcome Modal -->
-    <div id="welcomeModal" class="modal welcome-modal">
+    <div id="welcomeModal" class="modal">
         <div class="modal-content" style="text-align: center;">
             <div class="profile-avatar" style="margin: 0 auto 1rem;"><i class="fas fa-code"></i></div>
             <h2>MathRupiah Pro</h2>
-            <p style="margin: 0.5rem 0;">✨ <strong>Husni Aljalil</strong> ✨</p>
             <p><i class="fas fa-graduation-cap"></i> Belajar matematika interaktif<br>
             <i class="fas fa-money-bill-wave"></i> Jawab benar = dapatkan penghasilan<br>
-            <i class="fas fa-exclamation-triangle" style="color:#f59e0b;"></i> Jawab salah = potongan saldo</p>
+            <i class="fas fa-exclamation-triangle"></i> Jawab salah = potongan saldo</p>
             <button id="closeWelcomeModal" class="auth-btn" style="margin-top: 1rem;">Mulai Belajar</button>
         </div>
     </div>
     
     <!-- Banned Modal -->
-    <div id="bannedModal" class="modal banned-modal">
+    <div id="bannedModal" class="modal">
         <div class="modal-content" style="text-align: center;">
-            <div class="banned-icon" style="width: 80px; height: 80px; background: linear-gradient(145deg, #ef4444, #dc2626); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 2.5rem; color: white;"><i class="fas fa-ban"></i></div>
+            <div class="banned-icon"><i class="fas fa-ban"></i></div>
             <h2 style="color: #ef4444;">Akun Diblokir</h2>
-            <div class="ban-reason-box" style="background: rgba(239, 68, 68, 0.15); border-radius: 1rem; padding: 1rem; margin: 1rem 0; border-left: 4px solid #ef4444;">
+            <div class="ban-reason-box">
                 <strong>Alasan:</strong><br>
                 <span id="banReasonText">-</span>
+            </div>
+            <div id="tempBanInfo" class="temp-ban-info" style="display: none;">
+                <i class="fas fa-hourglass-half"></i> <strong>Ban Sementara</strong><br>
+                <span id="tempBanExpiryText"></span>
             </div>
             <button id="closeBannedModalBtn" class="auth-btn" style="background: #ef4444;">Tutup</button>
         </div>
@@ -710,8 +645,15 @@
         <div class="maintenance-container">
             <div class="maintenance-card">
                 <div class="maintenance-icon"><i class="fas fa-tools"></i></div>
-                <h1>Sedang dalam Pemeliharaan</h1>
-                <p style="margin-top: 1rem;"><i class="fas fa-clock"></i> Kami akan segera kembali.</p>
+                <h1>⚙️ Sedang dalam Pemeliharaan</h1>
+                <div class="maintenance-message-box">
+                    <i class="fas fa-info-circle"></i> <strong>Pesan dari Admin:</strong>
+                    <p id="maintenanceMessageDisplay">Sedang dalam pemeliharaan untuk peningkatan layanan.</p>
+                </div>
+                <div class="maintenance-estimate-box">
+                    <i class="fas fa-clock"></i> <strong>Estimasi Selesai:</strong>
+                    <span id="maintenanceEstimateDisplay">Belum ditentukan</span>
+                </div>
             </div>
         </div>
     </div>
@@ -748,7 +690,7 @@
                     </div>
                     <div id="kelasButtons" class="kelas-buttons" style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;"></div>
                     <div class="current-level-badge" style="margin-top: 12px; background: var(--accent-glow); border-radius: 60px; padding: 8px; text-align: center;">
-                        <i class="fas fa-star-of-life"></i> Level aktif: <strong id="selectedLevelName">SD Kelas 1</strong> (+Rp300/soal)
+                        <i class="fas fa-star-of-life"></i> Level aktif: <strong id="selectedLevelName">SD Kelas 1</strong> (+Rp200/soal)
                         <span class="penalty-badge"><i class="fas fa-minus-circle"></i> Salah -Rp200</span>
                     </div>
                 </div>
@@ -756,17 +698,16 @@
                 <button id="playQuizBtn" class="play-btn"><i class="fas fa-play"></i> MULAI KUIS & EARN</button>
                 
                 <div id="quizContent" style="display: none; margin-top: 1rem;">
-                    <div class="glass-card" style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 1.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                    <div class="glass-card" style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 1.5rem; margin-bottom: 1rem;">
                         <span><i class="fas fa-hourglass-half"></i> Batas waktu</span>
                         <span class="timer-display" id="timerDisplay">00:00</span>
-                        <span><i class="fas fa-bolt"></i> Kilat = Bonus!</span>
                     </div>
                     <div class="glass-card" style="padding: 1.8rem;">
-                        <div class="question-text" id="questionText" style="font-size: 1.4rem; font-weight: 700; text-align: center; background: rgba(0,0,0,0.2); border-radius: 1.5rem; padding: 1rem;"></div>
+                        <div class="question-text" id="questionText" style="font-size: 1.4rem; font-weight: 700; text-align: center; padding: 1rem;"></div>
                         <div class="options-grid" id="optionsContainer" style="margin-top: 1.2rem;"></div>
                         <div id="feedbackMsg" style="margin: 10px 0; text-align: center;"></div>
                         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-                            <div><i class="fas fa-gem"></i> <span id="rewardHint">+300/soal + bonus</span> | <span style="color: #f87171;"><i class="fas fa-minus-circle"></i> Salah -200</span></div>
+                            <div><i class="fas fa-gem"></i> <span id="rewardHint">+200/soal</span> | <span style="color: #f87171;"><i class="fas fa-minus-circle"></i> Salah -200</span></div>
                             <button id="nextButton" class="next-btn" disabled>Soal Berikutnya →</button>
                         </div>
                         <div class="progress-bar" style="margin-top: 16px; background: rgba(255,255,255,0.15); border-radius: 30px; height: 6px;">
@@ -800,10 +741,6 @@
                     <div id="withdrawHistoryList" style="max-height: 400px; overflow-y: auto;"></div>
                 </div>
             </div>
-            
-            <footer style="text-align: center; margin-top: 2rem; font-size: 0.7rem; opacity: 0.7;">
-                ✨ Jawab benar + bonus waktu cepat! Salah -Rp200 | Minimal tarik Rp10.000 ✨
-            </footer>
         </div>
     </div>
     
@@ -814,7 +751,6 @@
                 <div class="auth-logo"><i class="fas fa-calculator"></i></div>
                 <h1 style="text-align: center;">MathRupiah Pro</h1>
                 <p style="color: var(--text-secondary); text-align: center;">🎓 Asah matematika, dapatkan penghasilan</p>
-                <p style="color: var(--warning); font-size: 0.7rem; text-align: center; margin-top: 5px;"><i class="fab fa-chrome"></i> Khusus Google Chrome | <i class="fas fa-mobile-alt"></i> 1 HP = 1 Akun</p>
             </div>
             <div class="auth-tabs">
                 <button class="auth-tab active" data-tab="login"><i class="fas fa-sign-in-alt"></i> Masuk</button>
@@ -892,23 +828,6 @@
     import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, query, getDocs, onSnapshot, where } from "firebase/firestore";
     import { getQuestionsForLevel } from "./soal.js";
     
-    // ==================== BROWSER DETECTION ====================
-    const detectBrowser = () => {
-        const ua = navigator.userAgent.toLowerCase();
-        const isInApp = /fbav|instagram|whatsapp|micromessenger/i.test(ua);
-        const isChrome = /chrome/i.test(ua) && !/edg|opr|samsung|ucbrowser/i.test(ua);
-        let name = isChrome ? "Google Chrome" : (ua.includes('edg') ? "Microsoft Edge" : (ua.includes('firefox') ? "Mozilla Firefox" : (ua.includes('safari') ? "Apple Safari" : "Browser Lain")));
-        return { name, isChrome, isInAppBrowser: isInApp };
-    };
-    
-    const showChromeBlock = (name, isInApp) => {
-        document.getElementById("chromeBlockPage").style.display = "flex";
-        document.getElementById("detectedBrowserName").innerText = name;
-        if (isInApp) document.getElementById("inAppWarning").style.display = "block";
-        document.getElementById("mainContent").classList.add("hidden");
-        document.getElementById("authContainer").classList.add("hidden");
-    };
-    
     // ==================== FIREBASE CONFIG ====================
     const firebaseConfig = {
         apiKey: "AIzaSyBCaLABpKTIQhPJcJKN8dXSrk_cCLtTmQE",
@@ -933,10 +852,10 @@
     let timerInterval = null;
     let timeRemaining = 30;
     let isQuizActive = false;
+    let maintenanceUnsubscribe = null;
     
     const TIME_LIMIT = 30;
     const PENALTY_AMOUNT = 200;
-    const TIME_BONUS_THRESHOLD = 10;
     
     // ==================== UTILITY FUNCTIONS ====================
     const showToast = (msg, isError = false) => {
@@ -962,16 +881,8 @@
     };
     
     const getCurrentReward = () => {
-        const rewards = { sd: 300, smp: 400, smk: 500 };
-        return rewards[currentJenjang] || 300;
-    };
-    
-    const getTimeBonus = () => {
-        const used = TIME_LIMIT - timeRemaining;
-        if (used <= TIME_BONUS_THRESHOLD && used >= 0) {
-            return Math.min(Math.floor((TIME_BONUS_THRESHOLD - used + 1) * 50), 500);
-        }
-        return 0;
+        // Simplified: All levels now give 200 per correct answer
+        return 200;
     };
     
     const formatTime = (seconds) => {
@@ -986,84 +897,96 @@
         return arr;
     };
     
-    const shuffleQuestion = (q) => {
-        const opts = [...q.options];
-        const newIdx = Math.floor(Math.random() * opts.length);
-        [opts[q.correct], opts[newIdx]] = [opts[newIdx], opts[q.correct]];
-        return { ...q, options: opts, correct: newIdx };
-    };
-    
     const loadQuestions = () => {
         const raw = getQuestionsForLevel(currentLevelKey);
-        if (!raw) return [];
-        return shuffleArray(raw.slice(0, 100).map(q => shuffleQuestion(q)));
+        if (!raw || raw.length === 0) return [];
+        return shuffleArray([...raw]);
     };
     
-    // ==================== FIREBASE FUNCTIONS ====================
-    const updateUserBalance = async (username, balance) => {
-        await updateDoc(doc(db, "users", username), { balance });
+    // ==================== CHECK BAN STATUS ====================
+    const checkAndShowBanModal = (userData) => {
+        if (userData.banned === true) {
+            const isTempBan = userData.banType === 'temporary';
+            const banReason = userData.banReason || (isTempBan ? "Diblokir sementara oleh admin" : "Diblokir permanen oleh admin");
+            
+            document.getElementById("banReasonText").innerHTML = banReason;
+            
+            if (isTempBan && userData.banExpiry) {
+                const expiryDate = new Date(userData.banExpiry);
+                const now = new Date();
+                
+                if (expiryDate > now) {
+                    document.getElementById("tempBanInfo").style.display = "block";
+                    document.getElementById("tempBanExpiryText").innerHTML = `Berakhir pada: ${expiryDate.toLocaleString('id-ID')}`;
+                    document.getElementById("bannedModal").classList.add("active");
+                    return true;
+                } else {
+                    updateDoc(doc(db, "users", userData.username), {
+                        banned: false,
+                        banType: null,
+                        banExpiry: null,
+                        banReason: null
+                    }).then(() => {
+                        showToast("Masa ban sementara telah berakhir, silakan login kembali");
+                    });
+                    return false;
+                }
+            } else {
+                document.getElementById("tempBanInfo").style.display = "none";
+                document.getElementById("bannedModal").classList.add("active");
+                return true;
+            }
+        }
+        return false;
     };
     
-    const updateUserStats = async (username, totalAnswered, totalCorrect) => {
-        await updateDoc(doc(db, "users", username), { totalAnswered, totalCorrect });
-    };
-    
-    const getWeekStart = () => {
-        const now = new Date();
-        const dayOfWeek = now.getDay();
-        const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-        const monday = new Date(now);
-        monday.setDate(now.getDate() - diffToMonday);
-        monday.setHours(0, 0, 0, 0);
-        return monday;
-    };
-    
-    const canWithdrawTenThousand = async (username) => {
+    // ==================== MAINTENANCE FUNCTIONS ====================
+    const checkMaintenanceMode = async () => {
         try {
-            const weekStart = getWeekStart();
-            const q = query(collection(db, "withdraw_requests"), where("username", "==", username), where("amount", "==", 10000));
-            const snap = await getDocs(q);
-            const thisWeekWithdrawals = snap.docs.filter(doc => {
-                const data = doc.data();
-                const createdAt = new Date(data.createdAt);
-                return createdAt >= weekStart && (data.status === "pending" || data.status === "success");
-            });
-            return thisWeekWithdrawals.length === 0;
+            const maintenanceRef = doc(db, "settings", "maintenance");
+            const maintenanceDoc = await getDoc(maintenanceRef);
+            if (maintenanceDoc.exists() && maintenanceDoc.data().enabled === true) {
+                const data = maintenanceDoc.data();
+                return { 
+                    enabled: true, 
+                    message: data.message || "Sedang dalam pemeliharaan untuk peningkatan layanan.",
+                    estimatedTime: data.estimatedTime || "Belum ditentukan"
+                };
+            }
+            return { enabled: false };
         } catch (e) {
-            return true;
+            return { enabled: false };
         }
     };
     
-    const addWithdrawRequest = async (username, amount, account, method) => {
-        await addDoc(collection(db, "withdraw_requests"), {
-            username, amount, account, method, status: "pending", createdAt: new Date().toISOString()
+    const setupRealtimeMaintenance = () => {
+        if (maintenanceUnsubscribe) maintenanceUnsubscribe();
+        const maintenanceRef = doc(db, "settings", "maintenance");
+        maintenanceUnsubscribe = onSnapshot(maintenanceRef, (docSnap) => {
+            if (docSnap.exists() && docSnap.data().enabled === true) {
+                const data = docSnap.data();
+                showMaintenancePage(data);
+            } else {
+                hideMaintenancePage();
+                if (currentUser && document.getElementById("maintenancePage").classList.contains("hidden") === false) {
+                    location.reload();
+                }
+            }
         });
     };
     
-    const loadWithdrawHistory = async (username) => {
-        try {
-            const q = query(collection(db, "withdraw_requests"), where("username", "==", username));
-            const snap = await getDocs(q);
-            const res = [];
-            snap.forEach(doc => res.push({ id: doc.id, ...doc.data() }));
-            return res.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        } catch (e) {
-            return [];
-        }
+    const showMaintenancePage = (data) => {
+        document.getElementById("maintenancePage").classList.remove("hidden");
+        document.getElementById("authContainer").classList.add("hidden");
+        document.getElementById("mainContent").classList.add("hidden");
+        document.getElementById("maintenanceMessageDisplay").innerHTML = data.message || "Sedang dalam pemeliharaan.";
+        document.getElementById("maintenanceEstimateDisplay").innerHTML = data.estimatedTime || "Belum ditentukan";
+        if (isQuizActive) stopQuiz();
+        if (timerInterval) clearInterval(timerInterval);
     };
     
-    const isDeviceUsedByOtherUser = async (deviceId, currentUsername = null) => {
-        try {
-            const q = query(collection(db, "users"), where("deviceId", "==", deviceId));
-            const snap = await getDocs(q);
-            for (const docSnap of snap.docs) {
-                const userData = docSnap.data();
-                if (currentUsername === null || userData.username !== currentUsername) return true;
-            }
-            return false;
-        } catch (e) {
-            return false;
-        }
+    const hideMaintenancePage = () => {
+        document.getElementById("maintenancePage").classList.add("hidden");
     };
     
     // ==================== AUTH FUNCTIONS ====================
@@ -1076,14 +999,22 @@
             const data = snap.data();
             
             if (data.banned === true) {
-                return { success: false, msg: "banned", banReason: data.banReason || "Akun Anda telah di-banned oleh admin." };
+                const isTempBan = data.banType === 'temporary';
+                if (isTempBan && data.banExpiry) {
+                    const expiryDate = new Date(data.banExpiry);
+                    if (expiryDate > new Date()) {
+                        return { success: false, msg: "banned", banReason: data.banReason, banType: 'temporary', banExpiry: data.banExpiry };
+                    } else {
+                        await updateDoc(ref, { banned: false, banType: null, banExpiry: null, banReason: null });
+                        return { success: false, msg: "Masa ban telah berakhir, silakan login kembali" };
+                    }
+                }
+                return { success: false, msg: "banned", banReason: data.banReason, banType: 'permanent' };
             }
             
             if (data.password !== password) return { success: false, msg: "Password salah" };
             
             const devId = await getDeviceFingerprint();
-            const deviceUsedByOther = await isDeviceUsedByOtherUser(devId, username);
-            if (deviceUsedByOther) return { success: false, msg: "Perangkat ini sudah terdaftar dengan akun lain!" };
             if (data.deviceId && data.deviceId !== devId) return { success: false, msg: "Akun ini sudah terdaftar di perangkat lain!" };
             if (!data.deviceId) await updateDoc(ref, { deviceId: devId });
             await updateDoc(ref, { lastActive: new Date().toISOString() });
@@ -1103,12 +1034,10 @@
             const ref = doc(db, "users", username);
             if ((await getDoc(ref)).exists()) return { success: false, msg: "Username sudah terdaftar" };
             const devId = await getDeviceFingerprint();
-            const deviceUsed = await isDeviceUsedByOtherUser(devId);
-            if (deviceUsed) return { success: false, msg: "Perangkat ini sudah memiliki akun!" };
             const newUser = {
                 username, password, fullname: fullname || username, balance: 0, deviceId: devId,
                 totalAnswered: 0, totalCorrect: 0, createdAt: new Date().toISOString(),
-                lastActive: new Date().toISOString(), banned: false, banReason: null
+                lastActive: new Date().toISOString(), banned: false, banType: null, banExpiry: null, banReason: null
             };
             await setDoc(ref, newUser);
             return { success: true, user: newUser };
@@ -1152,19 +1081,21 @@
         const q = currentQuestionsList[currentQuestionIndex];
         if (currentUser.balance >= PENALTY_AMOUNT) {
             const newBalance = currentUser.balance - PENALTY_AMOUNT;
-            await updateUserBalance(currentUser.username, newBalance);
+            await updateDoc(doc(db, "users", currentUser.username), { balance: newBalance });
             currentUser.balance = newBalance;
             document.getElementById("balanceAmount").innerText = newBalance.toLocaleString('id-ID');
             showToast(`Waktu habis! Potongan Rp${PENALTY_AMOUNT}`, true);
         } else if (currentUser.balance > 0) {
             const newBalance = 0;
-            await updateUserBalance(currentUser.username, newBalance);
+            await updateDoc(doc(db, "users", currentUser.username), { balance: newBalance });
             currentUser.balance = newBalance;
             document.getElementById("balanceAmount").innerText = "0";
             showToast(`Waktu habis! Saldo habis`, true);
         }
         document.getElementById("feedbackMsg").innerHTML = `<span style="color:#f87171;">⏰ Waktu habis! Jawaban: ${q.options[q.correct]}</span>`;
-        await updateUserStats(currentUser.username, (currentUser.totalAnswered || 0) + 1, currentUser.totalCorrect || 0);
+        await updateDoc(doc(db, "users", currentUser.username), { 
+            totalAnswered: (currentUser.totalAnswered || 0) + 1 
+        });
         currentUser.totalAnswered = (currentUser.totalAnswered || 0) + 1;
         document.querySelectorAll(".opt-btn").forEach((btn, i) => {
             btn.disabled = true;
@@ -1181,37 +1112,36 @@
         const isCorrect = (selIdx === q.correct);
         answered = true;
         const baseReward = getCurrentReward();
-        const bonus = isCorrect ? getTimeBonus() : 0;
-        const totalReward = baseReward + bonus;
+        const totalReward = baseReward;
         
         if (isCorrect) {
             const newBalance = currentUser.balance + totalReward;
-            await updateUserBalance(currentUser.username, newBalance);
+            await updateDoc(doc(db, "users", currentUser.username), { balance: newBalance });
             currentUser.balance = newBalance;
             document.getElementById("balanceAmount").innerText = newBalance.toLocaleString('id-ID');
             const newAns = (currentUser.totalAnswered || 0) + 1;
             const newCor = (currentUser.totalCorrect || 0) + 1;
-            await updateUserStats(currentUser.username, newAns, newCor);
+            await updateDoc(doc(db, "users", currentUser.username), { totalAnswered: newAns, totalCorrect: newCor });
             currentUser.totalAnswered = newAns;
             currentUser.totalCorrect = newCor;
-            document.getElementById("feedbackMsg").innerHTML = `<span style="color:#6ee7b7;">✅ Benar! +Rp ${totalReward.toLocaleString('id-ID')}${bonus > 0 ? ` (Bonus kilat +${bonus})` : ""}</span>`;
+            document.getElementById("feedbackMsg").innerHTML = `<span style="color:#6ee7b7;">✅ Benar! +Rp ${totalReward.toLocaleString('id-ID')}</span>`;
             showToast(`+Rp ${totalReward.toLocaleString('id-ID')}`);
         } else {
             if (currentUser.balance >= PENALTY_AMOUNT) {
                 const newBalance = currentUser.balance - PENALTY_AMOUNT;
-                await updateUserBalance(currentUser.username, newBalance);
+                await updateDoc(doc(db, "users", currentUser.username), { balance: newBalance });
                 currentUser.balance = newBalance;
                 document.getElementById("balanceAmount").innerText = newBalance.toLocaleString('id-ID');
                 showToast(`Salah! Potongan Rp${PENALTY_AMOUNT}`, true);
             } else if (currentUser.balance > 0) {
                 const newBalance = 0;
-                await updateUserBalance(currentUser.username, newBalance);
+                await updateDoc(doc(db, "users", currentUser.username), { balance: newBalance });
                 currentUser.balance = newBalance;
                 document.getElementById("balanceAmount").innerText = "0";
                 showToast(`Salah! Saldo habis`, true);
             }
             const newAns = (currentUser.totalAnswered || 0) + 1;
-            await updateUserStats(currentUser.username, newAns, currentUser.totalCorrect || 0);
+            await updateDoc(doc(db, "users", currentUser.username), { totalAnswered: newAns });
             currentUser.totalAnswered = newAns;
             document.getElementById("feedbackMsg").innerHTML = `<span style="color:#f87171;">❌ Salah! Jawaban: ${q.options[q.correct]}</span>`;
         }
@@ -1338,17 +1268,22 @@
         const listDiv = document.getElementById("withdrawHistoryList");
         const summaryDiv = document.getElementById("withdrawSummary");
         try {
-            const reqs = await loadWithdrawHistory(currentUser.username);
+            const q = query(collection(db, "withdraw_requests"), where("username", "==", currentUser.username));
+            const snap = await getDocs(q);
+            const reqs = [];
+            snap.forEach(doc => reqs.push({ id: doc.id, ...doc.data() }));
+            reqs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            
             const pending = reqs.filter(r => r.status === "pending").length;
             const success = reqs.filter(r => r.status === "success").length;
             const rejected = reqs.filter(r => r.status === "rejected").length;
-            if (summaryDiv) {
-                summaryDiv.innerHTML = `
-                    <div class="status-summary-card"><i class="fas fa-clock"></i><div class="stat-value" style="font-size:1.5rem;">${pending}</div><div>Menunggu</div></div>
-                    <div class="status-summary-card"><i class="fas fa-check-circle"></i><div class="stat-value" style="font-size:1.5rem;">${success}</div><div>Berhasil</div></div>
-                    <div class="status-summary-card"><i class="fas fa-times-circle"></i><div class="stat-value" style="font-size:1.5rem;">${rejected}</div><div>Ditolak</div></div>
-                `;
-            }
+            
+            summaryDiv.innerHTML = `
+                <div class="status-summary-card"><i class="fas fa-clock"></i><div style="font-size:1.5rem; font-weight:800;">${pending}</div><div>Menunggu</div></div>
+                <div class="status-summary-card"><i class="fas fa-check-circle"></i><div style="font-size:1.5rem; font-weight:800;">${success}</div><div>Berhasil</div></div>
+                <div class="status-summary-card"><i class="fas fa-times-circle"></i><div style="font-size:1.5rem; font-weight:800;">${rejected}</div><div>Ditolak</div></div>
+            `;
+            
             if (reqs.length === 0) {
                 listDiv.innerHTML = '<div style="text-align:center; padding:30px;"><i class="fas fa-inbox"></i><p>Belum ada riwayat penarikan</p></div>';
             } else {
@@ -1361,6 +1296,24 @@
             }
         } catch (e) {
             listDiv.innerHTML = '<div style="text-align:center; padding:30px;"><i class="fas fa-exclamation-triangle"></i><p>Gagal memuat riwayat.</p></div>';
+        }
+    };
+    
+    const canWithdrawTenThousand = async (username) => {
+        try {
+            const weekStart = new Date();
+            weekStart.setDate(weekStart.getDate() - weekStart.getDay() + 1);
+            weekStart.setHours(0,0,0,0);
+            const q = query(collection(db, "withdraw_requests"), where("username", "==", username), where("amount", "==", 10000));
+            const snap = await getDocs(q);
+            const thisWeekWithdrawals = snap.docs.filter(doc => {
+                const data = doc.data();
+                const createdAt = new Date(data.createdAt);
+                return createdAt >= weekStart && (data.status === "pending" || data.status === "success");
+            });
+            return thisWeekWithdrawals.length === 0;
+        } catch (e) {
+            return true;
         }
     };
     
@@ -1401,7 +1354,9 @@
             return;
         }
         showLoading(true);
-        await addWithdrawRequest(currentUser.username, amount, account, method);
+        await addDoc(collection(db, "withdraw_requests"), {
+            username: currentUser.username, amount, account, method, status: "pending", createdAt: new Date().toISOString()
+        });
         const newBalance = currentUser.balance - amount;
         await updateDoc(doc(db, "users", currentUser.username), { balance: newBalance });
         currentUser.balance = newBalance;
@@ -1425,51 +1380,6 @@
         if (section === "profile") updateProfileUI();
         if (section === "history") displayWithdrawHistory();
         if (section !== "quiz" && isQuizActive) stopQuiz();
-    };
-    
-    // ==================== MAINTENANCE FUNCTIONS ====================
-    let maintenanceUnsubscribe = null;
-    let isMaintenanceActive = false;
-    
-    const checkMaintenanceMode = async () => {
-        try {
-            const maintenanceRef = doc(db, "settings", "maintenance");
-            const maintenanceDoc = await getDoc(maintenanceRef);
-            if (maintenanceDoc.exists() && maintenanceDoc.data().enabled === true) {
-                return { enabled: true, message: maintenanceDoc.data().message || "Sedang dalam pemeliharaan." };
-            }
-            return { enabled: false };
-        } catch (e) {
-            return { enabled: false };
-        }
-    };
-    
-    const setupRealtimeMaintenance = () => {
-        if (maintenanceUnsubscribe) maintenanceUnsubscribe();
-        const maintenanceRef = doc(db, "settings", "maintenance");
-        maintenanceUnsubscribe = onSnapshot(maintenanceRef, (docSnap) => {
-            if (docSnap.exists() && docSnap.data().enabled === true) {
-                isMaintenanceActive = true;
-                showMaintenancePage(docSnap.data());
-            } else if (isMaintenanceActive) {
-                isMaintenanceActive = false;
-                hideMaintenancePage();
-                if (currentUser) location.reload();
-            }
-        });
-    };
-    
-    const showMaintenancePage = (data) => {
-        document.getElementById("maintenancePage").classList.remove("hidden");
-        document.getElementById("authContainer").classList.add("hidden");
-        document.getElementById("mainContent").classList.add("hidden");
-        if (data.message) document.getElementById("maintenanceMessageText") && (document.getElementById("maintenanceMessageText").innerText = data.message);
-        if (isQuizActive) stopQuiz();
-        if (timerInterval) clearInterval(timerInterval);
-    };
-    
-    const hideMaintenancePage = () => {
-        document.getElementById("maintenancePage").classList.add("hidden");
     };
     
     // ==================== MAIN UI SETUP ====================
@@ -1508,7 +1418,7 @@
         };
         document.getElementById("saveProfileBtn").onclick = async () => {
             const newName = document.getElementById("editFullname").value.trim();
-            if (newName && db) {
+            if (newName) {
                 await updateDoc(doc(db, "users", currentUser.username), { fullname: newName });
                 currentUser.fullname = newName;
                 document.getElementById("userNameDisplay").innerText = newName;
@@ -1556,9 +1466,14 @@
                 localStorage.setItem("mathrupiah_session", currentUser.username);
                 await setupMainUI();
             } else if (res.msg === "banned") {
-                document.getElementById("banReasonText").innerText = res.banReason || "Akun Anda telah di-banned.";
+                document.getElementById("banReasonText").innerHTML = res.banReason || "Akun Anda telah di-banned.";
+                if (res.banType === 'temporary' && res.banExpiry) {
+                    document.getElementById("tempBanInfo").style.display = "block";
+                    document.getElementById("tempBanExpiryText").innerHTML = `Berakhir pada: ${new Date(res.banExpiry).toLocaleString('id-ID')}`;
+                } else {
+                    document.getElementById("tempBanInfo").style.display = "none";
+                }
                 document.getElementById("bannedModal").classList.add("active");
-                document.getElementById("loginError").innerHTML = `<i class="fas fa-ban"></i> Akun Anda telah di-banned!`;
             } else {
                 document.getElementById("loginError").innerHTML = `<i class="fas fa-exclamation-circle"></i> ${res.msg}`;
                 showToast(res.msg, true);
@@ -1582,8 +1497,6 @@
         
         document.getElementById("closeBannedModalBtn").onclick = () => {
             document.getElementById("bannedModal").classList.remove("active");
-            document.getElementById("loginUsername").value = "";
-            document.getElementById("loginPassword").value = "";
         };
     };
     
@@ -1605,11 +1518,24 @@
         };
     };
     
+    // ==================== BROWSER DETECTION ====================
+    const detectBrowser = () => {
+        const ua = navigator.userAgent.toLowerCase();
+        const isChrome = /chrome/i.test(ua) && !/edg|opr|samsung|ucbrowser/i.test(ua);
+        return { isChrome };
+    };
+    
+    const showChromeBlock = () => {
+        document.getElementById("chromeBlockPage").style.display = "flex";
+        document.getElementById("mainContent").classList.add("hidden");
+        document.getElementById("authContainer").classList.add("hidden");
+    };
+    
     // ==================== INITIALIZATION ====================
     const init = async () => {
         const browser = detectBrowser();
         if (!browser.isChrome) {
-            showChromeBlock(browser.name, browser.isInAppBrowser);
+            showChromeBlock();
             return;
         }
         document.getElementById("chromeBlockPage").style.display = "none";
@@ -1623,7 +1549,6 @@
         }
         hideMaintenancePage();
         
-        const devId = await getDeviceFingerprint();
         const session = localStorage.getItem("mathrupiah_session");
         if (session && db) {
             try {
@@ -1631,20 +1556,34 @@
                 if (snap.exists()) {
                     const userData = snap.data();
                     if (userData.banned === true) {
-                        localStorage.removeItem("mathrupiah_session");
-                        document.getElementById("banReasonText").innerText = userData.banReason || "Akun Anda telah di-banned.";
-                        document.getElementById("bannedModal").classList.add("active");
-                        document.getElementById("mainContent").classList.add("hidden");
-                        document.getElementById("authContainer").classList.remove("hidden");
-                        return;
+                        const isTempBan = userData.banType === 'temporary';
+                        if (isTempBan && userData.banExpiry) {
+                            const expiryDate = new Date(userData.banExpiry);
+                            if (expiryDate > new Date()) {
+                                localStorage.removeItem("mathrupiah_session");
+                                document.getElementById("banReasonText").innerHTML = userData.banReason || "Diblokir sementara oleh admin.";
+                                document.getElementById("tempBanInfo").style.display = "block";
+                                document.getElementById("tempBanExpiryText").innerHTML = `Berakhir pada: ${expiryDate.toLocaleString('id-ID')}`;
+                                document.getElementById("bannedModal").classList.add("active");
+                                document.getElementById("mainContent").classList.add("hidden");
+                                document.getElementById("authContainer").classList.remove("hidden");
+                                return;
+                            } else {
+                                await updateDoc(doc(db, "users", session), { banned: false, banType: null, banExpiry: null, banReason: null });
+                            }
+                        } else {
+                            localStorage.removeItem("mathrupiah_session");
+                            document.getElementById("banReasonText").innerHTML = userData.banReason || "Akun Anda telah di-banned permanen.";
+                            document.getElementById("tempBanInfo").style.display = "none";
+                            document.getElementById("bannedModal").classList.add("active");
+                            document.getElementById("mainContent").classList.add("hidden");
+                            document.getElementById("authContainer").classList.remove("hidden");
+                            return;
+                        }
                     }
-                    if (userData.deviceId === devId) {
-                        currentUser = userData;
-                        await setupMainUI();
-                        return;
-                    } else {
-                        localStorage.removeItem("mathrupiah_session");
-                    }
+                    currentUser = userData;
+                    await setupMainUI();
+                    return;
                 } else {
                     localStorage.removeItem("mathrupiah_session");
                 }
@@ -1657,7 +1596,6 @@
         initAuth();
     };
     
-    // Setup open in chrome button
     document.getElementById("openInChromeBtn")?.addEventListener("click", () => {
         const currentUrl = window.location.href;
         if (/android/i.test(navigator.userAgent)) {
@@ -1673,7 +1611,5 @@
     
     init();
 </script>
-<script src="https://awkwardmonopoly.com/07/f4/89/07f489b15159a6d5531feeb092a78233.js"></script>
-<script src="https://awkwardmonopoly.com/0a/20/f7/0a20f772c61727acc40aae0725fdb768.js"></script>
 </body>
 </html>

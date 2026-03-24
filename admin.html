@@ -1,0 +1,1801 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MathRupiah Pro | Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --primary-glow: rgba(99, 102, 241, 0.4);
+            --success: #10b981;
+            --success-dark: #059669;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --danger-dark: #dc2626;
+            --info: #3b82f6;
+            --dark: #0f0f1a;
+            --dark-card: #1a1a2e;
+            --dark-border: #2d2d44;
+            --dark-input: #25253a;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --gold: #fbbf24;
+            --silver: #94a3b8;
+            --bronze: #cd7f32;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--dark-border);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-light);
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+        
+        /* Header */
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1rem 1.5rem;
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px var(--primary-glow);
+        }
+        
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, var(--primary-light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .badge {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        .logout-btn {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 10px 20px;
+            border-radius: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.9), rgba(22, 22, 38, 0.9));
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(99, 102, 241, 0.15);
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+        }
+        
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-top: 0.5rem;
+            background: linear-gradient(135deg, #fff, var(--primary-light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(26, 26, 46, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+        
+        .tab-btn {
+            padding: 12px 28px;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tab-btn i {
+            font-size: 1rem;
+        }
+        
+        .tab-btn:hover {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--text-primary);
+        }
+        
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 15px var(--primary-glow);
+        }
+        
+        /* Cards */
+        .card {
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            overflow: hidden;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            border-color: var(--primary);
+        }
+        
+        .card-header {
+            padding: 1.2rem 1.8rem;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-header h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .search-box {
+            background: var(--dark-input);
+            border-radius: 0.75rem;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid var(--dark-border);
+            transition: all 0.3s ease;
+        }
+        
+        .search-box:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px var(--primary-glow);
+        }
+        
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            outline: none;
+            width: 200px;
+        }
+        
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 1rem 1.2rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+        }
+        
+        th {
+            background: rgba(0, 0, 0, 0.3);
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        tr:hover {
+            background: rgba(99, 102, 241, 0.05);
+        }
+        
+        /* Status Badges */
+        .user-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        .status-active {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .status-banned {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        /* Buttons */
+        .btn-icon {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 0.5rem;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+        }
+        
+        .btn-icon:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.05);
+        }
+        
+        .btn-danger { color: var(--danger); }
+        .btn-success { color: var(--success); }
+        .btn-warning { color: var(--warning); }
+        .btn-info { color: var(--info); }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border: none;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px var(--primary-glow);
+        }
+        
+        /* Filter Buttons */
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 6px 16px;
+            border-radius: 40px;
+            background: var(--dark-input);
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+            border: 1px solid var(--dark-border);
+        }
+        
+        .filter-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-color: transparent;
+        }
+        
+        /* Modal */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(15px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .modal.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, var(--dark-card), #15152a);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            animation: slideIn 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(-30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        /* Form Elements */
+        .input-field {
+            margin-bottom: 1.2rem;
+        }
+        
+        .input-field label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        .input-field input, .input-field select, .input-field textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--dark-input);
+            border: 1px solid var(--dark-border);
+            border-radius: 0.75rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .input-field input:focus, .input-field select:focus, .input-field textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px var(--primary-glow);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 12px 24px;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            z-index: 1100;
+            transition: 0.2s;
+            pointer-events: none;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+        
+        /* Leaderboard Cards */
+        .leaderboard-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .leaderboard-card {
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .leaderboard-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .leaderboard-header {
+            padding: 1.2rem 1.5rem;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(79, 70, 229, 0.1));
+            border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+        }
+        
+        .leaderboard-header h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .rank-1 { background: linear-gradient(90deg, rgba(251, 191, 36, 0.15), transparent); border-left: 4px solid var(--gold); }
+        .rank-2 { background: linear-gradient(90deg, rgba(148, 163, 184, 0.15), transparent); border-left: 4px solid var(--silver); }
+        .rank-3 { background: linear-gradient(90deg, rgba(205, 127, 50, 0.15), transparent); border-left: 4px solid var(--bronze); }
+        
+        .rank-medal {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+        }
+        
+        .medal-gold { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #1e293b; }
+        .medal-silver { background: linear-gradient(135deg, #94a3b8, #64748b); color: white; }
+        .medal-bronze { background: linear-gradient(135deg, #cd7f32, #b45309); color: white; }
+        
+        .leaderboard-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+            transition: all 0.2s ease;
+        }
+        
+        .leaderboard-row:hover {
+            background: rgba(99, 102, 241, 0.05);
+        }
+        
+        .leaderboard-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+        
+        .leaderboard-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+        }
+        
+        .leaderboard-name {
+            font-weight: 700;
+        }
+        
+        .leaderboard-stats {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+        
+        .leaderboard-score {
+            font-weight: 800;
+            font-size: 1rem;
+            min-width: 120px;
+            text-align: right;
+        }
+        
+        /* Charts */
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .chart-card {
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 1.5rem;
+            padding: 1.2rem;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+        
+        .chart-card h3 {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+        
+        canvas {
+            max-height: 300px;
+            width: 100%;
+        }
+        
+        .stat-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stat-summary-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--dark-input);
+            border-radius: 1rem;
+            border: 1px solid var(--dark-border);
+        }
+        
+        .stat-summary-item .label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+        
+        .stat-summary-item .value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-light);
+        }
+        
+        /* Toggle Switch */
+        .toggle-switch {
+            width: 50px;
+            height: 26px;
+            background: var(--dark-input);
+            border-radius: 40px;
+            display: inline-block;
+            position: relative;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        
+        .toggle-switch.active {
+            background: var(--success);
+        }
+        
+        .toggle-slider {
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 3px;
+            transition: 0.2s;
+        }
+        
+        .toggle-switch.active .toggle-slider {
+            left: 25px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .leaderboard-container { grid-template-columns: 1fr; }
+            .charts-container { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+            th, td { padding: 0.75rem; font-size: 0.8rem; }
+            .tab-btn { padding: 8px 16px; font-size: 0.8rem; }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .card-header { flex-direction: column; align-items: stretch; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="admin-header">
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-chalkboard-user"></i>
+            </div>
+            <div>
+                <h1>MathRupiah Pro</h1>
+                <span class="badge"><i class="fas fa-shield-alt"></i> ADMIN DASHBOARD</span>
+            </div>
+        </div>
+        <button id="logoutAdminBtn" class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i> Keluar
+        </button>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-users"></i></div>
+            <div class="stat-title">Total Pengguna</div>
+            <div class="stat-number" id="totalUsers">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-coins"></i></div>
+            <div class="stat-title">Total Saldo</div>
+            <div class="stat-number" id="totalBalance">Rp0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-hand-holding-usd"></i></div>
+            <div class="stat-title">Penarikan Pending</div>
+            <div class="stat-number" id="pendingWithdraws">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-ban"></i></div>
+            <div class="stat-title">Akun Terbanned</div>
+            <div class="stat-number" id="bannedUsers">0</div>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="users"><i class="fas fa-users"></i> Manajemen Pengguna</button>
+        <button class="tab-btn" data-tab="leaderboard"><i class="fas fa-trophy"></i> Leaderboard</button>
+        <button class="tab-btn" data-tab="withdrawals"><i class="fas fa-hand-holding-usd"></i> Permintaan Tarik</button>
+        <button class="tab-btn" data-tab="withdrawStats"><i class="fas fa-chart-line"></i> Statistik Penarikan</button>
+        <button class="tab-btn" data-tab="maintenance"><i class="fas fa-tools"></i> Mode Pemeliharaan</button>
+    </div>
+
+    <!-- TAB USERS -->
+    <div id="tabUsers" class="tab-content">
+        <div class="card">
+            <div class="card-header">
+                <h2><i class="fas fa-user-edit"></i> Daftar Pengguna</h2>
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchUser" placeholder="Cari username atau nama...">
+                </div>
+            </div>
+            <div style="padding: 1rem 1.5rem 0 1.5rem;">
+                <div class="filter-buttons">
+                    <div class="filter-btn active" data-filter="all">Semua</div>
+                    <div class="filter-btn" data-filter="active">Aktif</div>
+                    <div class="filter-btn" data-filter="banned">Terbanned</div>
+                </div>
+            </div>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr><th>Username</th><th>Nama</th><th>Saldo</th><th>Benar/Salah</th><th>Akurasi</th><th>Status</th><th>Aksi</th></tr>
+                    </thead>
+                    <tbody id="usersList"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB LEADERBOARD -->
+    <div id="tabLeaderboard" class="tab-content" style="display: none;">
+        <div class="leaderboard-container">
+            <div class="leaderboard-card">
+                <div class="leaderboard-header">
+                    <h3><i class="fas fa-coins" style="color: var(--gold);"></i> Peringkat Saldo Tertinggi</h3>
+                </div>
+                <div id="leaderboardBalanceList"></div>
+            </div>
+            <div class="leaderboard-card">
+                <div class="leaderboard-header">
+                    <h3><i class="fas fa-check-circle" style="color: var(--success);"></i> Peringkat Jawaban Benar</h3>
+                </div>
+                <div id="leaderboardCorrectList"></div>
+            </div>
+            <div class="leaderboard-card">
+                <div class="leaderboard-header">
+                    <h3><i class="fas fa-chart-line" style="color: var(--info);"></i> Peringkat Akurasi (min 50 soal)</h3>
+                </div>
+                <div id="leaderboardAccuracyList"></div>
+            </div>
+            <div class="leaderboard-card">
+                <div class="leaderboard-header">
+                    <h3><i class="fas fa-hand-holding-usd" style="color: var(--warning);"></i> Peringkat Total Penarikan</h3>
+                </div>
+                <div id="leaderboardWithdrawList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB WITHDRAWALS -->
+    <div id="tabWithdrawals" class="tab-content" style="display: none;">
+        <div class="card">
+            <div class="card-header">
+                <h2><i class="fas fa-clock"></i> Permintaan Penarikan</h2>
+                <div class="search-box"><i class="fas fa-filter"></i><input type="text" id="searchWithdraw" placeholder="Filter username"></div>
+            </div>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead><tr><th>Username</th><th>Jumlah</th><th>Metode</th><th>Rekening</th><th>Tanggal</th><th>Status</th><th>Aksi</th></tr></thead>
+                    <tbody id="withdrawList"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB WITHDRAW STATISTICS -->
+    <div id="tabWithdrawStats" class="tab-content" style="display: none;">
+        <div class="card">
+            <div class="card-header">
+                <h2><i class="fas fa-chart-line"></i> Statistik Penarikan Dana</h2>
+                <div class="date-range" style="display: flex; gap: 0.5rem;">
+                    <input type="date" id="startDate" class="date-input" style="background: var(--dark-input); border: 1px solid var(--dark-border); border-radius: 0.5rem; padding: 0.5rem; color: white;">
+                    <span>s/d</span>
+                    <input type="date" id="endDate" class="date-input" style="background: var(--dark-input); border: 1px solid var(--dark-border); border-radius: 0.5rem; padding: 0.5rem; color: white;">
+                    <button id="applyDateFilter" class="btn-primary" style="padding: 0.5rem 1rem;"><i class="fas fa-filter"></i></button>
+                    <button id="resetDateFilter" class="btn-icon"><i class="fas fa-undo"></i></button>
+                </div>
+            </div>
+            <div style="padding: 1.5rem;">
+                <div class="stat-summary">
+                    <div class="stat-summary-item"><div class="label"><i class="fas fa-chart-line"></i> Total Penarikan</div><div class="value" id="totalWithdrawAmount">Rp0</div></div>
+                    <div class="stat-summary-item"><div class="label"><i class="fas fa-check-circle"></i> Berhasil</div><div class="value" id="successWithdrawAmount">Rp0</div></div>
+                    <div class="stat-summary-item"><div class="label"><i class="fas fa-clock"></i> Menunggu</div><div class="value" id="pendingWithdrawAmount">Rp0</div></div>
+                </div>
+                <div class="charts-container">
+                    <div class="chart-card"><h3><i class="fas fa-chart-pie"></i> Status Penarikan</h3><canvas id="statusPieChart"></canvas></div>
+                    <div class="chart-card"><h3><i class="fas fa-chart-bar"></i> Jumlah Transaksi per Status</h3><canvas id="statusBarChart"></canvas></div>
+                </div>
+                <div class="charts-container">
+                    <div class="chart-card"><h3><i class="fas fa-chart-line"></i> Tren Penarikan (7 Hari)</h3><canvas id="trendLineChart"></canvas></div>
+                    <div class="chart-card"><h3><i class="fas fa-chart-pie"></i> Metode Penarikan</h3><canvas id="methodPieChart"></canvas></div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><h2><i class="fas fa-trophy"></i> Top 10 Penarikan Terbanyak</h2></div>
+                    <div style="overflow-x: auto;"><table><thead><tr><th>Rank</th><th>Username</th><th>Total Penarikan</th><th>Jumlah Transaksi</th><th>Terakhir Tarik</th></tr></thead><tbody id="topWithdrawersList"></tbody></table></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB MAINTENANCE -->
+    <div id="tabMaintenance" class="tab-content" style="display: none;">
+        <div class="card">
+            <div class="card-header"><h2><i class="fas fa-wrench"></i> Mode Pemeliharaan</h2></div>
+            <div style="padding: 1.5rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                    <span><strong>Status Maintenance:</strong></span>
+                    <div id="maintenanceToggle" class="toggle-switch"><div class="toggle-slider"></div></div>
+                    <span id="maintenanceStatusText">Nonaktif</span>
+                </div>
+                <div class="input-field">
+                    <label><i class="fas fa-comment-dots"></i> Pesan untuk Pengguna:</label>
+                    <textarea id="maintenanceMessage" rows="3" class="textarea-input" placeholder="Masukkan pesan maintenance..."></textarea>
+                </div>
+                <div class="input-field">
+                    <label><i class="fas fa-hourglass-half"></i> Estimasi Waktu Selesai:</label>
+                    <input type="text" id="maintenanceEstimate" class="textarea-input" placeholder="Contoh: 2 jam lagi, 15 Maret 2025">
+                </div>
+                <button id="saveMaintenanceBtn" class="btn-primary"><i class="fas fa-save"></i> Simpan Pengaturan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div id="editProfileModal" class="modal">
+    <div class="modal-content">
+        <h3 style="margin-bottom: 1rem;"><i class="fas fa-user-edit"></i> Edit Profil Pengguna</h3>
+        <div style="text-align: center; margin-bottom: 1rem;">
+            <div style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 2rem;">
+                <i class="fas fa-user"></i>
+            </div>
+            <p style="margin-top: 0.5rem;"><strong id="editProfileUsername">-</strong></p>
+        </div>
+        
+        <div class="input-field">
+            <label><i class="fas fa-user-circle"></i> Nama Lengkap</label>
+            <input type="text" id="editFullname" placeholder="Nama lengkap">
+        </div>
+        
+        <div class="form-row">
+            <div class="input-field">
+                <label><i class="fas fa-key"></i> Password Baru</label>
+                <input type="password" id="editPassword" placeholder="Kosongkan jika tidak diubah">
+            </div>
+            <div class="input-field">
+                <label><i class="fas fa-check-circle"></i> Konfirmasi Password</label>
+                <input type="password" id="editConfirmPassword" placeholder="Konfirmasi password">
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="input-field">
+                <label><i class="fas fa-coins"></i> Saldo</label>
+                <input type="number" id="editBalance" placeholder="Saldo">
+            </div>
+            <div class="input-field">
+                <label><i class="fas fa-chart-line"></i> Total Jawaban</label>
+                <input type="number" id="editTotalAnswered" placeholder="Total jawaban">
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="input-field">
+                <label><i class="fas fa-check-circle"></i> Jawaban Benar</label>
+                <input type="number" id="editTotalCorrect" placeholder="Jawaban benar">
+            </div>
+            <div class="input-field">
+                <label><i class="fas fa-chart-simple"></i> Akurasi</label>
+                <input type="text" id="editAccuracy" readonly disabled style="background: rgba(99,102,241,0.1); cursor: not-allowed;">
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="input-field">
+                <label><i class="fas fa-calendar-alt"></i> Tanggal Registrasi</label>
+                <input type="text" id="editCreatedAt" readonly disabled style="background: rgba(99,102,241,0.1); cursor: not-allowed;">
+            </div>
+            <div class="input-field">
+                <label><i class="fas fa-clock"></i> Aktivitas Terakhir</label>
+                <input type="text" id="editLastActive" readonly disabled style="background: rgba(99,102,241,0.1); cursor: not-allowed;">
+            </div>
+        </div>
+        
+        <div class="input-field">
+            <label><i class="fas fa-ban"></i> Status Akun</label>
+            <select id="editBanStatus">
+                <option value="false">Aktif</option>
+                <option value="true">Banned</option>
+            </select>
+        </div>
+        
+        <div class="input-field" id="banReasonField" style="display: none;">
+            <label><i class="fas fa-comment"></i> Alasan Ban</label>
+            <input type="text" id="editBanReason" placeholder="Alasan pemblokiran">
+        </div>
+        
+        <div style="display: flex; gap: 12px; margin-top: 1.5rem;">
+            <button id="saveProfileBtn" class="btn-primary"><i class="fas fa-save"></i> Simpan Perubahan</button>
+            <button id="cancelProfileBtn" class="btn-icon">Batal</button>
+        </div>
+    </div>
+</div>
+
+<!-- Ban Modal -->
+<div id="banModal" class="modal"><div class="modal-content"><h3><i class="fas fa-gavel"></i> Ban Pengguna</h3><p>Username: <strong id="banUsername"></strong></p><div class="input-field"><label>Alasan Ban:</label><input type="text" id="banReason" placeholder="Contoh: Kecurangan, spam"></div><div style="display: flex; gap: 12px; margin-top: 1rem;"><button id="confirmBanBtn" class="btn-primary" style="background: var(--danger);"><i class="fas fa-ban"></i> Ban Akun</button><button id="cancelBanBtn" class="btn-icon">Batal</button></div></div></div>
+
+<div id="unbanModal" class="modal"><div class="modal-content"><h3><i class="fas fa-user-check"></i> Buka Blokir Akun</h3><p>Username: <strong id="unbanUsername"></strong></p><div style="background: rgba(239,68,68,0.1); padding: 10px; border-radius: 0.75rem; margin: 10px 0;"><small>Alasan Ban:</small><br><span id="banReasonDisplay">-</span></div><div style="display: flex; gap: 12px; margin-top: 1rem;"><button id="confirmUnbanBtn" class="btn-primary" style="background: var(--success);"><i class="fas fa-check"></i> Ya, Buka Blokir</button><button id="cancelUnbanBtn" class="btn-icon">Batal</button></div></div></div>
+
+<div id="toastMsg" class="toast" style="opacity: 0;"></div>
+
+<script type="importmap">
+    {
+        "imports": {
+            "firebase/app": "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js",
+            "firebase/firestore": "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js"
+        }
+    }
+</script>
+<script type="module">
+    import { initializeApp } from "firebase/app";
+    import { getFirestore, collection, getDocs, doc, updateDoc, query, where, orderBy, getDoc, setDoc, onSnapshot } from "firebase/firestore";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBCaLABpKTIQhPJcJKN8dXSrk_cCLtTmQE",
+        authDomain: "math-rupiah.firebaseapp.com",
+        projectId: "math-rupiah",
+        storageBucket: "math-rupiah.firebasestorage.app",
+        messagingSenderId: "146629665060",
+        appId: "1:146629665060:web:4207c18f4739f7688a53b1"
+    };
+    
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const ADMIN_CRED = { username: "admin", password: "admin123" };
+    
+    let allUsers = [];
+    let allWithdrawals = [];
+    let currentFilter = "all";
+    let currentStartDate = null;
+    let currentEndDate = null;
+    let maintenanceEnabled = false;
+    let currentEditUser = null;
+    
+    let statusPieChart = null;
+    let statusBarChart = null;
+    let trendLineChart = null;
+    let methodPieChart = null;
+    
+    function showToast(msg, isError = false) {
+        const toast = document.getElementById("toastMsg");
+        toast.style.backgroundColor = isError ? "#dc2626" : "#6366f1";
+        toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-triangle' : 'fa-circle-check'}"></i> ${msg}`;
+        toast.style.opacity = "1";
+        setTimeout(() => toast.style.opacity = "0", 3000);
+    }
+    
+    function promptAdminLogin() {
+        const user = prompt("Masukkan username admin:");
+        if (user !== ADMIN_CRED.username) { alert("Username salah!"); return false; }
+        const pass = prompt("Masukkan password:");
+        if (pass !== ADMIN_CRED.password) { alert("Password salah!"); return false; }
+        return true;
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    async function fetchUsers() {
+        try {
+            const snapshot = await getDocs(collection(db, "users"));
+            allUsers = [];
+            snapshot.forEach(docSnap => {
+                allUsers.push({ id: docSnap.id, ...docSnap.data() });
+            });
+            renderUserTable();
+            updateStats();
+            renderLeaderboard();
+        } catch (e) {
+            console.error("Error fetching users:", e);
+            showToast("Gagal memuat data pengguna", true);
+        }
+    }
+    
+    function renderUserTable() {
+        const search = document.getElementById("searchUser")?.value.toLowerCase() || "";
+        let filtered = allUsers.filter(u => u.username?.toLowerCase().includes(search) || (u.fullname || "").toLowerCase().includes(search));
+        
+        if (currentFilter === "active") {
+            filtered = filtered.filter(u => u.banned !== true);
+        } else if (currentFilter === "banned") {
+            filtered = filtered.filter(u => u.banned === true);
+        }
+        
+        const tbody = document.getElementById("usersList");
+        if (!tbody) return;
+        tbody.innerHTML = "";
+        
+        if (filtered.length === 0) {
+            tbody.innerHTML = '运转<td colspan="7" class="empty-state"><i class="fas fa-inbox"></i> Tidak ada pengguna</td></tr>';
+            return;
+        }
+        
+        filtered.forEach(user => {
+            const totalAnswered = user.totalAnswered || 0;
+            const correct = user.totalCorrect || 0;
+            const accuracy = totalAnswered ? Math.round((correct / totalAnswered) * 100) : 0;
+            const isBanned = user.banned === true;
+            const statusHtml = `<span class="user-status ${isBanned ? 'status-banned' : 'status-active'}"><i class="fas ${isBanned ? 'fa-skull' : 'fa-circle'}"></i> ${isBanned ? 'BANNED' : 'Aktif'}</span>`;
+            
+            const actionButtons = `
+                <button class="btn-icon btn-info" data-action="editProfile" data-username="${user.username}" title="Edit Profil"><i class="fas fa-user-edit"></i></button>
+                ${isBanned ? 
+                    `<button class="btn-icon btn-success" data-action="unban" data-username="${user.username}" data-banreason="${user.banReason || '-'}" title="Buka Blokir"><i class="fas fa-user-check"></i></button>` : 
+                    `<button class="btn-icon btn-danger" data-action="ban" data-username="${user.username}" title="Ban"><i class="fas fa-ban"></i></button>`
+                }
+            `;
+            
+            tbody.innerHTML += `
+                <tr>
+                    <td><strong>${escapeHtml(user.username)}</strong></td>
+                    <td>${escapeHtml(user.fullname || '-')}</td>
+                    <td>Rp ${(user.balance || 0).toLocaleString('id-ID')}</td>
+                    <td>${correct}/${totalAnswered}</td>
+                    <td>${accuracy}%</td>
+                    <td>${statusHtml}</td>
+                    <td>${actionButtons}</td>
+                </tr>
+            `;
+        });
+        
+        document.querySelectorAll("[data-action='ban']").forEach(btn => {
+            btn.onclick = () => openBanModal(btn.dataset.username);
+        });
+        document.querySelectorAll("[data-action='unban']").forEach(btn => {
+            btn.onclick = () => openUnbanModal(btn.dataset.username, btn.dataset.banreason);
+        });
+        document.querySelectorAll("[data-action='editProfile']").forEach(btn => {
+            btn.onclick = () => openEditProfileModal(btn.dataset.username);
+        });
+    }
+    
+    async function openEditProfileModal(username) {
+        const user = allUsers.find(u => u.username === username);
+        if (!user) return;
+        
+        currentEditUser = username;
+        
+        document.getElementById("editProfileUsername").innerText = username;
+        document.getElementById("editFullname").value = user.fullname || "";
+        document.getElementById("editPassword").value = "";
+        document.getElementById("editConfirmPassword").value = "";
+        document.getElementById("editBalance").value = user.balance || 0;
+        document.getElementById("editTotalAnswered").value = user.totalAnswered || 0;
+        document.getElementById("editTotalCorrect").value = user.totalCorrect || 0;
+        
+        const totalAnswered = user.totalAnswered || 0;
+        const totalCorrect = user.totalCorrect || 0;
+        const accuracy = totalAnswered ? ((totalCorrect / totalAnswered) * 100).toFixed(1) : 0;
+        document.getElementById("editAccuracy").value = `${accuracy}%`;
+        
+        const createdAt = user.createdAt ? new Date(user.createdAt).toLocaleString('id-ID') : '-';
+        document.getElementById("editCreatedAt").value = createdAt;
+        
+        const lastActive = user.lastActive ? new Date(user.lastActive).toLocaleString('id-ID') : '-';
+        document.getElementById("editLastActive").value = lastActive;
+        
+        const isBanned = user.banned === true;
+        document.getElementById("editBanStatus").value = isBanned ? "true" : "false";
+        
+        if (isBanned && user.banReason) {
+            document.getElementById("editBanReason").value = user.banReason;
+            document.getElementById("banReasonField").style.display = "block";
+        } else {
+            document.getElementById("editBanReason").value = "";
+            document.getElementById("banReasonField").style.display = "none";
+        }
+        
+        document.getElementById("editBanStatus").onchange = () => {
+            if (document.getElementById("editBanStatus").value === "true") {
+                document.getElementById("banReasonField").style.display = "block";
+            } else {
+                document.getElementById("banReasonField").style.display = "none";
+            }
+        };
+        
+        document.getElementById("editProfileModal").classList.add("active");
+    }
+    
+    document.getElementById("saveProfileBtn").onclick = async () => {
+        if (!currentEditUser) return;
+        
+        const fullname = document.getElementById("editFullname").value.trim();
+        const newPassword = document.getElementById("editPassword").value;
+        const confirmPassword = document.getElementById("editConfirmPassword").value;
+        const newBalance = parseInt(document.getElementById("editBalance").value);
+        const newTotalAnswered = parseInt(document.getElementById("editTotalAnswered").value);
+        const newTotalCorrect = parseInt(document.getElementById("editTotalCorrect").value);
+        const banStatus = document.getElementById("editBanStatus").value === "true";
+        const banReason = document.getElementById("editBanReason").value.trim();
+        
+        if (newPassword && newPassword !== confirmPassword) {
+            showToast("Password dan konfirmasi password tidak cocok!", true);
+            return;
+        }
+        
+        if (newPassword && newPassword.length < 4) {
+            showToast("Password minimal 4 karakter!", true);
+            return;
+        }
+        
+        if (isNaN(newBalance) || newBalance < 0) {
+            showToast("Saldo tidak valid!", true);
+            return;
+        }
+        
+        if (isNaN(newTotalAnswered) || isNaN(newTotalCorrect) || newTotalCorrect > newTotalAnswered) {
+            showToast("Data jawaban tidak valid! Jawaban benar tidak boleh melebihi total jawaban", true);
+            return;
+        }
+        
+        try {
+            const updateData = {
+                fullname: fullname || currentEditUser,
+                balance: newBalance,
+                totalAnswered: newTotalAnswered,
+                totalCorrect: newTotalCorrect,
+                lastActive: new Date().toISOString()
+            };
+            
+            if (newPassword) {
+                updateData.password = newPassword;
+            }
+            
+            if (banStatus) {
+                updateData.banned = true;
+                updateData.banReason = banReason || "Diblokir oleh admin";
+                updateData.banTime = new Date().toISOString();
+            } else {
+                updateData.banned = false;
+                updateData.banReason = null;
+                updateData.banTime = null;
+            }
+            
+            await updateDoc(doc(db, "users", currentEditUser), updateData);
+            showToast(`✅ Profil ${currentEditUser} berhasil diperbarui!`, false);
+            document.getElementById("editProfileModal").classList.remove("active");
+            await fetchUsers();
+            await fetchWithdrawals();
+        } catch (e) {
+            console.error("Error updating profile:", e);
+            showToast("Gagal memperbarui profil: " + e.message, true);
+        }
+    };
+    
+    document.getElementById("cancelProfileBtn").onclick = () => {
+        document.getElementById("editProfileModal").classList.remove("active");
+        currentEditUser = null;
+    };
+    
+    function renderLeaderboard() {
+        const activeUsers = allUsers.filter(u => u.banned !== true);
+        
+        const balanceSorted = [...activeUsers].sort((a, b) => (b.balance || 0) - (a.balance || 0)).slice(0, 20);
+        renderLeaderboardList("leaderboardBalanceList", balanceSorted, "balance", "Saldo");
+        
+        const correctSorted = [...activeUsers].sort((a, b) => (b.totalCorrect || 0) - (a.totalCorrect || 0)).slice(0, 20);
+        renderLeaderboardList("leaderboardCorrectList", correctSorted, "correct", "Jawaban Benar");
+        
+        const accuracySorted = [...activeUsers]
+            .filter(u => (u.totalAnswered || 0) >= 50)
+            .map(u => ({ ...u, accuracy: (u.totalAnswered ? ((u.totalCorrect || 0) / u.totalAnswered) * 100 : 0) }))
+            .sort((a, b) => b.accuracy - a.accuracy)
+            .slice(0, 20);
+        renderLeaderboardList("leaderboardAccuracyList", accuracySorted, "accuracy", "Akurasi", "%");
+        
+        const userWithdrawals = {};
+        allWithdrawals.forEach(w => {
+            if (w.status === "success") {
+                if (!userWithdrawals[w.username]) userWithdrawals[w.username] = { total: 0, count: 0 };
+                userWithdrawals[w.username].total += (w.amount || 0);
+                userWithdrawals[w.username].count++;
+            }
+        });
+        
+        const withdrawSorted = Object.entries(userWithdrawals)
+            .map(([username, data]) => {
+                const user = activeUsers.find(u => u.username === username);
+                return { username, fullname: user?.fullname || username, totalWithdraw: data.total, withdrawCount: data.count };
+            })
+            .sort((a, b) => b.totalWithdraw - a.totalWithdraw)
+            .slice(0, 20);
+        renderWithdrawLeaderboardList(withdrawSorted);
+    }
+    
+    function renderLeaderboardList(containerId, users, key, label, suffix = "") {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        
+        if (users.length === 0) {
+            container.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i> Belum ada data</div>';
+            return;
+        }
+        
+        let html = '';
+        users.forEach((user, index) => {
+            const rank = index + 1;
+            let medalIcon = '';
+            let rankClass = '';
+            
+            if (rank === 1) {
+                rankClass = 'rank-1';
+                medalIcon = '<div class="rank-medal medal-gold"><i class="fas fa-crown"></i></div>';
+            } else if (rank === 2) {
+                rankClass = 'rank-2';
+                medalIcon = '<div class="rank-medal medal-silver"><i class="fas fa-medal"></i></div>';
+            } else if (rank === 3) {
+                rankClass = 'rank-3';
+                medalIcon = '<div class="rank-medal medal-bronze"><i class="fas fa-medal"></i></div>';
+            } else {
+                medalIcon = `<div class="rank-medal" style="background: var(--dark-input);">${rank}</div>`;
+            }
+            
+            let value = "";
+            if (key === "balance") {
+                value = `Rp ${(user.balance || 0).toLocaleString('id-ID')}`;
+            } else if (key === "correct") {
+                value = `${user.totalCorrect || 0}`;
+            } else if (key === "accuracy") {
+                value = `${user.accuracy.toFixed(1)}`;
+            } else {
+                value = `${user[key] || 0}`;
+            }
+            
+            html += `
+                <div class="leaderboard-row ${rankClass}">
+                    <div class="leaderboard-user">
+                        <div class="leaderboard-rank">${medalIcon}</div>
+                        <div class="leaderboard-avatar"><i class="fas fa-user"></i></div>
+                        <div class="leaderboard-info">
+                            <div class="leaderboard-name">${escapeHtml(user.fullname || user.username)}</div>
+                            <div class="leaderboard-stats">@${escapeHtml(user.username)}</div>
+                        </div>
+                    </div>
+                    <div class="leaderboard-score">${value} <small>${suffix || label}</small></div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+    
+    function renderWithdrawLeaderboardList(users) {
+        const container = document.getElementById("leaderboardWithdrawList");
+        if (!container) return;
+        
+        if (users.length === 0) {
+            container.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i> Belum ada data penarikan</div>';
+            return;
+        }
+        
+        let html = '';
+        users.forEach((user, index) => {
+            const rank = index + 1;
+            let medalIcon = '';
+            let rankClass = '';
+            
+            if (rank === 1) {
+                rankClass = 'rank-1';
+                medalIcon = '<div class="rank-medal medal-gold"><i class="fas fa-crown"></i></div>';
+            } else if (rank === 2) {
+                rankClass = 'rank-2';
+                medalIcon = '<div class="rank-medal medal-silver"><i class="fas fa-medal"></i></div>';
+            } else if (rank === 3) {
+                rankClass = 'rank-3';
+                medalIcon = '<div class="rank-medal medal-bronze"><i class="fas fa-medal"></i></div>';
+            } else {
+                medalIcon = `<div class="rank-medal" style="background: var(--dark-input);">${rank}</div>`;
+            }
+            
+            html += `
+                <div class="leaderboard-row ${rankClass}">
+                    <div class="leaderboard-user">
+                        <div class="leaderboard-rank">${medalIcon}</div>
+                        <div class="leaderboard-avatar"><i class="fas fa-user"></i></div>
+                        <div class="leaderboard-info">
+                            <div class="leaderboard-name">${escapeHtml(user.fullname || user.username)}</div>
+                            <div class="leaderboard-stats">@${escapeHtml(user.username)} • ${user.withdrawCount} kali tarik</div>
+                        </div>
+                    </div>
+                    <div class="leaderboard-score">Rp ${user.totalWithdraw.toLocaleString('id-ID')} <small>Total Penarikan</small></div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+    
+    async function updateStats() {
+        const total = allUsers.length;
+        let totalBalance = 0;
+        let bannedCount = 0;
+        allUsers.forEach(u => {
+            totalBalance += (u.balance || 0);
+            if (u.banned === true) bannedCount++;
+        });
+        document.getElementById("totalUsers").innerText = total;
+        document.getElementById("totalBalance").innerText = `Rp ${totalBalance.toLocaleString('id-ID')}`;
+        document.getElementById("bannedUsers").innerText = bannedCount;
+        
+        try {
+            const pendingSnap = await getDocs(query(collection(db, "withdraw_requests"), where("status", "==", "pending")));
+            document.getElementById("pendingWithdraws").innerText = pendingSnap.size;
+        } catch(e) {
+            console.error("Error fetching pending withdraws:", e);
+        }
+    }
+    
+    function setupFilters() {
+        document.querySelectorAll(".filter-btn").forEach(btn => {
+            btn.onclick = () => {
+                document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                currentFilter = btn.dataset.filter;
+                renderUserTable();
+            };
+        });
+    }
+    
+    let currentBanUser = null;
+    function openBanModal(username) {
+        currentBanUser = username;
+        document.getElementById("banUsername").innerText = username;
+        document.getElementById("banReason").value = "";
+        document.getElementById("banModal").classList.add("active");
+    }
+    
+    document.getElementById("confirmBanBtn").onclick = async () => {
+        const reason = document.getElementById("banReason").value.trim() || "Diblokir oleh admin";
+        if (currentBanUser) {
+            await updateDoc(doc(db, "users", currentBanUser), { banned: true, banReason: reason, banTime: new Date().toISOString() });
+            showToast(`✅ Akun ${currentBanUser} telah di-ban.`, false);
+            await fetchUsers();
+        }
+        document.getElementById("banModal").classList.remove("active");
+        currentBanUser = null;
+    };
+    
+    document.getElementById("cancelBanBtn").onclick = () => {
+        document.getElementById("banModal").classList.remove("active");
+        currentBanUser = null;
+    };
+    
+    let currentUnbanUser = null;
+    function openUnbanModal(username, banReason) {
+        currentUnbanUser = username;
+        document.getElementById("unbanUsername").innerText = username;
+        document.getElementById("banReasonDisplay").innerHTML = banReason || "Tidak ada alasan spesifik";
+        document.getElementById("unbanModal").classList.add("active");
+    }
+    
+    document.getElementById("confirmUnbanBtn").onclick = async () => {
+        if (currentUnbanUser) {
+            await updateDoc(doc(db, "users", currentUnbanUser), { banned: false, banReason: null, banTime: null });
+            showToast(`✅ Akun ${currentUnbanUser} telah dibuka blokir!`, false);
+            await fetchUsers();
+        }
+        document.getElementById("unbanModal").classList.remove("active");
+        currentUnbanUser = null;
+    };
+    
+    document.getElementById("cancelUnbanBtn").onclick = () => {
+        document.getElementById("unbanModal").classList.remove("active");
+        currentUnbanUser = null;
+    };
+    
+    async function fetchWithdrawals() {
+        try {
+            const snapshot = await getDocs(query(collection(db, "withdraw_requests"), orderBy("createdAt", "desc")));
+            allWithdrawals = [];
+            snapshot.forEach(docSnap => {
+                allWithdrawals.push({ id: docSnap.id, ...docSnap.data() });
+            });
+            renderWithdrawTable();
+            updateWithdrawStatistics();
+            renderLeaderboard();
+        } catch(e) {
+            console.error("Error fetching withdrawals:", e);
+        }
+    }
+    
+    function renderWithdrawTable() {
+        const search = document.getElementById("searchWithdraw")?.value.toLowerCase() || "";
+        const filtered = allWithdrawals.filter(w => w.username?.toLowerCase().includes(search));
+        const tbody = document.getElementById("withdrawList");
+        if (!tbody) return;
+        tbody.innerHTML = "";
+        
+        if (filtered.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-inbox"></i> Tidak ada permintaan penarikan</td></tr>';
+            return;
+        }
+        
+        filtered.forEach(w => {
+            const statusClass = w.status === "pending" ? "pending" : (w.status === "success" ? "success" : "rejected");
+            const statusText = w.status === "pending" ? "Menunggu" : (w.status === "success" ? "Berhasil" : "Ditolak");
+            const dateStr = w.createdAt ? new Date(w.createdAt).toLocaleString('id-ID') : '-';
+            tbody.innerHTML += `
+                <tr>
+                    <td><strong>${escapeHtml(w.username)}</strong></td>
+                    <td>Rp ${(w.amount || 0).toLocaleString('id-ID')}</td>
+                    <td>${escapeHtml(w.method || '-')}</td>
+                    <td>${escapeHtml(w.account || '-')}</td>
+                    <td>${dateStr}</td>
+                    <td><span class="withdraw-badge ${statusClass}">${statusText}</span></td>
+                    <td>${w.status === "pending" ? `<button class="btn-icon btn-success" data-action="approve" data-id="${w.id}" data-username="${w.username}" data-amount="${w.amount}" title="Setujui"><i class="fas fa-check-circle"></i></button> <button class="btn-icon btn-danger" data-action="reject" data-id="${w.id}" title="Tolak"><i class="fas fa-times-circle"></i></button>` : '-'}</td>
+                </tr>
+            `;
+        });
+        
+        document.querySelectorAll("[data-action='approve']").forEach(btn => {
+            btn.onclick = async () => {
+                const id = btn.dataset.id;
+                const username = btn.dataset.username;
+                const amount = parseInt(btn.dataset.amount);
+                if (confirm(`Setujui penarikan Rp ${amount.toLocaleString('id-ID')} untuk ${username}?`)) {
+                    await updateDoc(doc(db, "withdraw_requests", id), { status: "success" });
+                    showToast(`✅ Penarikan ${username} disetujui.`);
+                    await fetchWithdrawals();
+                    await fetchUsers();
+                }
+            };
+        });
+        
+        document.querySelectorAll("[data-action='reject']").forEach(btn => {
+            btn.onclick = async () => {
+                const id = btn.dataset.id;
+                if (confirm("Tolak permintaan ini?")) {
+                    const reqDoc = await getDoc(doc(db, "withdraw_requests", id));
+                    const data = reqDoc.data();
+                    if (data && data.status === "pending") {
+                        const userRef = doc(db, "users", data.username);
+                        const userSnap = await getDoc(userRef);
+                        if (userSnap.exists()) {
+                            const currBalance = userSnap.data().balance || 0;
+                            await updateDoc(userRef, { balance: currBalance + data.amount });
+                        }
+                        await updateDoc(doc(db, "withdraw_requests", id), { status: "rejected" });
+                        showToast(`❌ Penarikan ditolak, saldo dikembalikan.`);
+                        await fetchWithdrawals();
+                        await fetchUsers();
+                    }
+                }
+            };
+        });
+    }
+    
+    function getFilteredWithdrawals() {
+        let filtered = [...allWithdrawals];
+        if (currentStartDate) {
+            const start = new Date(currentStartDate);
+            start.setHours(0, 0, 0, 0);
+            filtered = filtered.filter(w => w.createdAt && new Date(w.createdAt) >= start);
+        }
+        if (currentEndDate) {
+            const end = new Date(currentEndDate);
+            end.setHours(23, 59, 59, 999);
+            filtered = filtered.filter(w => w.createdAt && new Date(w.createdAt) <= end);
+        }
+        return filtered;
+    }
+    
+    function updateWithdrawStatistics() {
+        const filtered = getFilteredWithdrawals();
+        let totalAmount = 0, successAmount = 0, pendingAmount = 0;
+        let successCount = 0, pendingCount = 0, rejectedCount = 0;
+        const methodStats = {};
+        const dailyStats = {};
+        
+        filtered.forEach(w => {
+            const amount = w.amount || 0;
+            totalAmount += amount;
+            if (w.status === "success") { successAmount += amount; successCount++; }
+            else if (w.status === "pending") { pendingAmount += amount; pendingCount++; }
+            else if (w.status === "rejected") { rejectedCount++; }
+            
+            const method = w.method || "Lainnya";
+            methodStats[method] = (methodStats[method] || 0) + amount;
+            if (w.createdAt && w.status === "success") {
+                const date = new Date(w.createdAt).toISOString().split('T')[0];
+                dailyStats[date] = (dailyStats[date] || 0) + amount;
+            }
+        });
+        
+        document.getElementById("totalWithdrawAmount").innerHTML = `Rp ${totalAmount.toLocaleString('id-ID')}`;
+        document.getElementById("successWithdrawAmount").innerHTML = `Rp ${successAmount.toLocaleString('id-ID')}`;
+        document.getElementById("pendingWithdrawAmount").innerHTML = `Rp ${pendingAmount.toLocaleString('id-ID')}`;
+        
+        updateStatusPieChart(successAmount, pendingAmount);
+        updateStatusBarChart(successCount, pendingCount, rejectedCount);
+        updateTrendLineChart(dailyStats);
+        updateMethodPieChart(methodStats);
+        updateTopWithdrawers();
+    }
+    
+    function updateStatusPieChart(success, pending) {
+        const ctx = document.getElementById('statusPieChart')?.getContext('2d');
+        if (!ctx) return;
+        if (statusPieChart) statusPieChart.destroy();
+        statusPieChart = new Chart(ctx, {
+            type: 'pie',
+            data: { labels: ['Berhasil', 'Menunggu'], datasets: [{ data: [success, pending], backgroundColor: ['#10b981', '#f59e0b'], borderWidth: 0 }] },
+            options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#f1f5f9' } } } }
+        });
+    }
+    
+    function updateStatusBarChart(successCount, pendingCount, rejectedCount) {
+        const ctx = document.getElementById('statusBarChart')?.getContext('2d');
+        if (!ctx) return;
+        if (statusBarChart) statusBarChart.destroy();
+        statusBarChart = new Chart(ctx, {
+            type: 'bar',
+            data: { labels: ['Berhasil', 'Menunggu', 'Ditolak'], datasets: [{ label: 'Jumlah Transaksi', data: [successCount, pendingCount, rejectedCount], backgroundColor: ['#10b981', '#f59e0b', '#ef4444'], borderRadius: 8 }] },
+            options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: '#f1f5f9' }, grid: { color: '#2d2d44' } }, x: { ticks: { color: '#f1f5f9' } } } }
+        });
+    }
+    
+    function updateTrendLineChart(dailyStats) {
+        const ctx = document.getElementById('trendLineChart')?.getContext('2d');
+        if (!ctx) return;
+        if (trendLineChart) trendLineChart.destroy();
+        const last7Days = [];
+        for (let i = 6; i >= 0; i--) {
+            const date = new Date();
+            date.setDate(date.getDate() - i);
+            last7Days.push(date.toISOString().split('T')[0]);
+        }
+        const data = last7Days.map(day => dailyStats[day] || 0);
+        trendLineChart = new Chart(ctx, {
+            type: 'line',
+            data: { labels: last7Days.map(d => { const date = new Date(d); return `${date.getDate()}/${date.getMonth()+1}`; }), datasets: [{ label: 'Total Penarikan (Rp)', data: data, borderColor: '#6366f1', backgroundColor: 'rgba(99,102,241,0.1)', fill: true, tension: 0.4 }] },
+            options: { responsive: true, plugins: { legend: { labels: { color: '#f1f5f9' } } }, scales: { y: { beginAtZero: true, ticks: { color: '#f1f5f9' }, grid: { color: '#2d2d44' } }, x: { ticks: { color: '#f1f5f9' } } } }
+        });
+    }
+    
+    function updateMethodPieChart(methodStats) {
+        const ctx = document.getElementById('methodPieChart')?.getContext('2d');
+        if (!ctx) return;
+        if (methodPieChart) methodPieChart.destroy();
+        const labels = Object.keys(methodStats);
+        const data = Object.values(methodStats);
+        const colors = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec489a'];
+        methodPieChart = new Chart(ctx, {
+            type: 'pie',
+            data: { labels: labels, datasets: [{ data: data, backgroundColor: colors.slice(0, labels.length), borderWidth: 0 }] },
+            options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#f1f5f9' } } } }
+        });
+    }
+    
+    async function updateTopWithdrawers() {
+        const userWithdrawals = {};
+        allWithdrawals.forEach(w => {
+            if (w.status === "success") {
+                if (!userWithdrawals[w.username]) userWithdrawals[w.username] = { total: 0, count: 0, lastWithdraw: null };
+                userWithdrawals[w.username].total += (w.amount || 0);
+                userWithdrawals[w.username].count++;
+                if (w.createdAt) {
+                    const withdrawDate = new Date(w.createdAt);
+                    if (!userWithdrawals[w.username].lastWithdraw || withdrawDate > userWithdrawals[w.username].lastWithdraw) {
+                        userWithdrawals[w.username].lastWithdraw = withdrawDate;
+                    }
+                }
+            }
+        });
+        const sorted = Object.entries(userWithdrawals).sort((a, b) => b[1].total - a[1].total).slice(0, 10);
+        const tbody = document.getElementById("topWithdrawersList");
+        if (!tbody) return;
+        tbody.innerHTML = "";
+        if (sorted.length === 0) {
+            tbody.innerHTML = '运转<td colspan="5" class="empty-state">Belum ada data penarikan</td></tr>';
+            return;
+        }
+        sorted.forEach(([username, data], index) => {
+            tbody.innerHTML += `<tr><td>${index + 1}</td><td><strong>${escapeHtml(username)}</strong></td><td>Rp ${data.total.toLocaleString('id-ID')}</td><td>${data.count} kali</td><td>${data.lastWithdraw ? data.lastWithdraw.toLocaleDateString('id-ID') : '-'}</td></tr>`;
+        });
+    }
+    
+    function setupDateFilters() {
+        const startInput = document.getElementById("startDate");
+        const endInput = document.getElementById("endDate");
+        const defaultEnd = new Date();
+        const defaultStart = new Date();
+        defaultStart.setDate(defaultStart.getDate() - 30);
+        if (startInput) startInput.value = defaultStart.toISOString().split('T')[0];
+        if (endInput) endInput.value = defaultEnd.toISOString().split('T')[0];
+        currentStartDate = startInput?.value || null;
+        currentEndDate = endInput?.value || null;
+        
+        document.getElementById("applyDateFilter").onclick = () => {
+            currentStartDate = startInput.value;
+            currentEndDate = endInput.value;
+            updateWithdrawStatistics();
+            showToast("Statistik diperbarui dengan filter tanggal", false);
+        };
+        document.getElementById("resetDateFilter").onclick = () => {
+            const newEnd = new Date();
+            const newStart = new Date();
+            newStart.setDate(newStart.getDate() - 30);
+            startInput.value = newStart.toISOString().split('T')[0];
+            endInput.value = newEnd.toISOString().split('T')[0];
+            currentStartDate = startInput.value;
+            currentEndDate = endInput.value;
+            updateWithdrawStatistics();
+            showToast("Filter tanggal direset", false);
+        };
+    }
+    
+    async function loadMaintenanceSettings() {
+        try {
+            const ref = doc(db, "settings", "maintenance");
+            const snap = await getDoc(ref);
+            if (snap.exists()) {
+                const data = snap.data();
+                maintenanceEnabled = data.enabled === true;
+                document.getElementById("maintenanceMessage").value = data.message || "";
+                document.getElementById("maintenanceEstimate").value = data.estimatedTime || "";
+            } else {
+                await setDoc(ref, { enabled: false, message: "", estimatedTime: "" });
+                maintenanceEnabled = false;
+            }
+            updateMaintenanceUI();
+        } catch(e) {
+            console.error("Error loading maintenance:", e);
+        }
+    }
+    
+    function updateMaintenanceUI() {
+        const toggle = document.getElementById("maintenanceToggle");
+        const statusSpan = document.getElementById("maintenanceStatusText");
+        if (maintenanceEnabled) {
+            toggle.classList.add("active");
+            statusSpan.innerText = "Aktif";
+            statusSpan.style.color = "#f59e0b";
+        } else {
+            toggle.classList.remove("active");
+            statusSpan.innerText = "Nonaktif";
+            statusSpan.style.color = "#9ca3af";
+        }
+    }
+    
+    document.getElementById("maintenanceToggle").onclick = () => {
+        maintenanceEnabled = !maintenanceEnabled;
+        updateMaintenanceUI();
+    };
+    
+    document.getElementById("saveMaintenanceBtn").onclick = async () => {
+        const msg = document.getElementById("maintenanceMessage").value;
+        const estimate = document.getElementById("maintenanceEstimate").value;
+        await setDoc(doc(db, "settings", "maintenance"), {
+            enabled: maintenanceEnabled,
+            message: msg,
+            estimatedTime: estimate,
+            updatedAt: new Date().toISOString()
+        });
+        showToast("⚙️ Pengaturan maintenance disimpan!");
+    };
+    
+    function switchTab(tabId) {
+        document.querySelectorAll(".tab-content").forEach(t => t.style.display = "none");
+        const targetTab = document.getElementById(`tab${tabId.charAt(0).toUpperCase() + tabId.slice(1)}`);
+        if (targetTab) targetTab.style.display = "block";
+        document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+        const activeBtn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
+        if (activeBtn) activeBtn.classList.add("active");
+        
+        if (tabId === "withdrawals") fetchWithdrawals();
+        else if (tabId === "withdrawStats") updateWithdrawStatistics();
+        else if (tabId === "users") fetchUsers();
+        else if (tabId === "leaderboard") renderLeaderboard();
+    }
+    
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+        btn.onclick = () => switchTab(btn.dataset.tab);
+    });
+    
+    document.getElementById("searchUser")?.addEventListener("input", () => renderUserTable());
+    document.getElementById("searchWithdraw")?.addEventListener("input", () => renderWithdrawTable());
+    
+    document.getElementById("logoutAdminBtn").onclick = () => {
+        if (confirm("Keluar dari panel admin?")) {
+            localStorage.removeItem("admin_auth");
+            window.location.reload();
+        }
+    };
+    
+    async function initAdmin() {
+        const adminAuth = localStorage.getItem("admin_auth");
+        if (!adminAuth) {
+            if (!promptAdminLogin()) {
+                document.body.innerHTML = "<div style='text-align:center; margin-top:50px'><i class='fas fa-lock'></i> <h2>Akses ditolak</h2><p>Anda bukan admin.</p></div>";
+                return;
+            }
+            localStorage.setItem("admin_auth", "true");
+        }
+        setupFilters();
+        setupDateFilters();
+        await loadMaintenanceSettings();
+        await fetchUsers();
+        await fetchWithdrawals();
+        
+        const maintenanceRef = doc(db, "settings", "maintenance");
+        onSnapshot(maintenanceRef, (docSnap) => {
+            if (docSnap.exists()) {
+                maintenanceEnabled = docSnap.data().enabled === true;
+                updateMaintenanceUI();
+                if (document.getElementById("maintenanceMessage")) {
+                    document.getElementById("maintenanceMessage").value = docSnap.data().message || "";
+                    document.getElementById("maintenanceEstimate").value = docSnap.data().estimatedTime || "";
+                }
+            }
+        });
+    }
+    
+    initAdmin();
+</script>
+</body>
+</html>

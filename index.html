@@ -586,6 +586,29 @@
             margin-top: 0.5rem;
             color: var(--warning);
         }
+        .suspicion-badge {
+            background: rgba(239, 68, 68, 0.3);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            color: #f87171;
+            margin-left: 8px;
+        }
+        .reward-badge {
+            background: rgba(16, 185, 129, 0.2);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            color: #6ee7b7;
+            margin-left: 8px;
+        }
+        .streak-badge {
+            background: rgba(245, 158, 11, 0.3);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            color: #fbbf24;
+        }
 
         @media (max-width: 768px) {
             .container { padding: 1rem; }
@@ -617,7 +640,8 @@
             <div class="profile-avatar" style="margin: 0 auto 1rem;"><i class="fas fa-code"></i></div>
             <h2>MathRupiah Pro</h2>
             <p><i class="fas fa-graduation-cap"></i> Belajar matematika interaktif<br>
-            <i class="fas fa-money-bill-wave"></i> Jawab benar = dapatkan penghasilan<br>
+            <i class="fas fa-money-bill-wave"></i> Reward variatif: 50-400/soal<br>
+            <i class="fas fa-chart-line"></i> Bonus streak & combo!<br>
             <i class="fas fa-exclamation-triangle"></i> Jawab salah = potongan saldo</p>
             <button id="closeWelcomeModal" class="auth-btn" style="margin-top: 1rem;">Mulai Belajar</button>
         </div>
@@ -686,8 +710,9 @@
                     </div>
                     <div id="kelasButtons" class="kelas-buttons" style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;"></div>
                     <div class="current-level-badge" style="margin-top: 12px; background: var(--accent-glow); border-radius: 60px; padding: 8px; text-align: center;">
-                        <i class="fas fa-star-of-life"></i> Level aktif: <strong id="selectedLevelName">SD Kelas 1</strong> (+Rp200/soal)
+                        <i class="fas fa-star-of-life"></i> Level aktif: <strong id="selectedLevelName">SD Kelas 1</strong> (Reward: 50-400/soal)
                         <span class="penalty-badge"><i class="fas fa-minus-circle"></i> Salah -Rp200</span>
+                        <span class="streak-badge" id="streakDisplay"><i class="fas fa-fire"></i> Streak: 0</span>
                     </div>
                 </div>
                 
@@ -703,7 +728,7 @@
                         <div class="options-grid" id="optionsContainer" style="margin-top: 1.2rem;"></div>
                         <div id="feedbackMsg" style="margin: 10px 0; text-align: center;"></div>
                         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-                            <div><i class="fas fa-gem"></i> <span id="rewardHint">+200/soal</span> | <span style="color: #f87171;"><i class="fas fa-minus-circle"></i> Salah -200</span></div>
+                            <div><i class="fas fa-gem"></i> <span id="rewardHint">Reward: 50-400 (variatif)</span> | <span style="color: #f87171;"><i class="fas fa-minus-circle"></i> Salah -200</span></div>
                             <button id="nextButton" class="next-btn" disabled>Soal Berikutnya →</button>
                         </div>
                         <div class="progress-bar" style="margin-top: 16px; background: rgba(255,255,255,0.15); border-radius: 30px; height: 6px;">
@@ -743,8 +768,8 @@
             <div class="auth-header">
                 <div class="auth-logo"><i class="fas fa-calculator"></i></div>
                 <h1 style="text-align: center;">MathRupiah Pro</h1>
-                <p style="color: var(--text-secondary); text-align: center;">🎓 Asah matematika, dapatkan penghasilan</p>
-                <div class="security-warning"><i class="fas fa-shield-alt"></i> Sistem keamanan aktif</div>
+                <p style="color: var(--text-secondary); text-align: center;">🎓 Asah matematika, dapatkan penghasilan variatif</p>
+                <div class="security-warning"><i class="fas fa-shield-alt"></i> Sistem keamanan aktif | Reward bervariasi berdasarkan kecepatan, akurasi & streak</div>
             </div>
             <div class="auth-tabs">
                 <button class="auth-tab active" data-tab="login"><i class="fas fa-sign-in-alt"></i> Masuk</button>
@@ -845,26 +870,609 @@
     let isQuizActive = false;
     let maintenanceUnsubscribe = null;
     let securityCheckInterval = null;
+    let answerDetector = null;
     
     const TIME_LIMIT = 30;
     const PENALTY_AMOUNT = 200;
     
-    // ==================== IMPROVED VPN/DNS DETECTION ====================
-    // Menggunakan deteksi yang lebih akurat dan mengurangi false positive
+    // ==================== ADVANCED REWARD SYSTEM ====================
+    class AdvancedRewardCalculator {
+        constructor() {
+            this.rewardMultipliers = {
+                streak: {
+                    base: 1.0,
+                    increment: 0.05,
+                    max: 1.5
+                },
+                timeBonus: {
+                    fast: 1.25,
+                    normal: 1.0,
+                    slow: 0.75
+                },
+                difficulty: {
+                    easy: 1.0,
+                    medium: 1.15,
+                    hard: 1.35
+                },
+                accuracy: {
+                    high: 1.2,
+                    medium: 1.0,
+                    low: 0.65
+                }
+            };
+            
+            this.currentStreak = 0;
+            this.maxStreak = 0;
+            this.sessionStartTime = null;
+            this.dailyAnswered = 0;
+            this.dailyCorrect = 0;
+            this.lastAnswerTimes = [];
+            this.comboActive = false;
+            this.comboCounter = 0;
+            this.lastReset = new Date();
+            this.sessionQuestions = [];
+        }
+        
+        analyzeDifficulty(question) {
+            let difficultyScore = 0;
+            
+            if (question.text.length > 50) difficultyScore += 0.3;
+            else if (question.text.length > 30) difficultyScore += 0.2;
+            
+            if (question.text.includes('×') || question.text.includes('÷') || 
+                question.text.includes('*') || question.text.includes('/')) {
+                difficultyScore += 0.3;
+            }
+            
+            if (/\d{3,}/.test(question.text)) difficultyScore += 0.25;
+            
+            if (question.text.includes('.') || question.text.includes(',')) {
+                difficultyScore += 0.25;
+            }
+            
+            if (question.text.toLowerCase().includes('akar') || 
+                question.text.includes('²') || question.text.includes('√')) {
+                difficultyScore += 0.35;
+            }
+            
+            if (difficultyScore < 0.35) return 'easy';
+            if (difficultyScore < 0.7) return 'medium';
+            return 'hard';
+        }
+        
+        calculateTimeMultiplier(timeSpentMs) {
+            if (timeSpentMs < 2500) return this.rewardMultipliers.timeBonus.fast;
+            if (timeSpentMs < 8000) return this.rewardMultipliers.timeBonus.normal;
+            return this.rewardMultipliers.timeBonus.slow;
+        }
+        
+        calculateAccuracyMultiplier() {
+            if (this.dailyAnswered === 0) return 1.0;
+            
+            const accuracy = this.dailyCorrect / this.dailyAnswered;
+            if (accuracy >= 0.88) return this.rewardMultipliers.accuracy.high;
+            if (accuracy >= 0.65) return this.rewardMultipliers.accuracy.medium;
+            return this.rewardMultipliers.accuracy.low;
+        }
+        
+        updateStreak(isCorrect) {
+            if (isCorrect) {
+                this.currentStreak++;
+                if (this.currentStreak > this.maxStreak) this.maxStreak = this.currentStreak;
+                
+                if (this.currentStreak >= 8 && !this.comboActive) {
+                    this.comboActive = true;
+                    this.comboCounter = Math.floor(this.currentStreak / 8);
+                } else if (this.comboActive && this.currentStreak >= 8) {
+                    this.comboCounter = Math.floor(this.currentStreak / 8);
+                } else if (this.currentStreak < 8) {
+                    this.comboActive = false;
+                    this.comboCounter = 0;
+                }
+            } else {
+                if (this.currentStreak >= 5 && this.currentStreak <= 10) {
+                    this.currentStreak = Math.floor(this.currentStreak * 0.5);
+                } else {
+                    this.currentStreak = 0;
+                }
+                this.comboActive = false;
+                this.comboCounter = 0;
+            }
+            
+            const streakMultiplier = Math.min(
+                this.rewardMultipliers.streak.base + 
+                (this.currentStreak * this.rewardMultipliers.streak.increment),
+                this.rewardMultipliers.streak.max
+            );
+            
+            return streakMultiplier;
+        }
+        
+        detectRandomPattern() {
+            if (this.lastAnswerTimes.length < 6) return false;
+            
+            const recentTimes = this.lastAnswerTimes.slice(-6);
+            const differences = [];
+            for (let i = 1; i < recentTimes.length; i++) {
+                differences.push(recentTimes[i] - recentTimes[i-1]);
+            }
+            
+            const avgDiff = differences.reduce((a,b) => a + b, 0) / differences.length;
+            const variance = differences.reduce((a,b) => a + Math.pow(b - avgDiff, 2), 0) / differences.length;
+            
+            if (variance < 150 && differences.length >= 5) {
+                return true;
+            }
+            
+            const allEqual = differences.every(d => Math.abs(d - differences[0]) < 50);
+            if (allEqual && differences.length >= 4) {
+                return true;
+            }
+            
+            return false;
+        }
+        
+        detectAnswerPattern() {
+            if (this.sessionQuestions.length < 10) return false;
+            
+            let patternScore = 0;
+            let lastCorrect = null;
+            let alternatingCount = 0;
+            
+            for (let i = 0; i < this.sessionQuestions.length; i++) {
+                const isCorrect = this.sessionQuestions[i].isCorrect;
+                
+                if (lastCorrect !== null && isCorrect !== lastCorrect) {
+                    alternatingCount++;
+                } else if (lastCorrect !== null && isCorrect === lastCorrect) {
+                    alternatingCount = Math.max(0, alternatingCount - 1);
+                }
+                
+                lastCorrect = isCorrect;
+            }
+            
+            if (alternatingCount > 7) patternScore += 0.3;
+            
+            const recentCorrect = this.sessionQuestions.slice(-10).filter(q => q.isCorrect).length;
+            if (recentCorrect === 10) patternScore += 0.4;
+            
+            return patternScore > 0.5;
+        }
+        
+        calculateFinalReward(baseReward, question, isCorrect, timeSpentMs) {
+            if (!isCorrect) return 0;
+            
+            this.lastAnswerTimes.push(timeSpentMs);
+            if (this.lastAnswerTimes.length > 25) this.lastAnswerTimes.shift();
+            
+            this.sessionQuestions.push({
+                isCorrect: isCorrect,
+                timeSpent: timeSpentMs,
+                timestamp: Date.now()
+            });
+            if (this.sessionQuestions.length > 50) this.sessionQuestions.shift();
+            
+            const hasRandomPattern = this.detectRandomPattern();
+            const hasAnswerPattern = this.detectAnswerPattern();
+            
+            const difficulty = this.analyzeDifficulty(question);
+            const difficultyMultiplier = this.rewardMultipliers.difficulty[difficulty];
+            
+            const timeMultiplier = this.calculateTimeMultiplier(timeSpentMs);
+            
+            const streakMultiplier = this.updateStreak(isCorrect);
+            
+            const accuracyMultiplier = this.calculateAccuracyMultiplier();
+            
+            let variationFactor = 0.8 + (Math.random() * 0.4);
+            variationFactor = Math.min(Math.max(variationFactor, 0.75), 1.15);
+            
+            let progressFactor = Math.max(0.55, 1 - (this.dailyAnswered / 600));
+            
+            let comboBonus = 1.0;
+            if (this.comboActive) {
+                comboBonus = 1 + (this.comboCounter * 0.07);
+                comboBonus = Math.min(comboBonus, 1.35);
+            }
+            
+            let consistencyFactor = 1.0;
+            if (this.dailyAnswered >= 15) {
+                const recentCorrect = this.dailyCorrect / this.dailyAnswered;
+                if (recentCorrect >= 0.82 && recentCorrect <= 0.94) {
+                    consistencyFactor = 1.08;
+                }
+            }
+            
+            let penaltyFactor = 1.0;
+            if (hasRandomPattern) penaltyFactor *= 0.4;
+            if (hasAnswerPattern) penaltyFactor *= 0.5;
+            
+            let finalReward = baseReward * difficultyMultiplier * timeMultiplier * 
+                             streakMultiplier * accuracyMultiplier * variationFactor * 
+                             progressFactor * comboBonus * consistencyFactor * penaltyFactor;
+            
+            if (this.currentStreak >= 15 && !hasRandomPattern && !hasAnswerPattern) {
+                finalReward *= 1.1;
+            }
+            
+            if (timeSpentMs < 1800 && difficulty === 'hard') {
+                finalReward *= 0.85;
+            }
+            
+            if (timeSpentMs > 12000 && !hasRandomPattern) {
+                finalReward *= 0.9;
+            }
+            
+            finalReward = Math.round(finalReward / 25) * 25;
+            
+            finalReward = Math.min(finalReward, baseReward * 2.2);
+            finalReward = Math.max(finalReward, 50);
+            
+            return Math.floor(finalReward);
+        }
+        
+        updateDailyStats(isCorrect) {
+            const now = new Date();
+            if ((now - this.lastReset) > 24 * 60 * 60 * 1000) {
+                this.dailyAnswered = 0;
+                this.dailyCorrect = 0;
+                this.lastReset = now;
+                this.currentStreak = 0;
+                this.comboActive = false;
+                this.comboCounter = 0;
+                this.lastAnswerTimes = [];
+                this.sessionQuestions = [];
+            }
+            
+            this.dailyAnswered++;
+            if (isCorrect) this.dailyCorrect++;
+        }
+        
+        resetSession() {
+            this.currentStreak = 0;
+            this.comboActive = false;
+            this.comboCounter = 0;
+            this.lastAnswerTimes = [];
+            this.sessionQuestions = [];
+        }
+        
+        getStreakInfo() {
+            return {
+                streak: this.currentStreak,
+                maxStreak: this.maxStreak,
+                comboActive: this.comboActive,
+                comboLevel: this.comboCounter
+            };
+        }
+        
+        getDailyStats() {
+            const accuracy = this.dailyAnswered > 0 ? 
+                (this.dailyCorrect / this.dailyAnswered * 100).toFixed(1) : 0;
+            return {
+                answered: this.dailyAnswered,
+                correct: this.dailyCorrect,
+                accuracy: accuracy
+            };
+        }
+    }
     
+    let rewardCalculator = null;
+    
+    // ==================== ABNORMAL ANSWER DETECTION SYSTEM ====================
+    class AbnormalAnswerDetector {
+        constructor(username, dbInstance) {
+            this.username = username;
+            this.db = dbInstance;
+            this.answerHistory = [];
+            this.quizSessions = [];
+            this.currentSession = null;
+            this.suspicionScore = 0;
+            this.MAX_SUSPICION_SCORE = 100;
+            this.BAN_THRESHOLD = 80;
+            
+            this.config = {
+                MIN_ANSWER_TIME_MS: 1800,
+                MAX_CONSECUTIVE_CORRECT: 18,
+                MAX_CORRECT_RATE_5MIN: 0.94,
+                SUSPICIOUS_PATTERN_THRESHOLD: 0.75,
+                MAX_ANSWERS_PER_MINUTE: 11,
+                SUSPICIOUS_TIMESTAMP_DUPLICATE: 2
+            };
+        }
+        
+        startSession(level) {
+            this.currentSession = {
+                id: Date.now(),
+                level: level,
+                startTime: new Date(),
+                answers: [],
+                completed: false
+            };
+        }
+        
+        recordAnswer(questionText, isCorrect, timeSpentMs, timestamp = null) {
+            const answerTime = timestamp || new Date();
+            
+            const answerRecord = {
+                questionText: questionText,
+                isCorrect: isCorrect,
+                timeSpentMs: timeSpentMs,
+                timestamp: answerTime,
+                sessionId: this.currentSession?.id
+            };
+            
+            if (this.currentSession) {
+                this.currentSession.answers.push(answerRecord);
+            }
+            
+            this.answerHistory.push(answerRecord);
+            
+            const analysis = this.analyzeAnswer(answerRecord);
+            
+            if (analysis.isSuspicious) {
+                this.suspicionScore += analysis.scoreIncrease;
+                
+                if (this.suspicionScore >= this.BAN_THRESHOLD) {
+                    this.triggerBan(analysis.reason);
+                }
+            }
+            
+            return analysis;
+        }
+        
+        analyzeAnswer(answer) {
+            let isSuspicious = false;
+            let reason = "";
+            let scoreIncrease = 0;
+            
+            if (answer.timeSpentMs < this.config.MIN_ANSWER_TIME_MS) {
+                isSuspicious = true;
+                reason = `Menjawab terlalu cepat (${answer.timeSpentMs}ms)`;
+                scoreIncrease = 18;
+                
+                const fastAnswers = this.getRecentAnswers(12).filter(a => a.timeSpentMs < this.config.MIN_ANSWER_TIME_MS);
+                if (fastAnswers.length >= 6) {
+                    scoreIncrease = 35;
+                    reason = `Menjawab terlalu cepat berulang kali (${fastAnswers.length}x)`;
+                }
+            }
+            
+            const recentAnswers = this.getRecentAnswers(25);
+            const correctCount = recentAnswers.filter(a => a.isCorrect).length;
+            const correctRate = recentAnswers.length > 0 ? correctCount / recentAnswers.length : 0;
+            
+            if (recentAnswers.length >= 12 && correctRate === 1.0) {
+                isSuspicious = true;
+                reason = `Akurasi sempurna 100% dalam ${recentAnswers.length} soal terakhir`;
+                scoreIncrease = 30;
+            } else if (recentAnswers.length >= 25 && correctRate > this.config.MAX_CORRECT_RATE_5MIN) {
+                isSuspicious = true;
+                reason = `Akurasi terlalu tinggi (${Math.round(correctRate * 100)}%)`;
+                scoreIncrease = 20;
+            }
+            
+            const timestamps = this.getRecentAnswers(12).map(a => a.timestamp.getTime());
+            const uniqueTimestamps = new Set(timestamps);
+            if (timestamps.length - uniqueTimestamps.size >= this.config.SUSPICIOUS_TIMESTAMP_DUPLICATE) {
+                isSuspicious = true;
+                reason = `Pola klik tidak wajar (timestamp duplikat)`;
+                scoreIncrease = 25;
+            }
+            
+            const answersPerMinute = this.getAnswersPerMinute();
+            if (answersPerMinute > this.config.MAX_ANSWERS_PER_MINUTE) {
+                isSuspicious = true;
+                reason = `Kecepatan menjawab tidak normal (${answersPerMinute} soal/menit)`;
+                scoreIncrease = 25;
+            }
+            
+            const patternScore = this.detectAbnormalPattern(recentAnswers);
+            if (patternScore > this.config.SUSPICIOUS_PATTERN_THRESHOLD) {
+                isSuspicious = true;
+                reason = `Pola jawaban tidak manusiawi terdeteksi`;
+                scoreIncrease = 30;
+            }
+            
+            if (this.currentSession && this.currentSession.answers.length > 35) {
+                const sessionDuration = (new Date() - this.currentSession.startTime) / 1000 / 60;
+                const answersPerMinute = this.currentSession.answers.length / sessionDuration;
+                
+                if (answersPerMinute > 9 && sessionDuration > 6) {
+                    isSuspicious = true;
+                    reason = `Sesi terlalu intens (${Math.round(answersPerMinute)} soal/menit)`;
+                    scoreIncrease = 35;
+                }
+            }
+            
+            return { isSuspicious, reason, scoreIncrease };
+        }
+        
+        getRecentAnswers(count) {
+            return this.answerHistory.slice(-count);
+        }
+        
+        getAnswersPerMinute() {
+            const now = new Date();
+            const oneMinuteAgo = new Date(now.getTime() - 60000);
+            const recentAnswers = this.answerHistory.filter(a => a.timestamp >= oneMinuteAgo);
+            return recentAnswers.length;
+        }
+        
+        detectAbnormalPattern(answers) {
+            if (answers.length < 12) return 0;
+            
+            let patternScore = 0;
+            let lastCorrect = null;
+            let alternatingCount = 0;
+            let consecutiveCorrect = 0;
+            let consecutiveWrong = 0;
+            
+            for (let i = 0; i < answers.length; i++) {
+                const isCorrect = answers[i].isCorrect;
+                
+                if (lastCorrect !== null && isCorrect !== lastCorrect) {
+                    alternatingCount++;
+                } else if (lastCorrect !== null && isCorrect === lastCorrect) {
+                    alternatingCount = Math.max(0, alternatingCount - 1);
+                }
+                
+                if (isCorrect) {
+                    consecutiveCorrect++;
+                    if (consecutiveCorrect > 12) patternScore += 0.12;
+                } else {
+                    consecutiveCorrect = 0;
+                }
+                
+                if (!isCorrect) {
+                    consecutiveWrong++;
+                    if (consecutiveWrong > 6) patternScore += 0.07;
+                } else {
+                    consecutiveWrong = 0;
+                }
+                
+                lastCorrect = isCorrect;
+                
+                if (alternatingCount > 9) {
+                    patternScore += 0.18;
+                }
+            }
+            
+            return Math.min(patternScore, 1);
+        }
+        
+        async endSession() {
+            if (!this.currentSession || this.currentSession.completed) return;
+            
+            this.currentSession.completed = true;
+            this.currentSession.endTime = new Date();
+            this.currentSession.totalAnswers = this.currentSession.answers.length;
+            this.currentSession.correctAnswers = this.currentSession.answers.filter(a => a.isCorrect).length;
+            this.currentSession.accuracy = this.currentSession.totalAnswers > 0 ? 
+                this.currentSession.correctAnswers / this.currentSession.totalAnswers : 0;
+            
+            const sessionAnalysis = this.analyzeSession();
+            
+            if (sessionAnalysis.isSuspicious) {
+                await this.triggerBan(sessionAnalysis.reason);
+            }
+            
+            try {
+                await addDoc(collection(this.db, "quiz_sessions"), {
+                    username: this.username,
+                    ...this.currentSession,
+                    suspicionScore: this.suspicionScore,
+                    timestamp: new Date().toISOString()
+                });
+            } catch (e) {
+                console.error("Failed to save quiz session:", e);
+            }
+            
+            this.quizSessions.push(this.currentSession);
+            this.currentSession = null;
+            
+            return sessionAnalysis;
+        }
+        
+        analyzeSession() {
+            if (!this.currentSession) return { isSuspicious: false, reason: "" };
+            
+            let isSuspicious = false;
+            let reason = "";
+            
+            const answers = this.currentSession.answers;
+            const totalAnswers = answers.length;
+            const correctAnswers = answers.filter(a => a.isCorrect).length;
+            const accuracy = totalAnswers > 0 ? correctAnswers / totalAnswers : 0;
+            const avgTime = answers.reduce((sum, a) => sum + a.timeSpentMs, 0) / totalAnswers;
+            
+            if (totalAnswers >= 35 && accuracy > 0.94) {
+                isSuspicious = true;
+                reason = `Akurasi ${Math.round(accuracy * 100)}% dalam ${totalAnswers} soal (terlalu tinggi)`;
+            }
+            
+            if (totalAnswers >= 25 && avgTime < 1400) {
+                isSuspicious = true;
+                reason = `Rata-rata waktu menjawab ${Math.round(avgTime)}ms (terlalu cepat)`;
+            }
+            
+            if (totalAnswers >= 20 && avgTime < 1800 && accuracy > 0.88) {
+                isSuspicious = true;
+                reason = `Kombinasi tidak wajar: cepat (${Math.round(avgTime)}ms) + akurat (${Math.round(accuracy * 100)}%)`;
+            }
+            
+            return { isSuspicious, reason };
+        }
+        
+        async triggerBan(reason) {
+            if (!this.username) return;
+            
+            try {
+                const banExpiry = new Date();
+                banExpiry.setDate(banExpiry.getDate() + 1);
+                
+                const userRef = doc(this.db, "users", this.username);
+                await updateDoc(userRef, {
+                    banned: true,
+                    banType: "temporary",
+                    banExpiry: banExpiry.toISOString(),
+                    banReason: `🤖 Pengerjaan abnormal terdeteksi: ${reason} (Ban 1 hari)`,
+                    abnormalDetectionLog: {
+                        reason: reason,
+                        suspicionScore: this.suspicionScore,
+                        timestamp: new Date().toISOString()
+                    }
+                });
+                
+                showToast(`⚠️ Pengerjaan abnormal terdeteksi! Akun dibekukan 1 hari.`, true);
+                
+                if (currentUser && currentUser.username === this.username) {
+                    stopTimer();
+                    if (isQuizActive) stopQuiz();
+                    if (securityCheckInterval) clearInterval(securityCheckInterval);
+                    localStorage.removeItem("mathrupiah_session");
+                    
+                    document.getElementById("banReasonText").innerHTML = `🤖 Pengerjaan abnormal terdeteksi: ${reason}<br><br>Akun dibekukan selama 1 hari.`;
+                    document.getElementById("tempBanInfo").style.display = "block";
+                    document.getElementById("tempBanExpiryText").innerHTML = `Berakhir pada: ${banExpiry.toLocaleString('id-ID')}`;
+                    document.getElementById("bannedModal").classList.add("active");
+                    
+                    document.getElementById("mainContent").classList.add("hidden");
+                    document.getElementById("authContainer").classList.remove("hidden");
+                    currentUser = null;
+                }
+                
+            } catch (e) {
+                console.error("Failed to apply ban:", e);
+            }
+        }
+        
+        resetSuspicionScore() {
+            this.suspicionScore = Math.max(0, this.suspicionScore - 25);
+        }
+        
+        getStats() {
+            return {
+                totalAnswers: this.answerHistory.length,
+                suspicionScore: this.suspicionScore,
+                sessionsCount: this.quizSessions.length,
+                currentSessionAnswers: this.currentSession?.answers.length || 0
+            };
+        }
+    }
+    
+    // ==================== VPN/DNS DETECTION ====================
     const detectVPNandDNS = async () => {
         const detectionResults = {
             isUsingVPN: false,
             isUsingProxy: false,
             isUsingCustomDNS: false,
-            confidence: 0, // 0-100, hanya ban jika confidence tinggi
+            confidence: 0,
             reason: ""
         };
         
         let riskScore = 0;
         const reasons = [];
         
-        // 1. Detect VPN via WebRTC IP leak - hanya jika ada multiple IP addresses
         try {
             const pc = new RTCPeerConnection({ iceServers: [] });
             pc.createDataChannel("");
@@ -875,12 +1483,10 @@
             pc.onicecandidate = (event) => {
                 if (event.candidate) {
                     const candidate = event.candidate.candidate;
-                    // Deteksi relay (TURN) yang biasanya menandakan VPN
                     if (candidate.includes("relay")) {
                         riskScore += 60;
                         reasons.push("WebRTC relay terdeteksi (VPN)");
                     }
-                    // Ekstrak IP
                     const ipMatch = candidate.match(/([0-9]{1,3}\.){3}[0-9]{1,3}/);
                     if (ipMatch) ips.add(ipMatch[0]);
                 }
@@ -889,14 +1495,12 @@
             await new Promise(resolve => setTimeout(resolve, 500));
             pc.close();
             
-            // Jika ada lebih dari 2 IP berbeda, kemungkinan VPN
             if (ips.size > 2) {
                 riskScore += 30;
                 reasons.push("Multiple IP addresses terdeteksi");
             }
         } catch(e) {}
         
-        // 2. Detect VPN via timezone vs IP - hanya menggunakan API yang lebih reliable
         try {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 5000);
@@ -905,36 +1509,18 @@
             
             if (response.ok) {
                 const data = await response.json();
-                const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
                 
-                // Daftar timezone yang umum dan tidak mencurigakan
-                const commonTimezones = [
-                    'Asia/Jakarta', 'Asia/Makassar', 'Asia/Jayapura', 
-                    'Asia/Singapore', 'Asia/Bangkok', 'Asia/Ho_Chi_Minh'
-                ];
-                
-                // Jika timezone sangat berbeda dari lokasi IP (hanya jika confidence tinggi)
-                if (data.timezone && !commonTimezones.includes(data.timezone) && 
-                    !userTimezone.includes(data.timezone.split('/')[1])) {
-                    // Ini hanya indikasi lemah, tidak langsung dianggap VPN
-                    riskScore += 20;
-                    reasons.push("Timezone mismatch (kemungkinan VPN)");
-                }
-                
-                // Deteksi ISP yang dikenal sebagai VPN provider
-                const vpnProviders = ['VPN', 'Proxy', 'M247', 'DigitalOcean', 'Linode', 'Vultr'];
+                const vpnProviders = ['VPN', 'Proxy', 'M247', 'DigitalOcean', 'Linode', 'Vultr', 'AWS', 'Google Cloud'];
                 if (data.org && vpnProviders.some(provider => data.org.includes(provider))) {
-                    riskScore += 50;
+                    riskScore += 55;
                     reasons.push(`ISP terdeteksi sebagai VPN provider: ${data.org}`);
                 }
             }
         } catch(e) {}
         
-        // 3. Deteksi ekstensi VPN yang dikenal - hanya ekstensi yang benar-benar VPN
         const knownVPNExtensions = [
-            "bdcfajkppmheejcknpfbankcgiomemem", // NordVPN
-            "fjoaledfpmneenckfbpdfhkmimnjocfa", // ExpressVPN
-            "hpglfhgfnhbgpjdenjgmdgoeiappafln"   // CyberGhost
+            "bdcfajkppmheejcknpfbankcgiomemem",
+            "fjoaledfpmneenckfbpdfhkmimnjocfa"
         ];
         
         const detectedExtensions = [];
@@ -949,47 +1535,24 @@
             reasons.push("VPN extension terdeteksi");
         }
         
-        // 4. Deteksi proxy via navigator properties - lebih akurat
         try {
-            // Cek WebDriver (automation tools sering digunakan dengan proxy)
             if (navigator.webdriver === true) {
-                riskScore += 40;
+                riskScore += 45;
                 reasons.push("WebDriver terdeteksi");
             }
             
-            // Cek plugins length yang tidak normal
             if (navigator.plugins && navigator.plugins.length === 0) {
-                riskScore += 10;
+                riskScore += 15;
                 reasons.push("No plugins detected (mungkin headless browser)");
             }
         } catch(e) {}
         
-        // 5. Cek DNS melalui multiple methods - hanya ambil yang jelas mencurigakan
-        try {
-            // Cek apakah DNS menggunakan DoH/DoT yang mencurigakan
-            const dnsTestStart = performance.now();
-            await fetch('https://www.google.com/favicon.ico', { 
-                mode: 'no-cors',
-                cache: 'no-store',
-                signal: AbortSignal.timeout(3000)
-            });
-            const dnsTime = performance.now() - dnsTestStart;
-            
-            // DNS terlalu cepat (di bawah 10ms) bisa menandakan DNS cache yang tidak normal
-            // Tapi ini tidak langsung dianggap sebagai pelanggaran
-            if (dnsTime < 5) {
-                // Ini hanya indikasi sangat lemah
-                riskScore += 5;
-            }
-        } catch(e) {}
-        
-        // Tentukan apakah terbukti menggunakan VPN (hanya jika risk score tinggi)
-        const isConfirmedVPN = riskScore >= 70;
+        const isConfirmedVPN = riskScore >= 65;
         
         return {
             isUsingVPN: isConfirmedVPN,
             isUsingProxy: isConfirmedVPN && reasons.some(r => r.includes('proxy')),
-            isUsingCustomDNS: false, // Dinonaktifkan untuk mengurangi false positive
+            isUsingCustomDNS: false,
             confidence: Math.min(riskScore, 100),
             reason: isConfirmedVPN ? reasons.join(', ') : ""
         };
@@ -1042,11 +1605,8 @@
         try {
             const detection = await detectVPNandDNS();
             
-            // Log untuk debugging (opsional, bisa dihapus)
-            console.log(`Security check for ${username}: risk score ${detection.confidence}, VPN: ${detection.isUsingVPN}`);
-            
-            if (detection.isUsingVPN && detection.confidence >= 70) {
-                const reason = detection.reason || "Penggunaan VPN/Proxy terdeteksi dengan confidence tinggi";
+            if (detection.isUsingVPN && detection.confidence >= 65) {
+                const reason = detection.reason || "Penggunaan VPN/Proxy terdeteksi";
                 await applyBanForViolation(username, reason);
                 return { passed: false, reason: reason };
             }
@@ -1059,7 +1619,6 @@
     
     const startPeriodicSecurityCheck = (username) => {
         if (securityCheckInterval) clearInterval(securityCheckInterval);
-        // Kurangi frekuensi pengecekan menjadi setiap 2 menit untuk mengurangi beban
         securityCheckInterval = setInterval(async () => {
             if (currentUser && currentUser.username === username && !currentUser.banned) {
                 const result = await performSecurityCheck(username);
@@ -1068,7 +1627,7 @@
                     securityCheckInterval = null;
                 }
             }
-        }, 120000); // Check every 2 minutes
+        }, 120000);
     };
     
     // ==================== UTILITY FUNCTIONS ====================
@@ -1321,29 +1880,101 @@
         });
         document.getElementById("nextButton").disabled = false;
         updateProfileUI();
+        
+        if (rewardCalculator) {
+            rewardCalculator.updateDailyStats(false);
+        }
+        
+        if (answerDetector && currentUser) {
+            answerDetector.recordAnswer(q.text, false, TIME_LIMIT * 1000);
+        }
+        
+        updateStreakDisplay();
+    };
+    
+    const updateStreakDisplay = () => {
+        const streakElem = document.getElementById("streakDisplay");
+        if (streakElem && rewardCalculator) {
+            const streakInfo = rewardCalculator.getStreakInfo();
+            if (streakInfo.streak > 0) {
+                let displayText = `<i class="fas fa-fire"></i> Streak: ${streakInfo.streak}`;
+                if (streakInfo.comboActive) {
+                    displayText += ` 🔥 COMBO x${streakInfo.comboLevel + 1}`;
+                }
+                streakElem.innerHTML = displayText;
+            } else {
+                streakElem.innerHTML = `<i class="fas fa-fire"></i> Streak: 0`;
+            }
+        }
     };
     
     const handleAnswer = async (selIdx) => {
         if (answered || !currentUser || !isQuizActive) return;
+        
+        const startTime = performance.now();
+        
         stopTimer();
         const q = currentQuestionsList[currentQuestionIndex];
         const isCorrect = (selIdx === q.correct);
         answered = true;
+        
+        const timeSpent = Math.round(performance.now() - startTime);
+        
+        if (!rewardCalculator && currentUser) {
+            rewardCalculator = new AdvancedRewardCalculator();
+        }
+        
         const baseReward = getCurrentReward();
-        const totalReward = baseReward;
+        let finalReward = 0;
         
         if (isCorrect) {
-            const newBalance = currentUser.balance + totalReward;
+            finalReward = rewardCalculator.calculateFinalReward(
+                baseReward, 
+                q, 
+                isCorrect, 
+                timeSpent
+            );
+            rewardCalculator.updateDailyStats(true);
+        } else {
+            rewardCalculator.updateDailyStats(false);
+            rewardCalculator.resetSession();
+        }
+        
+        if (answerDetector && currentUser) {
+            answerDetector.recordAnswer(q.text, isCorrect, timeSpent);
+            
+            if (answerDetector.suspicionScore > 0) {
+                setTimeout(() => answerDetector.resetSuspicionScore(), 30000);
+            }
+        }
+        
+        if (isCorrect) {
+            const newBalance = currentUser.balance + finalReward;
             await updateDoc(doc(db, "users", currentUser.username), { balance: newBalance });
             currentUser.balance = newBalance;
             document.getElementById("balanceAmount").innerText = newBalance.toLocaleString('id-ID');
+            
             const newAns = (currentUser.totalAnswered || 0) + 1;
             const newCor = (currentUser.totalCorrect || 0) + 1;
             await updateDoc(doc(db, "users", currentUser.username), { totalAnswered: newAns, totalCorrect: newCor });
             currentUser.totalAnswered = newAns;
             currentUser.totalCorrect = newCor;
-            document.getElementById("feedbackMsg").innerHTML = `<span style="color:#6ee7b7;">✅ Benar! +Rp ${totalReward.toLocaleString('id-ID')}</span>`;
-            showToast(`+Rp ${totalReward.toLocaleString('id-ID')}`);
+            
+            let rewardDetail = `+Rp ${finalReward.toLocaleString('id-ID')}`;
+            const streakInfo = rewardCalculator.getStreakInfo();
+            if (streakInfo.streak > 0) {
+                rewardDetail += ` (Streak ${streakInfo.streak})`;
+            }
+            if (streakInfo.comboActive) {
+                rewardDetail += ` 🔥 COMBO x${streakInfo.comboLevel + 1}`;
+            }
+            
+            const difficulty = rewardCalculator.analyzeDifficulty(q);
+            if (difficulty === 'hard') rewardDetail += ` ⭐ Hard!`;
+            else if (difficulty === 'medium') rewardDetail += ` 📘 Medium!`;
+            
+            document.getElementById("feedbackMsg").innerHTML = `<span style="color:#6ee7b7;">✅ Benar! ${rewardDetail}</span>`;
+            showToast(rewardDetail);
         } else {
             if (currentUser.balance >= PENALTY_AMOUNT) {
                 const newBalance = currentUser.balance - PENALTY_AMOUNT;
@@ -1371,6 +2002,7 @@
         });
         document.getElementById("nextButton").disabled = false;
         updateProfileUI();
+        updateStreakDisplay();
     };
     
     const renderQuestion = () => {
@@ -1393,6 +2025,17 @@
         if (isQuizActive) startTimer();
         const percent = ((currentQuestionIndex + 1) / currentQuestionsList.length) * 100;
         document.getElementById("progressFill").style.width = `${percent}%`;
+        
+        if (rewardCalculator) {
+            const difficulty = rewardCalculator.analyzeDifficulty(q);
+            let difficultyText = "";
+            if (difficulty === 'hard') difficultyText = " 🔥 Soal Sulit!";
+            else if (difficulty === 'medium') difficultyText = " 📘 Soal Sedang";
+            else difficultyText = " 📗 Soal Mudah";
+            document.getElementById("rewardHint").innerHTML = `Reward: 50-400 (variatif)${difficultyText}`;
+        }
+        
+        updateStreakDisplay();
     };
     
     const nextQuestion = () => {
@@ -1409,23 +2052,53 @@
         if (!currentQuestionsList.length) { showToast("Gagal memuat soal!", true); return; }
         currentQuestionIndex = 0;
         isQuizActive = true;
+        
+        if (rewardCalculator) {
+            rewardCalculator.resetSession();
+        } else if (currentUser) {
+            rewardCalculator = new AdvancedRewardCalculator();
+        }
+        
+        if (answerDetector && currentUser) {
+            answerDetector.startSession(currentLevelKey);
+        }
+        
         document.getElementById("quizContent").style.display = "block";
         const btn = document.getElementById("playQuizBtn");
         btn.innerHTML = '<i class="fas fa-stop"></i> STOP - Hentikan Kuis';
         btn.classList.add("stop-mode");
         renderQuestion();
-        showToast(`Kuis dimulai! Reward +Rp${getCurrentReward()}/soal | Salah -Rp${PENALTY_AMOUNT}`);
+        showToast(`Kuis dimulai! Reward bervariasi: 50-400 Rupiah | Bonus streak & combo! | Salah -Rp${PENALTY_AMOUNT}`);
     };
     
     const stopQuiz = () => {
         if (!isQuizActive) return;
         isQuizActive = false;
         stopTimer();
+        
+        if (answerDetector && currentUser) {
+            answerDetector.endSession().then(analysis => {
+                if (analysis && analysis.isSuspicious) {
+                    console.log(`Session ended with suspicious activity: ${analysis.reason}`);
+                }
+            });
+        }
+        
+        if (rewardCalculator && rewardCalculator.dailyAnswered > 0) {
+            const dailyStats = rewardCalculator.getDailyStats();
+            console.log(`Session stats: ${dailyStats.answered} soal, akurasi ${dailyStats.accuracy}%`);
+            const streakInfo = rewardCalculator.getStreakInfo();
+            if (streakInfo.maxStreak > 0) {
+                showToast(`✨ Streak terbaik: ${streakInfo.maxStreak} ✨`);
+            }
+        }
+        
         document.getElementById("quizContent").style.display = "none";
         const btn = document.getElementById("playQuizBtn");
         btn.innerHTML = '<i class="fas fa-play"></i> MULAI KUIS & EARN';
         btn.classList.remove("stop-mode");
         showToast("Kuis dihentikan");
+        updateStreakDisplay();
     };
     
     const toggleQuiz = () => {
@@ -1447,8 +2120,10 @@
                 currentLevelKey = `${currentJenjang}${currentKelas}`;
                 updateKelasButtons();
                 const names = { sd: "SD", smp: "SMP", smk: "SMK" };
-                document.getElementById("selectedLevelName").innerHTML = `${names[currentJenjang]} Kelas ${currentKelas} (+Rp${getCurrentReward()}/soal) <span class="penalty-badge"><i class="fas fa-minus-circle"></i> Salah -Rp${PENALTY_AMOUNT}</span>`;
+                document.getElementById("selectedLevelName").innerHTML = `${names[currentJenjang]} Kelas ${currentKelas} (Reward: 50-400/soal) <span class="penalty-badge"><i class="fas fa-minus-circle"></i> Salah -Rp${PENALTY_AMOUNT}</span> <span class="streak-badge" id="streakDisplay"><i class="fas fa-fire"></i> Streak: 0</span>`;
                 showToast(`Kelas ${currentKelas} dipilih`);
+                if (rewardCalculator) rewardCalculator.resetSession();
+                updateStreakDisplay();
             };
         });
     };
@@ -1466,8 +2141,10 @@
         });
         updateKelasButtons();
         const names = { sd: "SD", smp: "SMP", smk: "SMK" };
-        document.getElementById("selectedLevelName").innerHTML = `${names[currentJenjang]} Kelas ${currentKelas} (+Rp${getCurrentReward()}/soal) <span class="penalty-badge"><i class="fas fa-minus-circle"></i> Salah -Rp${PENALTY_AMOUNT}</span>`;
+        document.getElementById("selectedLevelName").innerHTML = `${names[currentJenjang]} Kelas ${currentKelas} (Reward: 50-400/soal) <span class="penalty-badge"><i class="fas fa-minus-circle"></i> Salah -Rp${PENALTY_AMOUNT}</span> <span class="streak-badge" id="streakDisplay"><i class="fas fa-fire"></i> Streak: 0</span>`;
         showToast(`Jenjang ${jenjang.toUpperCase()} dipilih`);
+        if (rewardCalculator) rewardCalculator.resetSession();
+        updateStreakDisplay();
     };
     
     const updateProfileUI = () => {
@@ -1606,6 +2283,30 @@
         document.getElementById("userNameDisplay").innerText = currentUser.fullname || currentUser.username;
         document.getElementById("balanceAmount").innerText = (currentUser.balance || 0).toLocaleString('id-ID');
         
+        if (currentUser && !answerDetector) {
+            answerDetector = new AbnormalAnswerDetector(currentUser.username, db);
+            
+            try {
+                const sessionsQuery = query(
+                    collection(db, "quiz_sessions"), 
+                    where("username", "==", currentUser.username),
+                    where("timestamp", ">", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
+                );
+                const sessionsSnap = await getDocs(sessionsQuery);
+                sessionsSnap.forEach(doc => {
+                    if (answerDetector) {
+                        answerDetector.quizSessions.push(doc.data());
+                    }
+                });
+            } catch (e) {
+                console.error("Failed to load previous sessions:", e);
+            }
+        }
+        
+        if (!rewardCalculator && currentUser) {
+            rewardCalculator = new AdvancedRewardCalculator();
+        }
+        
         startPeriodicSecurityCheck(currentUser.username);
         
         document.getElementById("logoutBtn").onclick = () => {
@@ -1614,6 +2315,8 @@
             if (securityCheckInterval) clearInterval(securityCheckInterval);
             localStorage.removeItem("mathrupiah_session");
             currentUser = null;
+            answerDetector = null;
+            rewardCalculator = null;
             document.getElementById("mainContent").classList.add("hidden");
             document.getElementById("authContainer").classList.remove("hidden");
             showToast("Logout berhasil");
@@ -1653,6 +2356,7 @@
         updateKelasButtons();
         showSection("quiz");
         updateProfileUI();
+        updateStreakDisplay();
         
         if (!window.welcomeShown) {
             setTimeout(() => {
@@ -1746,6 +2450,25 @@
         document.getElementById("chromeBlockPage").style.display = "flex";
         document.getElementById("mainContent").classList.add("hidden");
         document.getElementById("authContainer").classList.add("hidden");
+    };
+    
+    setInterval(() => {
+        if (answerDetector && answerDetector.suspicionScore >= answerDetector.BAN_THRESHOLD) {
+            answerDetector.triggerBan("Skor kecurigaan melebihi batas");
+        }
+    }, 10000);
+    
+    window.getAbnormalDetectionStats = function() {
+        if (!answerDetector) return null;
+        return answerDetector.getStats();
+    };
+    
+    window.getRewardStats = function() {
+        if (!rewardCalculator) return null;
+        return {
+            streak: rewardCalculator.getStreakInfo(),
+            daily: rewardCalculator.getDailyStats()
+        };
     };
     
     const init = async () => {

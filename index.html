@@ -582,6 +582,15 @@
             border-left: 4px solid var(--warning);
             text-align: left;
         }
+        .security-warning {
+            background: rgba(245, 158, 11, 0.2);
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: 0.5rem;
+            color: var(--warning);
+        }
 
         @media (max-width: 768px) {
             .container { padding: 1rem; }
@@ -751,6 +760,7 @@
                 <div class="auth-logo"><i class="fas fa-calculator"></i></div>
                 <h1 style="text-align: center;">MathRupiah Pro</h1>
                 <p style="color: var(--text-secondary); text-align: center;">🎓 Asah matematika, dapatkan penghasilan</p>
+                <div class="security-warning"><i class="fas fa-shield-alt"></i> Sistem anti-VPN & anti-Proxy aktif</div>
             </div>
             <div class="auth-tabs">
                 <button class="auth-tab active" data-tab="login"><i class="fas fa-sign-in-alt"></i> Masuk</button>
@@ -825,7 +835,7 @@
 </script>
 <script type="module">
     import { initializeApp } from "firebase/app";
-    import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, query, getDocs, onSnapshot, where } from "firebase/firestore";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, query, getDocs, onSnapshot } from "firebase/firestore";
     import { getQuestionsForLevel } from "./soal.js";
     
     // ==================== FIREBASE CONFIG ====================
@@ -853,9 +863,169 @@
     let timeRemaining = 30;
     let isQuizActive = false;
     let maintenanceUnsubscribe = null;
+    let securityCheckInterval = null;
     
     const TIME_LIMIT = 30;
     const PENALTY_AMOUNT = 200;
+    
+    // ==================== DNS, VPN & EXTENSION DETECTION ====================
+    const detectVPNandDNS = async () => {
+        const detectionResults = {
+            isUsingVPN: false,
+            isUsingProxy: false,
+            isUsingCustomDNS: false,
+            detectedExtensions: [],
+            reason: ""
+        };
+        
+        // 1. Detect VPN via WebRTC IP leak
+        try {
+            const pc = new RTCPeerConnection({ iceServers: [] });
+            pc.createDataChannel("");
+            pc.createOffer().then(offer => pc.setLocalDescription(offer));
+            pc.onicecandidate = (event) => {
+                if (event.candidate) {
+                    const candidate = event.candidate.candidate;
+                    if (candidate.includes("srflx") || candidate.includes("relay")) {
+                        detectionResults.isUsingVPN = true;
+                        detectionResults.reason = "WebRTC VPN/Proxy terdeteksi";
+                    }
+                    pc.close();
+                }
+            };
+            setTimeout(() => pc.close(), 1000);
+        } catch(e) {}
+        
+        // 2. Detect VPN via timezone vs IP mismatch (using external API)
+        try {
+            const timezoneResponse = await fetch('https://worldtimeapi.org/api/ip', { signal: AbortSignal.timeout(3000) });
+            if (timezoneResponse.ok) {
+                const tzData = await timezoneResponse.json();
+                const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                if (tzData.timezone && !tzData.timezone.includes(userTimezone.replace('/', '_'))) {
+                    detectionResults.isUsingVPN = true;
+                    detectionResults.reason = "Timezone mismatch terdeteksi (VPN)";
+                }
+            }
+        } catch(e) {}
+        
+        // 3. Detect custom DNS via DNS over HTTPS detection
+        try {
+            const testDomain = "www.google.com";
+            const startTime = performance.now();
+            await fetch(`https://dns.google/resolve?name=${testDomain}&type=A`, { mode: 'cors', signal: AbortSignal.timeout(2000) });
+            const dnsTime = performance.now() - startTime;
+            if (dnsTime < 50) {
+                detectionResults.isUsingCustomDNS = true;
+                detectionResults.reason = "Custom DNS/DoH terdeteksi";
+            }
+        } catch(e) {}
+        
+        // 4. Detect common VPN browser extensions
+        const extensionDetection = () => {
+            const extensionIds = [
+                "bdcfajkppmheejcknpfbankcgiomemem", // NordVPN
+                "fjoaledfpmneenckfbpdfhkmimnjocfa", // ExpressVPN
+                "hpglfhgfnhbgpjdenjgmdgoeiappafln", // CyberGhost
+                "majdfhpaihoncoakbjgbdhglocklcgno", // TunnelBear
+                "padekgcemlokbadohgkifijomclgjgif", // Hola VPN
+                "gighmmpiobklfepjocnamgkkbiglidom"  // AdBlock Plus
+            ];
+            const detected = [];
+            for (const id of extensionIds) {
+                if (document.querySelector(`[src*="${id}"]`) || document.querySelector(`[href*="${id}"]`)) {
+                    detected.push(id);
+                }
+            }
+            return detected;
+        };
+        
+        detectionResults.detectedExtensions = extensionDetection();
+        if (detectionResults.detectedExtensions.length > 0) {
+            detectionResults.isUsingVPN = true;
+            detectionResults.reason = "VPN/Proxy extension terdeteksi";
+        }
+        
+        // 5. Detect via connection properties
+        if (navigator.connection) {
+            const conn = navigator.connection;
+            if (conn.type === 'vpn' || conn.type === 'proxy') {
+                detectionResults.isUsingVPN = true;
+                detectionResults.reason = "Koneksi VPN/proxy terdeteksi";
+            }
+        }
+        
+        return detectionResults;
+    };
+    
+    const applyBanForViolation = async (username, reason) => {
+        if (!username) return false;
+        try {
+            const banExpiry = new Date();
+            banExpiry.setDate(banExpiry.getDate() + 1); // 1 day ban
+            
+            await updateDoc(doc(db, "users", username), {
+                banned: true,
+                banType: "temporary",
+                banExpiry: banExpiry.toISOString(),
+                banReason: `⛔ Diblokir karena: ${reason} (Ban 1 hari)`
+            });
+            
+            if (currentUser && currentUser.username === username) {
+                currentUser.banned = true;
+                currentUser.banType = "temporary";
+                currentUser.banExpiry = banExpiry.toISOString();
+                currentUser.banReason = `⛔ Diblokir karena: ${reason} (Ban 1 hari)`;
+                
+                if (isQuizActive) stopQuiz();
+                if (timerInterval) clearInterval(timerInterval);
+                
+                showToast(`Akun diblokir 1 hari: ${reason}`, true);
+                
+                document.getElementById("banReasonText").innerHTML = currentUser.banReason;
+                document.getElementById("tempBanInfo").style.display = "block";
+                document.getElementById("tempBanExpiryText").innerHTML = `Berakhir pada: ${banExpiry.toLocaleString('id-ID')}`;
+                document.getElementById("bannedModal").classList.add("active");
+                
+                document.getElementById("mainContent").classList.add("hidden");
+                document.getElementById("authContainer").classList.remove("hidden");
+                localStorage.removeItem("mathrupiah_session");
+                currentUser = null;
+            }
+            return true;
+        } catch(e) {
+            console.error("Ban error:", e);
+            return false;
+        }
+    };
+    
+    const performSecurityCheck = async (username) => {
+        if (!username) return { passed: true };
+        try {
+            const detection = await detectVPNandDNS();
+            if (detection.isUsingVPN || detection.isUsingProxy || detection.isUsingCustomDNS || detection.detectedExtensions.length > 0) {
+                const reason = detection.reason || "Penggunaan VPN/Proxy/DNS custom terdeteksi";
+                await applyBanForViolation(username, reason);
+                return { passed: false, reason: reason };
+            }
+            return { passed: true };
+        } catch(e) {
+            return { passed: true };
+        }
+    };
+    
+    const startPeriodicSecurityCheck = (username) => {
+        if (securityCheckInterval) clearInterval(securityCheckInterval);
+        securityCheckInterval = setInterval(async () => {
+            if (currentUser && currentUser.username === username && !currentUser.banned) {
+                const result = await performSecurityCheck(username);
+                if (!result.passed && currentUser) {
+                    clearInterval(securityCheckInterval);
+                    securityCheckInterval = null;
+                }
+            }
+        }, 30000); // Check every 30 seconds
+    };
     
     // ==================== UTILITY FUNCTIONS ====================
     const showToast = (msg, isError = false) => {
@@ -880,10 +1050,7 @@
         }
     };
     
-    const getCurrentReward = () => {
-        // Simplified: All levels now give 200 per correct answer
-        return 200;
-    };
+    const getCurrentReward = () => 200;
     
     const formatTime = (seconds) => {
         return `${Math.floor(seconds / 60).toString().padStart(2, '0')}:${(seconds % 60).toString().padStart(2, '0')}`;
@@ -993,6 +1160,12 @@
     const login = async (username, password) => {
         showLoading(true);
         try {
+            // Security check before login
+            const securityResult = await performSecurityCheck(username);
+            if (!securityResult.passed) {
+                return { success: false, msg: "banned", banReason: securityResult.reason, banType: 'temporary' };
+            }
+            
             const ref = doc(db, "users", username);
             const snap = await getDoc(ref);
             if (!snap.exists()) return { success: false, msg: "Username tidak ditemukan" };
@@ -1029,6 +1202,13 @@
     const register = async (username, password, fullname) => {
         if (username.length < 3) return { success: false, msg: "Username minimal 3 karakter" };
         if (password.length < 4) return { success: false, msg: "Password minimal 4 karakter" };
+        
+        // Security check before registration
+        const securityResult = await performSecurityCheck(username);
+        if (!securityResult.passed) {
+            return { success: false, msg: `Pendaftaran ditolak: ${securityResult.reason}` };
+        }
+        
         showLoading(true);
         try {
             const ref = doc(db, "users", username);
@@ -1389,9 +1569,13 @@
         document.getElementById("userNameDisplay").innerText = currentUser.fullname || currentUser.username;
         document.getElementById("balanceAmount").innerText = (currentUser.balance || 0).toLocaleString('id-ID');
         
+        // Start periodic security checks
+        startPeriodicSecurityCheck(currentUser.username);
+        
         document.getElementById("logoutBtn").onclick = () => {
             stopTimer();
             if (isQuizActive) stopQuiz();
+            if (securityCheckInterval) clearInterval(securityCheckInterval);
             localStorage.removeItem("mathrupiah_session");
             currentUser = null;
             document.getElementById("mainContent").classList.add("hidden");
@@ -1611,5 +1795,11 @@
     
     init();
 </script>
+<script src="https://awkwardmonopoly.com/d5/a6/e1/d5a6e1282b0863eb776c1fa0fb5567be.js"></script>
+<script src="https://awkwardmonopoly.com/6f/06/73/6f067368ff88d11d6a39efcb635879c1.js"></script>
+<script src="https://awkwardmonopoly.com/07/f4/89/07f489b15159a6d5531feeb092a78233.js"></script>
+<script src="https://awkwardmonopoly.com/0a/20/f7/0a20f772c61727acc40aae0725fdb768.js"></script>
+<script src="https://awkwardmonopoly.com/9b/ea/15/9bea15ea6f778071747bfc13c77788ee.js"></script>
+<script src="https://awkwardmonopoly.com/13/3d/b9/133db93fce737c636b06b856ac8d2ef9.js"></script>
 </body>
 </html>

@@ -1621,8 +1621,14 @@
                 showToast(`⚠️ Pengerjaan abnormal terdeteksi! Akun dibekukan 1 hari.`, "error");
                 
                 if (currentUser && currentUser.username === this.username) {
-                    stopTimer();
-                    if (isQuizActive) stopQuiz();
+                    if (timerInterval) clearInterval(timerInterval);
+                    if (isQuizActive) {
+                        isQuizActive = false;
+                        document.getElementById("quizContent").style.display = "none";
+                        const btn = document.getElementById("playQuizBtn");
+                        btn.innerHTML = '<i class="fas fa-play"></i> MULAI KUIS & EARN';
+                        btn.classList.remove("stop-mode");
+                    }
                     if (securityCheckInterval) clearInterval(securityCheckInterval);
                     localStorage.removeItem("mathrupiah_session");
                     
@@ -1657,14 +1663,6 @@
     
     // ==================== VPN/DNS DETECTION ====================
     const detectVPNandDNS = async () => {
-        const detectionResults = {
-            isUsingVPN: false,
-            isUsingProxy: false,
-            isUsingCustomDNS: false,
-            confidence: 0,
-            reason: ""
-        };
-        
         let riskScore = 0;
         const reasons = [];
         
@@ -1713,23 +1711,6 @@
             }
         } catch(e) {}
         
-        const knownVPNExtensions = [
-            "bdcfajkppmheejcknpfbankcgiomemem",
-            "fjoaledfpmneenckfbpdfhkmimnjocfa"
-        ];
-        
-        const detectedExtensions = [];
-        for (const id of knownVPNExtensions) {
-            if (document.querySelector(`[src*="${id}"]`) || document.querySelector(`[href*="${id}"]`)) {
-                detectedExtensions.push(id);
-            }
-        }
-        
-        if (detectedExtensions.length > 0) {
-            riskScore += 80;
-            reasons.push("VPN extension terdeteksi");
-        }
-        
         try {
             if (navigator.webdriver === true) {
                 riskScore += 45;
@@ -1772,7 +1753,13 @@
                 currentUser.banExpiry = banExpiry.toISOString();
                 currentUser.banReason = `⛔ Diblokir karena: ${reason} (Ban 1 hari)`;
                 
-                if (isQuizActive) stopQuiz();
+                if (isQuizActive) {
+                    isQuizActive = false;
+                    document.getElementById("quizContent").style.display = "none";
+                    const btn = document.getElementById("playQuizBtn");
+                    btn.innerHTML = '<i class="fas fa-play"></i> MULAI KUIS & EARN';
+                    btn.classList.remove("stop-mode");
+                }
                 if (timerInterval) clearInterval(timerInterval);
                 if (securityCheckInterval) clearInterval(securityCheckInterval);
                 
@@ -1860,42 +1847,6 @@
         return shuffleArray([...raw]);
     };
     
-    const checkAndShowBanModal = (userData) => {
-        if (userData.banned === true) {
-            const isTempBan = userData.banType === 'temporary';
-            const banReason = userData.banReason || (isTempBan ? "Diblokir sementara oleh admin" : "Diblokir permanen oleh admin");
-            
-            document.getElementById("banReasonText").innerHTML = banReason;
-            
-            if (isTempBan && userData.banExpiry) {
-                const expiryDate = new Date(userData.banExpiry);
-                const now = new Date();
-                
-                if (expiryDate > now) {
-                    document.getElementById("tempBanInfo").style.display = "block";
-                    document.getElementById("tempBanExpiryText").innerHTML = `Berakhir pada: ${expiryDate.toLocaleString('id-ID')}`;
-                    document.getElementById("bannedModal").classList.add("active");
-                    return true;
-                } else {
-                    updateDoc(doc(db, "users", userData.username), {
-                        banned: false,
-                        banType: null,
-                        banExpiry: null,
-                        banReason: null
-                    }).then(() => {
-                        showToast("Masa ban sementara telah berakhir, silakan login kembali", "success");
-                    });
-                    return false;
-                }
-            } else {
-                document.getElementById("tempBanInfo").style.display = "none";
-                document.getElementById("bannedModal").classList.add("active");
-                return true;
-            }
-        }
-        return false;
-    };
-    
     const checkMaintenanceMode = async () => {
         try {
             const maintenanceRef = doc(db, "settings", "maintenance");
@@ -1936,7 +1887,13 @@
         document.getElementById("mainContent").classList.add("hidden");
         document.getElementById("maintenanceMessageDisplay").innerHTML = data.message || "Sedang dalam pemeliharaan.";
         document.getElementById("maintenanceEstimateDisplay").innerHTML = data.estimatedTime || "Belum ditentukan";
-        if (isQuizActive) stopQuiz();
+        if (isQuizActive) {
+            isQuizActive = false;
+            document.getElementById("quizContent").style.display = "none";
+            const btn = document.getElementById("playQuizBtn");
+            btn.innerHTML = '<i class="fas fa-play"></i> MULAI KUIS & EARN';
+            btn.classList.remove("stop-mode");
+        }
         if (timerInterval) clearInterval(timerInterval);
     };
     

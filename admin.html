@@ -64,7 +64,6 @@
             padding: 0.75rem;
         }
         
-        /* HEADER RESPONSIF */
         .admin-header {
             display: flex;
             justify-content: space-between;
@@ -117,6 +116,26 @@
             margin-top: 2px;
         }
         
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(99, 102, 241, 0.1);
+            padding: 5px 12px;
+            border-radius: 2rem;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+        
+        .admin-email {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+        
+        .admin-email i {
+            margin-right: 4px;
+            color: var(--primary-light);
+        }
+        
         .logout-btn {
             background: rgba(239, 68, 68, 0.15);
             border: 1px solid rgba(239, 68, 68, 0.3);
@@ -129,7 +148,11 @@
             white-space: nowrap;
         }
         
-        /* STATS GRID RESPONSIF */
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+            transform: translateY(-1px);
+        }
+        
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -188,7 +211,6 @@
             word-break: break-word;
         }
         
-        /* TABS - HORIZONTAL SCROLL UNTUK HP */
         .tabs {
             display: flex;
             gap: 0.4rem;
@@ -234,7 +256,6 @@
             box-shadow: 0 4px 15px var(--primary-glow);
         }
         
-        /* CARD */
         .card {
             background: rgba(26, 26, 46, 0.8);
             backdrop-filter: blur(10px);
@@ -290,7 +311,6 @@
             box-shadow: 0 0 0 2px var(--primary-glow);
         }
         
-        /* TABLE RESPONSIF */
         .table-wrapper {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
@@ -323,7 +343,6 @@
             background: rgba(99, 102, 241, 0.05);
         }
         
-        /* FILTER BUTTONS */
         .filter-group {
             padding: 0.75rem 1rem;
             display: flex;
@@ -349,7 +368,6 @@
             border-color: transparent;
         }
         
-        /* BADGES */
         .status-badge {
             display: inline-flex;
             align-items: center;
@@ -432,7 +450,6 @@
             box-shadow: 0 5px 20px var(--primary-glow);
         }
         
-        /* LEADERBOARD RESPONSIF */
         .leaderboard-container {
             display: grid;
             grid-template-columns: 1fr;
@@ -538,7 +555,6 @@
             flex-shrink: 0;
         }
         
-        /* CHARTS RESPONSIF */
         .charts-container {
             display: grid;
             grid-template-columns: 1fr;
@@ -607,7 +623,6 @@
             font-size: 0.7rem;
         }
         
-        /* MODAL RESPONSIF */
         .modal {
             position: fixed;
             inset: 0;
@@ -717,107 +732,147 @@
             font-size: 0.8rem;
         }
         
-        .toast {
+        /* ========== ENHANCED TOAST STYLES ========== */
+        .toast-container {
             position: fixed;
-            bottom: 20px;
+            bottom: 24px;
             left: 50%;
             transform: translateX(-50%);
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            padding: 10px 18px;
-            border-radius: 0.75rem;
-            font-weight: 600;
             z-index: 1100;
-            transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
             pointer-events: none;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-            font-size: 0.75rem;
-            text-align: center;
-            max-width: 90%;
-            white-space: normal;
         }
         
-        /* MEDIA QUERIES UNTUK LAYAR LEBIH BESAR */
+        .toast {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #1e1e32, #16162a);
+            backdrop-filter: blur(12px);
+            padding: 12px 20px;
+            border-radius: 1rem;
+            font-weight: 500;
+            font-size: 0.8rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: translateY(30px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            pointer-events: none;
+            max-width: 90%;
+            min-width: 200px;
+            white-space: nowrap;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .toast.hide {
+            transform: translateY(30px);
+            opacity: 0;
+        }
+        
+        .toast-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        
+        .toast-success .toast-icon {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+        }
+        
+        .toast-error .toast-icon {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+        }
+        
+        .toast-info .toast-icon {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary-light);
+        }
+        
+        .toast-warning .toast-icon {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+        }
+        
+        .toast-message {
+            flex: 1;
+            color: var(--text-primary);
+            white-space: normal;
+            word-break: break-word;
+            line-height: 1.4;
+        }
+        
+        .toast-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            border-radius: 0 0 0 0.5rem;
+            animation: progressShrink 3s linear forwards;
+        }
+        
+        .toast-success .toast-progress {
+            background: linear-gradient(90deg, var(--success), #34d399);
+        }
+        
+        .toast-error .toast-progress {
+            background: linear-gradient(90deg, var(--danger), #f87171);
+        }
+        
+        .toast-warning .toast-progress {
+            background: linear-gradient(90deg, var(--warning), #fbbf24);
+        }
+        
+        @keyframes progressShrink {
+            from { width: 100%; }
+            to { width: 0%; }
+        }
+        
         @media (min-width: 640px) {
-            .container {
-                padding: 1rem;
-            }
-            .stats-grid {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 1rem;
-            }
-            .leaderboard-container {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .charts-container {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .form-row {
-                grid-template-columns: 1fr 1fr;
-                gap: 1rem;
-            }
-            .modal-content {
-                max-width: 550px;
-                width: 90%;
-            }
-            .stat-number {
-                font-size: 1.5rem;
-            }
-            .tab-btn {
-                padding: 10px 20px;
-                font-size: 0.8rem;
-            }
+            .container { padding: 1rem; }
+            .stats-grid { grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+            .leaderboard-container { grid-template-columns: repeat(2, 1fr); }
+            .charts-container { grid-template-columns: repeat(2, 1fr); }
+            .form-row { grid-template-columns: 1fr 1fr; gap: 1rem; }
+            .modal-content { max-width: 550px; width: 90%; }
+            .stat-number { font-size: 1.5rem; }
+            .tab-btn { padding: 10px 20px; font-size: 0.8rem; }
+            .toast { padding: 12px 24px; font-size: 0.85rem; min-width: 280px; }
         }
         
         @media (min-width: 1024px) {
-            .leaderboard-container {
-                grid-template-columns: repeat(4, 1fr);
-            }
-            .stat-number {
-                font-size: 1.8rem;
-            }
+            .leaderboard-container { grid-template-columns: repeat(4, 1fr); }
+            .stat-number { font-size: 1.8rem; }
         }
         
-        /* PERBAIKAN UNTUK HP SANGAT KECIL */
         @media (max-width: 480px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 0.6rem;
-            }
-            .stat-card {
-                padding: 0.7rem;
-            }
-            .stat-icon {
-                width: 30px;
-                height: 30px;
-                font-size: 0.9rem;
-            }
-            .stat-number {
-                font-size: 1rem;
-            }
-            .stat-title {
-                font-size: 0.55rem;
-            }
-            .card-header {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .search-box {
-                width: 100%;
-            }
-            .leaderboard-score {
-                min-width: 70px;
-                font-size: 0.7rem;
-            }
-            .leaderboard-name {
-                font-size: 0.7rem;
-            }
-            .btn-icon {
-                padding: 4px;
-            }
-            th, td {
-                padding: 0.5rem 0.3rem;
-                font-size: 0.65rem;
-            }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
+            .stat-card { padding: 0.7rem; }
+            .stat-icon { width: 30px; height: 30px; font-size: 0.9rem; }
+            .stat-number { font-size: 1rem; }
+            .stat-title { font-size: 0.55rem; }
+            .card-header { flex-direction: column; align-items: stretch; }
+            .search-box { width: 100%; }
+            .leaderboard-score { min-width: 70px; font-size: 0.7rem; }
+            .leaderboard-name { font-size: 0.7rem; }
+            .btn-icon { padding: 4px; }
+            th, td { padding: 0.5rem 0.3rem; font-size: 0.65rem; }
+            .toast { padding: 10px 16px; font-size: 0.75rem; min-width: 220px; white-space: normal; }
         }
     </style>
 </head>
@@ -828,7 +883,12 @@
             <div class="logo-icon"><i class="fas fa-chalkboard-user"></i></div>
             <div><h1>MathRupiah Pro</h1><span class="badge"><i class="fas fa-shield-alt"></i> ADMIN</span></div>
         </div>
-        <button id="logoutAdminBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Keluar</button>
+        <div class="admin-info">
+            <div class="admin-email" id="adminEmailDisplay">
+                <i class="fas fa-envelope"></i> <span id="adminEmail">Loading...</span>
+            </div>
+            <button id="logoutAdminBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Keluar</button>
+        </div>
     </div>
 
     <div class="stats-grid">
@@ -846,7 +906,6 @@
         <button class="tab-btn" data-tab="maintenance"><i class="fas fa-tools"></i> Maintenance</button>
     </div>
 
-    <!-- TAB USERS -->
     <div id="tabUsers" class="tab-content">
         <div class="card">
             <div class="card-header">
@@ -870,7 +929,6 @@
         </div>
     </div>
 
-    <!-- TAB LEADERBOARD -->
     <div id="tabLeaderboard" class="tab-content" style="display: none;">
         <div class="leaderboard-container">
             <div class="leaderboard-card"><div class="leaderboard-header"><h3><i class="fas fa-coins" style="color: var(--gold);"></i> Peringkat Saldo</h3></div><div id="leaderboardBalanceList"></div></div>
@@ -880,20 +938,21 @@
         </div>
     </div>
 
-    <!-- TAB WITHDRAWALS -->
     <div id="tabWithdrawals" class="tab-content" style="display: none;">
         <div class="card">
             <div class="card-header"><h2><i class="fas fa-clock"></i> Permintaan Penarikan</h2><div class="search-box"><i class="fas fa-search"></i><input type="text" id="searchWithdraw" placeholder="Filter username"></div></div>
             <div class="table-wrapper">
-                <table>
-                    <thead><tr><th>Username</th><th>Jumlah</th><th>Metode</th><th>Rekening</th><th>Tanggal</th><th>Status</th><th>Aksi</th></tr></thead>
+                 <table>
+                    <thead>
+                        <tr><th>Username</th><th>Jumlah</th><th>Metode</th><th>Rekening</th><th>Tanggal</th><th>Status</th><th>Aksi</th>
+                        </tr>
+                    </thead>
                     <tbody id="withdrawList"></tbody>
-                </table>
+                 </table>
             </div>
         </div>
     </div>
 
-    <!-- TAB WITHDRAW STATISTICS -->
     <div id="tabWithdrawStats" class="tab-content" style="display: none;">
         <div class="card">
             <div class="card-header">
@@ -928,7 +987,6 @@
         </div>
     </div>
 
-    <!-- TAB MAINTENANCE -->
     <div id="tabMaintenance" class="tab-content" style="display: none;">
         <div class="card">
             <div class="card-header"><h2><i class="fas fa-wrench"></i> Mode Pemeliharaan</h2></div>
@@ -952,7 +1010,9 @@
     </div>
 </div>
 
-<!-- MODALS -->
+<!-- Enhanced Toast Container -->
+<div id="toastContainer" class="toast-container"></div>
+
 <div id="editProfileModal" class="modal">
     <div class="modal-content">
         <h3 style="margin-bottom: 0.75rem;"><i class="fas fa-user-edit"></i> Edit Profil</h3>
@@ -1048,19 +1108,19 @@
     </div>
 </div>
 
-<div id="toastMsg" class="toast" style="opacity: 0;"></div>
-
 <script type="importmap">
     {
         "imports": {
             "firebase/app": "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js",
-            "firebase/firestore": "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js"
+            "firebase/firestore": "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js",
+            "firebase/auth": "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js"
         }
     }
 </script>
 <script type="module">
     import { initializeApp } from "firebase/app";
-    import { getFirestore, collection, getDocs, doc, updateDoc, query, orderBy, getDoc, setDoc, onSnapshot, where } from "firebase/firestore";
+    import { getFirestore, collection, getDocs, doc, updateDoc, query, getDoc, setDoc, onSnapshot, where } from "firebase/firestore";
+    import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBCaLABpKTIQhPJcJKN8dXSrk_cCLtTmQE",
@@ -1073,8 +1133,78 @@
     
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const ADMIN_CRED = { username: "admin", password: "admin123" };
+    const auth = getAuth(app);
     
+    // ==================== ENHANCED TOAST SYSTEM ====================
+    function showToast(message, type = 'success', duration = 3000) {
+        const container = document.getElementById('toastContainer');
+        if (!container) return;
+        
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        
+        let iconHtml = '';
+        switch(type) {
+            case 'success':
+                iconHtml = '<i class="fas fa-check-circle"></i>';
+                break;
+            case 'error':
+                iconHtml = '<i class="fas fa-exclamation-circle"></i>';
+                break;
+            case 'warning':
+                iconHtml = '<i class="fas fa-exclamation-triangle"></i>';
+                break;
+            default:
+                iconHtml = '<i class="fas fa-info-circle"></i>';
+        }
+        
+        toast.innerHTML = `
+            <div class="toast-icon">${iconHtml}</div>
+            <div class="toast-message">${escapeHtml(message)}</div>
+            <div class="toast-progress"></div>
+        `;
+        
+        container.appendChild(toast);
+        
+        // Trigger animation
+        setTimeout(() => toast.classList.add('show'), 10);
+        
+        // Auto remove after duration
+        setTimeout(() => {
+            toast.classList.remove('show');
+            toast.classList.add('hide');
+            setTimeout(() => toast.remove(), 300);
+        }, duration);
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+    
+    // ==================== AUTHENTICATION CHECK ====================
+    let currentAdminUser = null;
+    
+    onAuthStateChanged(auth, (user) => {
+        if (!user) {
+            console.log('No user logged in, redirecting to login...');
+            window.location.href = 'login.html';
+        } else {
+            currentAdminUser = user;
+            console.log('Admin logged in:', user.email);
+            
+            const adminEmailSpan = document.getElementById('adminEmail');
+            if (adminEmailSpan) {
+                adminEmailSpan.innerText = user.email;
+            }
+            
+            initDashboard();
+        }
+    });
+    
+    // ==================== GLOBAL VARIABLES ====================
     let allUsers = [];
     let allWithdrawals = [];
     let currentFilter = "all";
@@ -1086,32 +1216,7 @@
     
     let statusPieChart, statusBarChart, trendLineChart, methodPieChart = null;
     
-    function showToast(msg, isError = false) {
-        const toast = document.getElementById("toastMsg");
-        toast.style.backgroundColor = isError ? "#dc2626" : "#6366f1";
-        toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-triangle' : 'fa-circle-check'}"></i> ${msg}`;
-        toast.style.opacity = "1";
-        setTimeout(() => toast.style.opacity = "0", 3000);
-    }
-    
-    function promptAdminLogin() {
-        const user = prompt("Masukkan username admin:");
-        if (user !== ADMIN_CRED.username) { alert("Username salah!"); return false; }
-        const pass = prompt("Masukkan password:");
-        if (pass !== ADMIN_CRED.password) { alert("Password salah!"); return false; }
-        return true;
-    }
-    
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
-    }
-    
+    // ==================== USER MANAGEMENT ====================
     async function fetchUsers() {
         try {
             const snapshot = await getDocs(collection(db, "users"));
@@ -1120,11 +1225,11 @@
                 allUsers.push({ id: docSnap.id, ...docSnap.data() });
             });
             renderUserTable();
-            updateStats();
+            await updateStats();
             renderLeaderboard();
         } catch (e) {
             console.error("Error fetching users:", e);
-            showToast("Gagal memuat data pengguna", true);
+            showToast("Gagal memuat data pengguna", 'error');
         }
     }
     
@@ -1204,22 +1309,44 @@
     }
     
     async function updateStats() {
-        const total = allUsers.length;
-        let totalBalance = 0;
-        let bannedCount = 0;
-        allUsers.forEach(u => {
-            totalBalance += (u.balance || 0);
-            if (u.banned === true) bannedCount++;
-        });
-        document.getElementById("totalUsers").innerText = total;
-        document.getElementById("totalBalance").innerText = `Rp ${totalBalance.toLocaleString('id-ID')}`;
-        document.getElementById("bannedUsers").innerText = bannedCount;
-        
         try {
-            const pendingSnap = await getDocs(query(collection(db, "withdraw_requests"), where("status", "==", "pending")));
-            document.getElementById("pendingWithdraws").innerText = pendingSnap.size;
-        } catch(e) {
-            console.error("Error fetching pending withdraws:", e);
+            const total = allUsers.length;
+            let totalBalance = 0;
+            let bannedCount = 0;
+            
+            allUsers.forEach(u => {
+                totalBalance += (u.balance || 0);
+                if (u.banned === true) bannedCount++;
+            });
+            
+            const totalUsersEl = document.getElementById("totalUsers");
+            const totalBalanceEl = document.getElementById("totalBalance");
+            const bannedUsersEl = document.getElementById("bannedUsers");
+            
+            if (totalUsersEl) totalUsersEl.innerText = total;
+            if (totalBalanceEl) totalBalanceEl.innerText = `Rp ${totalBalance.toLocaleString('id-ID')}`;
+            if (bannedUsersEl) bannedUsersEl.innerText = bannedCount;
+            
+            try {
+                const pendingQuery = query(
+                    collection(db, "withdraw_requests"),
+                    where("status", "==", "pending")
+                );
+                const pendingSnap = await getDocs(pendingQuery);
+                const pendingCount = pendingSnap.size;
+                
+                const pendingWithdrawsEl = document.getElementById("pendingWithdraws");
+                if (pendingWithdrawsEl) {
+                    pendingWithdrawsEl.innerText = pendingCount;
+                }
+            } catch (e) {
+                console.error("Error fetching pending withdraws:", e);
+                const pendingWithdrawsEl = document.getElementById("pendingWithdraws");
+                if (pendingWithdrawsEl) pendingWithdrawsEl.innerText = "0";
+            }
+            
+        } catch (e) {
+            console.error("Error updating stats:", e);
         }
     }
     
@@ -1234,18 +1361,28 @@
         });
     }
     
+    // ==================== WITHDRAWAL MANAGEMENT ====================
     async function fetchWithdrawals() {
         try {
-            const snapshot = await getDocs(query(collection(db, "withdraw_requests"), orderBy("createdAt", "desc")));
+            const snapshot = await getDocs(collection(db, "withdraw_requests"));
             allWithdrawals = [];
             snapshot.forEach(docSnap => {
                 allWithdrawals.push({ id: docSnap.id, ...docSnap.data() });
             });
+            
+            allWithdrawals.sort((a, b) => {
+                const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
+                const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
+                return dateB - dateA;
+            });
+            
             renderWithdrawTable();
             updateWithdrawStatistics();
             renderLeaderboard();
+            await updateStats();
         } catch(e) {
             console.error("Error fetching withdrawals:", e);
+            showToast("Gagal memuat data penarikan", 'error');
         }
     }
     
@@ -1285,7 +1422,7 @@
                 const amount = parseInt(btn.dataset.amount);
                 if (confirm(`Setujui penarikan Rp ${amount.toLocaleString('id-ID')} untuk ${username}?`)) {
                     await updateDoc(doc(db, "withdraw_requests", id), { status: "success" });
-                    showToast(`✅ Penarikan ${username} disetujui.`);
+                    showToast(`✅ Penarikan ${username} disetujui.`, 'success');
                     await fetchWithdrawals();
                     await fetchUsers();
                 }
@@ -1306,7 +1443,7 @@
                             await updateDoc(userRef, { balance: currBalance + data.amount });
                         }
                         await updateDoc(doc(db, "withdraw_requests", id), { status: "rejected" });
-                        showToast(`❌ Penarikan ditolak, saldo dikembalikan.`);
+                        showToast(`❌ Penarikan ditolak, saldo dikembalikan.`, 'warning');
                         await fetchWithdrawals();
                         await fetchUsers();
                     }
@@ -1356,7 +1493,6 @@
         document.getElementById("successWithdrawAmount").innerHTML = `Rp ${successAmount.toLocaleString('id-ID')}`;
         document.getElementById("pendingWithdrawAmount").innerHTML = `Rp ${pendingAmount.toLocaleString('id-ID')}`;
         
-        // Update charts
         const pieCtx = document.getElementById('statusPieChart')?.getContext('2d');
         if (pieCtx) {
             if (statusPieChart) statusPieChart.destroy();
@@ -1453,7 +1589,7 @@
             currentStartDate = startInput.value;
             currentEndDate = endInput.value;
             updateWithdrawStatistics();
-            showToast("Statistik diperbarui dengan filter tanggal", false);
+            showToast("Statistik diperbarui dengan filter tanggal", 'info');
         };
         document.getElementById("resetDateFilter").onclick = () => {
             const newEnd = new Date();
@@ -1464,10 +1600,11 @@
             currentStartDate = startInput.value;
             currentEndDate = endInput.value;
             updateWithdrawStatistics();
-            showToast("Filter tanggal direset", false);
+            showToast("Filter tanggal direset", 'info');
         };
     }
     
+    // ==================== LEADERBOARD ====================
     function renderLeaderboard() {
         const activeUsers = allUsers.filter(u => u.banned !== true);
         
@@ -1583,7 +1720,7 @@
         container.innerHTML = html;
     }
     
-    // Ban Functions
+    // ==================== BAN / UNBAN MODALS ====================
     function openBanPermanentModal(username) {
         currentActionUser = username;
         document.getElementById("banPermanentUsername").innerText = username;
@@ -1655,7 +1792,7 @@
         document.getElementById("editProfileModal").classList.add("active");
     }
     
-    // Maintenance
+    // ==================== MAINTENANCE ====================
     async function loadMaintenanceSettings() {
         try {
             const ref = doc(db, "settings", "maintenance");
@@ -1689,7 +1826,7 @@
         }
     }
     
-    // Tab switching
+    // ==================== TAB SWITCHING ====================
     function switchTab(tabId) {
         document.querySelectorAll(".tab-content").forEach(t => t.style.display = "none");
         const targetTab = document.getElementById(`tab${tabId.charAt(0).toUpperCase() + tabId.slice(1)}`);
@@ -1704,205 +1841,208 @@
         else if (tabId === "leaderboard") renderLeaderboard();
     }
     
-    // Event Listeners
-    document.querySelectorAll(".tab-btn").forEach(btn => {
-        btn.onclick = () => switchTab(btn.dataset.tab);
-    });
-    
-    document.getElementById("searchUser")?.addEventListener("input", () => renderUserTable());
-    document.getElementById("searchWithdraw")?.addEventListener("input", () => renderWithdrawTable());
-    
-    document.getElementById("logoutAdminBtn").onclick = () => {
-        if (confirm("Keluar dari panel admin?")) {
-            localStorage.removeItem("admin_auth");
-            window.location.reload();
-        }
-    };
-    
-    document.getElementById("confirmBanPermanentBtn").onclick = async () => {
-        const reason = document.getElementById("banPermanentReason").value.trim() || "Diblokir permanen oleh admin";
-        if (currentActionUser) {
-            await updateDoc(doc(db, "users", currentActionUser), { 
-                banned: true, 
-                banType: 'permanent', 
-                banExpiry: null,
-                banReason: reason, 
-                banTime: new Date().toISOString() 
-            });
-            showToast(`🔒 Akun ${currentActionUser} telah di-ban permanen.`, false);
-            await fetchUsers();
-            await fetchWithdrawals();
-        }
-        document.getElementById("banPermanentModal").classList.remove("active");
-        currentActionUser = null;
-    };
-    
-    document.getElementById("cancelBanPermanentBtn").onclick = () => {
-        document.getElementById("banPermanentModal").classList.remove("active");
-        currentActionUser = null;
-    };
-    
-    document.getElementById("confirmBanTemporaryBtn").onclick = async () => {
-        const durationHours = parseInt(document.getElementById("banTemporaryDuration").value);
-        const reason = document.getElementById("banTemporaryReason").value.trim() || "Diblokir sementara oleh admin";
-        const expiry = new Date();
-        expiry.setHours(expiry.getHours() + durationHours);
-        
-        if (currentActionUser) {
-            await updateDoc(doc(db, "users", currentActionUser), { 
-                banned: true, 
-                banType: 'temporary', 
-                banExpiry: expiry.toISOString(),
-                banReason: reason, 
-                banTime: new Date().toISOString() 
-            });
-            showToast(`⏰ Akun ${currentActionUser} di-ban sementara selama ${durationHours} jam.`, false);
-            await fetchUsers();
-            await fetchWithdrawals();
-        }
-        document.getElementById("banTemporaryModal").classList.remove("active");
-        currentActionUser = null;
-    };
-    
-    document.getElementById("cancelBanTemporaryBtn").onclick = () => {
-        document.getElementById("banTemporaryModal").classList.remove("active");
-        currentActionUser = null;
-    };
-    
-    document.getElementById("confirmUnbanBtn").onclick = async () => {
-        if (currentActionUser) {
-            await updateDoc(doc(db, "users", currentActionUser), { 
-                banned: false, 
-                banType: null, 
-                banExpiry: null, 
-                banReason: null, 
-                banTime: null 
-            });
-            showToast(`✅ Akun ${currentActionUser} telah dibuka blokir!`, false);
-            await fetchUsers();
-            await fetchWithdrawals();
-        }
-        document.getElementById("unbanModal").classList.remove("active");
-        currentActionUser = null;
-    };
-    
-    document.getElementById("cancelUnbanBtn").onclick = () => {
-        document.getElementById("unbanModal").classList.remove("active");
-        currentActionUser = null;
-    };
-    
-    document.getElementById("saveProfileBtn").onclick = async () => {
-        if (!currentEditUser) return;
-        
-        const fullname = document.getElementById("editFullname").value.trim();
-        const newPassword = document.getElementById("editPassword").value;
-        const confirmPassword = document.getElementById("editConfirmPassword").value;
-        const newBalance = parseInt(document.getElementById("editBalance").value);
-        const newTotalAnswered = parseInt(document.getElementById("editTotalAnswered").value);
-        const newTotalCorrect = parseInt(document.getElementById("editTotalCorrect").value);
-        const banStatus = document.getElementById("editBanStatus").value;
-        const banReason = document.getElementById("editBanReason").value.trim();
-        
-        if (newPassword && newPassword !== confirmPassword) {
-            showToast("Password dan konfirmasi password tidak cocok!", true);
-            return;
-        }
-        
-        if (newPassword && newPassword.length < 4) {
-            showToast("Password minimal 4 karakter!", true);
-            return;
-        }
-        
-        if (isNaN(newBalance) || newBalance < 0) {
-            showToast("Saldo tidak valid!", true);
-            return;
-        }
-        
-        if (isNaN(newTotalAnswered) || isNaN(newTotalCorrect) || newTotalCorrect > newTotalAnswered) {
-            showToast("Data jawaban tidak valid! Jawaban benar tidak boleh melebihi total jawaban", true);
-            return;
-        }
-        
-        try {
-            const updateData = {
-                fullname: fullname || currentEditUser,
-                balance: newBalance,
-                totalAnswered: newTotalAnswered,
-                totalCorrect: newTotalCorrect,
-                lastActive: new Date().toISOString()
-            };
-            
-            if (newPassword) {
-                updateData.password = newPassword;
-            }
-            
-            if (banStatus === "permanent") {
-                updateData.banned = true;
-                updateData.banType = 'permanent';
-                updateData.banExpiry = null;
-                updateData.banReason = banReason || "Diblokir permanen oleh admin";
-                updateData.banTime = new Date().toISOString();
-            } else if (banStatus === "temporary") {
-                const durationHours = parseInt(document.getElementById("tempBanDuration").value);
-                const expiry = new Date();
-                expiry.setHours(expiry.getHours() + durationHours);
-                updateData.banned = true;
-                updateData.banType = 'temporary';
-                updateData.banExpiry = expiry.toISOString();
-                updateData.banReason = banReason || "Diblokir sementara oleh admin";
-                updateData.banTime = new Date().toISOString();
-            } else {
-                updateData.banned = false;
-                updateData.banType = null;
-                updateData.banExpiry = null;
-                updateData.banReason = null;
-                updateData.banTime = null;
-            }
-            
-            await updateDoc(doc(db, "users", currentEditUser), updateData);
-            showToast(`✅ Profil ${currentEditUser} berhasil diperbarui!`, false);
-            document.getElementById("editProfileModal").classList.remove("active");
-            await fetchUsers();
-            await fetchWithdrawals();
-        } catch (e) {
-            console.error("Error updating profile:", e);
-            showToast("Gagal memperbarui profil: " + e.message, true);
-        }
-    };
-    
-    document.getElementById("cancelProfileBtn").onclick = () => {
-        document.getElementById("editProfileModal").classList.remove("active");
-        currentEditUser = null;
-    };
-    
-    document.getElementById("maintenanceToggle").onclick = () => {
-        maintenanceEnabled = !maintenanceEnabled;
-        updateMaintenanceUI();
-    };
-    
-    document.getElementById("saveMaintenanceBtn").onclick = async () => {
-        const msg = document.getElementById("maintenanceMessage").value;
-        const estimate = document.getElementById("maintenanceEstimate").value;
-        await setDoc(doc(db, "settings", "maintenance"), {
-            enabled: maintenanceEnabled,
-            message: msg,
-            estimatedTime: estimate,
-            updatedAt: new Date().toISOString()
+    // ==================== EVENT LISTENERS ====================
+    function setupEventListeners() {
+        document.querySelectorAll(".tab-btn").forEach(btn => {
+            btn.onclick = () => switchTab(btn.dataset.tab);
         });
-        showToast("⚙️ Pengaturan maintenance disimpan!");
-    };
-    
-    async function initAdmin() {
-        const adminAuth = localStorage.getItem("admin_auth");
-        if (!adminAuth) {
-            if (!promptAdminLogin()) {
-                document.body.innerHTML = "<div style='text-align:center; margin-top:50px'><i class='fas fa-lock'></i> <h2>Akses ditolak</h2><p>Anda bukan admin.</p></div>";
+        
+        document.getElementById("searchUser")?.addEventListener("input", () => renderUserTable());
+        document.getElementById("searchWithdraw")?.addEventListener("input", () => renderWithdrawTable());
+        
+        document.getElementById("logoutAdminBtn").onclick = async () => {
+            if (confirm("Keluar dari panel admin?")) {
+                try {
+                    await signOut(auth);
+                    localStorage.removeItem("admin_auth");
+                    showToast("Berhasil keluar dari dashboard", 'success');
+                    setTimeout(() => window.location.href = "login.html", 500);
+                } catch (error) {
+                    console.error("Logout error:", error);
+                    showToast("Gagal keluar: " + error.message, 'error');
+                }
+            }
+        };
+        
+        document.getElementById("confirmBanPermanentBtn").onclick = async () => {
+            const reason = document.getElementById("banPermanentReason").value.trim() || "Diblokir permanen oleh admin";
+            if (currentActionUser) {
+                await updateDoc(doc(db, "users", currentActionUser), { 
+                    banned: true, 
+                    banType: 'permanent', 
+                    banExpiry: null,
+                    banReason: reason, 
+                    banTime: new Date().toISOString() 
+                });
+                showToast(`🔒 Akun ${currentActionUser} telah di-ban permanen.`, 'success');
+                await fetchUsers();
+                await fetchWithdrawals();
+            }
+            document.getElementById("banPermanentModal").classList.remove("active");
+            currentActionUser = null;
+        };
+        
+        document.getElementById("cancelBanPermanentBtn").onclick = () => {
+            document.getElementById("banPermanentModal").classList.remove("active");
+            currentActionUser = null;
+        };
+        
+        document.getElementById("confirmBanTemporaryBtn").onclick = async () => {
+            const durationHours = parseInt(document.getElementById("banTemporaryDuration").value);
+            const reason = document.getElementById("banTemporaryReason").value.trim() || "Diblokir sementara oleh admin";
+            const expiry = new Date();
+            expiry.setHours(expiry.getHours() + durationHours);
+            
+            if (currentActionUser) {
+                await updateDoc(doc(db, "users", currentActionUser), { 
+                    banned: true, 
+                    banType: 'temporary', 
+                    banExpiry: expiry.toISOString(),
+                    banReason: reason, 
+                    banTime: new Date().toISOString() 
+                });
+                showToast(`⏰ Akun ${currentActionUser} di-ban sementara selama ${durationHours} jam.`, 'warning');
+                await fetchUsers();
+                await fetchWithdrawals();
+            }
+            document.getElementById("banTemporaryModal").classList.remove("active");
+            currentActionUser = null;
+        };
+        
+        document.getElementById("cancelBanTemporaryBtn").onclick = () => {
+            document.getElementById("banTemporaryModal").classList.remove("active");
+            currentActionUser = null;
+        };
+        
+        document.getElementById("confirmUnbanBtn").onclick = async () => {
+            if (currentActionUser) {
+                await updateDoc(doc(db, "users", currentActionUser), { 
+                    banned: false, 
+                    banType: null, 
+                    banExpiry: null, 
+                    banReason: null, 
+                    banTime: null 
+                });
+                showToast(`✅ Akun ${currentActionUser} telah dibuka blokir!`, 'success');
+                await fetchUsers();
+                await fetchWithdrawals();
+            }
+            document.getElementById("unbanModal").classList.remove("active");
+            currentActionUser = null;
+        };
+        
+        document.getElementById("cancelUnbanBtn").onclick = () => {
+            document.getElementById("unbanModal").classList.remove("active");
+            currentActionUser = null;
+        };
+        
+        document.getElementById("saveProfileBtn").onclick = async () => {
+            if (!currentEditUser) return;
+            
+            const fullname = document.getElementById("editFullname").value.trim();
+            const newPassword = document.getElementById("editPassword").value;
+            const confirmPassword = document.getElementById("editConfirmPassword").value;
+            const newBalance = parseInt(document.getElementById("editBalance").value);
+            const newTotalAnswered = parseInt(document.getElementById("editTotalAnswered").value);
+            const newTotalCorrect = parseInt(document.getElementById("editTotalCorrect").value);
+            const banStatus = document.getElementById("editBanStatus").value;
+            const banReason = document.getElementById("editBanReason").value.trim();
+            
+            if (newPassword && newPassword !== confirmPassword) {
+                showToast("Password dan konfirmasi password tidak cocok!", 'error');
                 return;
             }
-            localStorage.setItem("admin_auth", "true");
-        }
+            
+            if (newPassword && newPassword.length < 4) {
+                showToast("Password minimal 4 karakter!", 'error');
+                return;
+            }
+            
+            if (isNaN(newBalance) || newBalance < 0) {
+                showToast("Saldo tidak valid!", 'error');
+                return;
+            }
+            
+            if (isNaN(newTotalAnswered) || isNaN(newTotalCorrect) || newTotalCorrect > newTotalAnswered) {
+                showToast("Data jawaban tidak valid! Jawaban benar tidak boleh melebihi total jawaban", 'error');
+                return;
+            }
+            
+            try {
+                const updateData = {
+                    fullname: fullname || currentEditUser,
+                    balance: newBalance,
+                    totalAnswered: newTotalAnswered,
+                    totalCorrect: newTotalCorrect,
+                    lastActive: new Date().toISOString()
+                };
+                
+                if (newPassword) {
+                    updateData.password = newPassword;
+                }
+                
+                if (banStatus === "permanent") {
+                    updateData.banned = true;
+                    updateData.banType = 'permanent';
+                    updateData.banExpiry = null;
+                    updateData.banReason = banReason || "Diblokir permanen oleh admin";
+                    updateData.banTime = new Date().toISOString();
+                } else if (banStatus === "temporary") {
+                    const durationHours = parseInt(document.getElementById("tempBanDuration").value);
+                    const expiry = new Date();
+                    expiry.setHours(expiry.getHours() + durationHours);
+                    updateData.banned = true;
+                    updateData.banType = 'temporary';
+                    updateData.banExpiry = expiry.toISOString();
+                    updateData.banReason = banReason || "Diblokir sementara oleh admin";
+                    updateData.banTime = new Date().toISOString();
+                } else {
+                    updateData.banned = false;
+                    updateData.banType = null;
+                    updateData.banExpiry = null;
+                    updateData.banReason = null;
+                    updateData.banTime = null;
+                }
+                
+                await updateDoc(doc(db, "users", currentEditUser), updateData);
+                showToast(`✅ Profil ${currentEditUser} berhasil diperbarui!`, 'success');
+                document.getElementById("editProfileModal").classList.remove("active");
+                await fetchUsers();
+                await fetchWithdrawals();
+            } catch (e) {
+                console.error("Error updating profile:", e);
+                showToast("Gagal memperbarui profil: " + e.message, 'error');
+            }
+        };
+        
+        document.getElementById("cancelProfileBtn").onclick = () => {
+            document.getElementById("editProfileModal").classList.remove("active");
+            currentEditUser = null;
+        };
+        
+        document.getElementById("maintenanceToggle").onclick = () => {
+            maintenanceEnabled = !maintenanceEnabled;
+            updateMaintenanceUI();
+        };
+        
+        document.getElementById("saveMaintenanceBtn").onclick = async () => {
+            const msg = document.getElementById("maintenanceMessage").value;
+            const estimate = document.getElementById("maintenanceEstimate").value;
+            await setDoc(doc(db, "settings", "maintenance"), {
+                enabled: maintenanceEnabled,
+                message: msg,
+                estimatedTime: estimate,
+                updatedAt: new Date().toISOString()
+            });
+            showToast("⚙️ Pengaturan maintenance disimpan!", 'success');
+        };
+    }
+    
+    // ==================== INITIALIZATION ====================
+    async function initDashboard() {
         setupFilters();
         setupDateFilters();
+        setupEventListeners();
         await loadMaintenanceSettings();
         await fetchUsers();
         await fetchWithdrawals();
@@ -1918,9 +2058,10 @@
                 }
             }
         });
+        
+        console.log('✅ Admin dashboard initialized');
+        showToast("Selamat datang di Dashboard Admin!", 'success', 4000);
     }
-    
-    initAdmin();
 </script>
 </body>
 </html>

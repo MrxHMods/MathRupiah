@@ -33,6 +33,7 @@
             --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
+            --info: #3b82f6;
             --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -59,6 +60,159 @@
             min-height: 100vh;
             transition: background 0.4s ease, color 0.2s ease;
             color: var(--text-primary);
+        }
+
+        /* ==================== ENHANCED TOAST SYSTEM ==================== */
+        .toast-container {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            pointer-events: none;
+        }
+
+        .toast-msg {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 60px;
+            padding: 14px 28px;
+            min-width: 220px;
+            max-width: 90vw;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: white;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.1);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transform-origin: bottom;
+            animation: toastSlideUp 0.4s ease forwards;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            letter-spacing: 0.3px;
+        }
+
+        @keyframes toastSlideUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .toast-msg.toast-hide {
+            animation: toastSlideDown 0.3s ease forwards;
+        }
+
+        @keyframes toastSlideDown {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.9);
+            }
+        }
+
+        .toast-msg.success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.95), rgba(5, 150, 105, 0.95));
+            border-left: 4px solid #10b981;
+            box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.3);
+        }
+
+        .toast-msg.error {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.95), rgba(220, 38, 38, 0.95));
+            border-left: 4px solid #ef4444;
+            box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.3);
+        }
+
+        .toast-msg.warning {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.95), rgba(217, 119, 6, 0.95));
+            border-left: 4px solid #f59e0b;
+            box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.3);
+        }
+
+        .toast-msg.info {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.95), rgba(37, 99, 235, 0.95));
+            border-left: 4px solid #3b82f6;
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3);
+        }
+
+        .toast-msg.reward {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.95), rgba(124, 58, 237, 0.95));
+            border-left: 4px solid #8b5cf6;
+            box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.4);
+        }
+
+        .toast-msg .toast-icon {
+            font-size: 1.2rem;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+        }
+
+        .toast-msg .toast-text {
+            flex: 1;
+            text-align: center;
+        }
+
+        .toast-msg .toast-close {
+            cursor: pointer;
+            font-size: 0.8rem;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+            background: rgba(255, 255, 255, 0.2);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: auto;
+        }
+
+        .toast-msg .toast-close:hover {
+            opacity: 1;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        body.light-mode .toast-msg {
+            background: rgba(255, 255, 255, 0.95);
+            color: #1e293b;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
+        }
+
+        body.light-mode .toast-msg.success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        body.light-mode .toast-msg.error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        body.light-mode .toast-msg.warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        body.light-mode .toast-msg.info {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+        body.light-mode .toast-msg.reward {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
         }
 
         .chrome-block-container {
@@ -416,21 +570,6 @@
             padding: 1.8rem;
             border: 1px solid var(--card-border);
         }
-        .toast-msg {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--accent);
-            backdrop-filter: blur(20px);
-            color: white;
-            padding: 14px 28px;
-            border-radius: 60px;
-            z-index: 1000;
-            transition: 0.2s;
-            pointer-events: none;
-            font-weight: 600;
-        }
         .theme-toggle {
             position: fixed;
             bottom: 25px;
@@ -616,6 +755,7 @@
             .wallet-card { flex-direction: column; gap: 12px; text-align: center; }
             .timer-display { font-size: 1.5rem; }
             .stat-value { font-size: 1.2rem; }
+            .toast-msg { padding: 10px 20px; font-size: 0.8rem; }
         }
     </style>
 </head>
@@ -632,6 +772,8 @@
     </div>
     
     <div id="loadingOverlay" class="loading-overlay"><div class="spinner"></div><div style="color:white">Memuat...</div></div>
+    
+    <div class="toast-container" id="toastContainer"></div>
     
     <div class="theme-toggle" id="themeToggleBtn"><i class="fas fa-moon"></i> <span>Mode Gelap</span></div>
     
@@ -830,8 +972,6 @@
     </div>
 </div>
 
-<div id="toastMsg" class="toast-msg" style="opacity: 0;"></div>
-
 <script type="importmap">
     {
         "imports": {
@@ -874,6 +1014,61 @@
     
     const TIME_LIMIT = 30;
     const PENALTY_AMOUNT = 200;
+    
+    // ==================== ENHANCED TOAST SYSTEM ====================
+    const toastContainer = document.getElementById("toastContainer");
+    let activeToasts = [];
+    
+    const showToast = (message, type = "info", duration = 2500) => {
+        const toast = document.createElement("div");
+        toast.className = `toast-msg ${type}`;
+        
+        let icon = "";
+        switch(type) {
+            case "success": icon = '<i class="fas fa-check-circle toast-icon"></i>'; break;
+            case "error": icon = '<i class="fas fa-exclamation-circle toast-icon"></i>'; break;
+            case "warning": icon = '<i class="fas fa-exclamation-triangle toast-icon"></i>'; break;
+            case "reward": icon = '<i class="fas fa-gem toast-icon"></i>'; break;
+            default: icon = '<i class="fas fa-info-circle toast-icon"></i>';
+        }
+        
+        toast.innerHTML = `
+            ${icon}
+            <span class="toast-text">${message}</span>
+            <span class="toast-close"><i class="fas fa-times"></i></span>
+        `;
+        
+        const closeBtn = toast.querySelector(".toast-close");
+        closeBtn.onclick = () => removeToast(toast);
+        
+        toastContainer.appendChild(toast);
+        activeToasts.push(toast);
+        
+        if (activeToasts.length > 4) {
+            removeToast(activeToasts[0]);
+        }
+        
+        const timeout = setTimeout(() => removeToast(toast), duration);
+        toast.dataset.timeout = timeout;
+        
+        return toast;
+    };
+    
+    const removeToast = (toast) => {
+        if (!toast || !toast.parentNode) return;
+        
+        if (toast.dataset.timeout) {
+            clearTimeout(parseInt(toast.dataset.timeout));
+        }
+        
+        toast.classList.add("toast-hide");
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.parentNode.removeChild(toast);
+                activeToasts = activeToasts.filter(t => t !== toast);
+            }
+        }, 300);
+    };
     
     // ==================== ADVANCED REWARD SYSTEM ====================
     class AdvancedRewardCalculator {
@@ -1423,7 +1618,7 @@
                     }
                 });
                 
-                showToast(`⚠️ Pengerjaan abnormal terdeteksi! Akun dibekukan 1 hari.`, true);
+                showToast(`⚠️ Pengerjaan abnormal terdeteksi! Akun dibekukan 1 hari.`, "error");
                 
                 if (currentUser && currentUser.username === this.username) {
                     stopTimer();
@@ -1581,7 +1776,7 @@
                 if (timerInterval) clearInterval(timerInterval);
                 if (securityCheckInterval) clearInterval(securityCheckInterval);
                 
-                showToast(`Akun diblokir 1 hari: ${reason}`, true);
+                showToast(`Akun diblokir 1 hari: ${reason}`, "error");
                 
                 document.getElementById("banReasonText").innerHTML = currentUser.banReason;
                 document.getElementById("tempBanInfo").style.display = "block";
@@ -1631,14 +1826,6 @@
     };
     
     // ==================== UTILITY FUNCTIONS ====================
-    const showToast = (msg, isError = false) => {
-        const toast = document.getElementById("toastMsg");
-        toast.style.backgroundColor = isError ? "#dc2626" : "var(--accent)";
-        toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-triangle' : 'fa-circle-check'}"></i> ${msg}`;
-        toast.style.opacity = "1";
-        setTimeout(() => toast.style.opacity = "0", 2500);
-    };
-    
     const showLoading = (show) => {
         document.getElementById("loadingOverlay").classList.toggle("active", show);
     };
@@ -1696,7 +1883,7 @@
                         banExpiry: null,
                         banReason: null
                     }).then(() => {
-                        showToast("Masa ban sementara telah berakhir, silakan login kembali");
+                        showToast("Masa ban sementara telah berakhir, silakan login kembali", "success");
                     });
                     return false;
                 }
@@ -1861,13 +2048,13 @@
             await updateDoc(doc(db, "users", currentUser.username), { balance: newBalance });
             currentUser.balance = newBalance;
             document.getElementById("balanceAmount").innerText = newBalance.toLocaleString('id-ID');
-            showToast(`Waktu habis! Potongan Rp${PENALTY_AMOUNT}`, true);
+            showToast(`Waktu habis! Potongan Rp${PENALTY_AMOUNT}`, "error");
         } else if (currentUser.balance > 0) {
             const newBalance = 0;
             await updateDoc(doc(db, "users", currentUser.username), { balance: newBalance });
             currentUser.balance = newBalance;
             document.getElementById("balanceAmount").innerText = "0";
-            showToast(`Waktu habis! Saldo habis`, true);
+            showToast(`Waktu habis! Saldo habis`, "error");
         }
         document.getElementById("feedbackMsg").innerHTML = `<span style="color:#f87171;">⏰ Waktu habis! Jawaban: ${q.options[q.correct]}</span>`;
         await updateDoc(doc(db, "users", currentUser.username), { 
@@ -1974,20 +2161,20 @@
             else if (difficulty === 'medium') rewardDetail += ` 📘 Medium!`;
             
             document.getElementById("feedbackMsg").innerHTML = `<span style="color:#6ee7b7;">✅ Benar! ${rewardDetail}</span>`;
-            showToast(rewardDetail);
+            showToast(rewardDetail, "reward");
         } else {
             if (currentUser.balance >= PENALTY_AMOUNT) {
                 const newBalance = currentUser.balance - PENALTY_AMOUNT;
                 await updateDoc(doc(db, "users", currentUser.username), { balance: newBalance });
                 currentUser.balance = newBalance;
                 document.getElementById("balanceAmount").innerText = newBalance.toLocaleString('id-ID');
-                showToast(`Salah! Potongan Rp${PENALTY_AMOUNT}`, true);
+                showToast(`Salah! Potongan Rp${PENALTY_AMOUNT}`, "error");
             } else if (currentUser.balance > 0) {
                 const newBalance = 0;
                 await updateDoc(doc(db, "users", currentUser.username), { balance: newBalance });
                 currentUser.balance = newBalance;
                 document.getElementById("balanceAmount").innerText = "0";
-                showToast(`Salah! Saldo habis`, true);
+                showToast(`Salah! Saldo habis`, "error");
             }
             const newAns = (currentUser.totalAnswered || 0) + 1;
             await updateDoc(doc(db, "users", currentUser.username), { totalAnswered: newAns });
@@ -2039,7 +2226,7 @@
     };
     
     const nextQuestion = () => {
-        if (!answered) { showToast("Jawab dulu!"); return; }
+        if (!answered) { showToast("Jawab dulu!", "warning"); return; }
         let next = currentQuestionIndex + 1;
         if (next >= currentQuestionsList.length) next = 0;
         currentQuestionIndex = next;
@@ -2047,9 +2234,9 @@
     };
     
     const startQuiz = () => {
-        if (isQuizActive) { showToast("Kuis sedang berjalan!"); return; }
+        if (isQuizActive) { showToast("Kuis sedang berjalan!", "warning"); return; }
         currentQuestionsList = loadQuestions();
-        if (!currentQuestionsList.length) { showToast("Gagal memuat soal!", true); return; }
+        if (!currentQuestionsList.length) { showToast("Gagal memuat soal!", "error"); return; }
         currentQuestionIndex = 0;
         isQuizActive = true;
         
@@ -2068,7 +2255,7 @@
         btn.innerHTML = '<i class="fas fa-stop"></i> STOP - Hentikan Kuis';
         btn.classList.add("stop-mode");
         renderQuestion();
-        showToast(`Kuis dimulai! Reward bervariasi: 50-400 Rupiah | Bonus streak & combo! | Salah -Rp${PENALTY_AMOUNT}`);
+        showToast(`Kuis dimulai! Reward bervariasi: 50-400 Rupiah | Bonus streak & combo! | Salah -Rp${PENALTY_AMOUNT}`, "info");
     };
     
     const stopQuiz = () => {
@@ -2089,7 +2276,7 @@
             console.log(`Session stats: ${dailyStats.answered} soal, akurasi ${dailyStats.accuracy}%`);
             const streakInfo = rewardCalculator.getStreakInfo();
             if (streakInfo.maxStreak > 0) {
-                showToast(`✨ Streak terbaik: ${streakInfo.maxStreak} ✨`);
+                showToast(`✨ Strek terbaik: ${streakInfo.maxStreak} ✨`, "success");
             }
         }
         
@@ -2097,7 +2284,7 @@
         const btn = document.getElementById("playQuizBtn");
         btn.innerHTML = '<i class="fas fa-play"></i> MULAI KUIS & EARN';
         btn.classList.remove("stop-mode");
-        showToast("Kuis dihentikan");
+        showToast("Kuis dihentikan", "info");
         updateStreakDisplay();
     };
     
@@ -2115,13 +2302,13 @@
         container.innerHTML = list.map(k => `<button class="kelas-btn ${currentKelas == k ? 'active' : ''}" data-kelas="${k}">Kelas ${k}</button>`).join('');
         document.querySelectorAll('.kelas-btn').forEach(btn => {
             btn.onclick = () => {
-                if (isQuizActive) { showToast("Selesaikan kuis dulu!", true); return; }
+                if (isQuizActive) { showToast("Selesaikan kuis dulu!", "warning"); return; }
                 currentKelas = btn.dataset.kelas;
                 currentLevelKey = `${currentJenjang}${currentKelas}`;
                 updateKelasButtons();
                 const names = { sd: "SD", smp: "SMP", smk: "SMK" };
                 document.getElementById("selectedLevelName").innerHTML = `${names[currentJenjang]} Kelas ${currentKelas} (Reward: 50-400/soal) <span class="penalty-badge"><i class="fas fa-minus-circle"></i> Salah -Rp${PENALTY_AMOUNT}</span> <span class="streak-badge" id="streakDisplay"><i class="fas fa-fire"></i> Streak: 0</span>`;
-                showToast(`Kelas ${currentKelas} dipilih`);
+                showToast(`Kelas ${currentKelas} dipilih`, "success");
                 if (rewardCalculator) rewardCalculator.resetSession();
                 updateStreakDisplay();
             };
@@ -2129,7 +2316,7 @@
     };
     
     const changeJenjang = (jenjang) => {
-        if (isQuizActive) { showToast("Selesaikan kuis dulu!", true); return; }
+        if (isQuizActive) { showToast("Selesaikan kuis dulu!", "warning"); return; }
         currentJenjang = jenjang;
         if (jenjang === "sd") currentKelas = "1";
         else if (jenjang === "smp") currentKelas = "7";
@@ -2142,7 +2329,7 @@
         updateKelasButtons();
         const names = { sd: "SD", smp: "SMP", smk: "SMK" };
         document.getElementById("selectedLevelName").innerHTML = `${names[currentJenjang]} Kelas ${currentKelas} (Reward: 50-400/soal) <span class="penalty-badge"><i class="fas fa-minus-circle"></i> Salah -Rp${PENALTY_AMOUNT}</span> <span class="streak-badge" id="streakDisplay"><i class="fas fa-fire"></i> Streak: 0</span>`;
-        showToast(`Jenjang ${jenjang.toUpperCase()} dipilih`);
+        showToast(`Jenjang ${jenjang.toUpperCase()} dipilih`, "success");
         if (rewardCalculator) rewardCalculator.resetSession();
         updateStreakDisplay();
     };
@@ -2219,7 +2406,7 @@
         if (!canWithdraw10k) {
             tenKCard.style.opacity = "0.5";
             tenKCard.style.cursor = "not-allowed";
-            tenKCard.onclick = () => showToast(`Rp10.000 sudah digunakan minggu ini!`, true);
+            tenKCard.onclick = () => showToast(`Rp10.000 sudah digunakan minggu ini!`, "warning");
         } else {
             tenKCard.style.opacity = "1";
             tenKCard.style.cursor = "pointer";
@@ -2241,11 +2428,11 @@
         const method = document.getElementById("withdrawMethod").value;
         const selected = document.querySelector(".amount-card.selected");
         let amount = selected ? parseInt(selected.dataset.amount) : null;
-        if (!amount) { showToast("Pilih jumlah penarikan!", true); return; }
-        if (amount > currentUser.balance) { showToast("Saldo tidak cukup!", true); return; }
-        if (!account) { showToast("Masukkan nomor rekening/e-wallet", true); return; }
+        if (!amount) { showToast("Pilih jumlah penarikan!", "warning"); return; }
+        if (amount > currentUser.balance) { showToast("Saldo tidak cukup!", "error"); return; }
+        if (!account) { showToast("Masukkan nomor rekening/e-wallet", "warning"); return; }
         if (amount === 10000 && !(await canWithdrawTenThousand(currentUser.username))) {
-            showToast(`Penarikan Rp10.000 hanya 1x/minggu!`, true);
+            showToast(`Penarikan Rp10.000 hanya 1x/minggu!`, "warning");
             return;
         }
         showLoading(true);
@@ -2256,7 +2443,7 @@
         await updateDoc(doc(db, "users", currentUser.username), { balance: newBalance });
         currentUser.balance = newBalance;
         document.getElementById("balanceAmount").innerText = newBalance.toLocaleString('id-ID');
-        showToast(`Penarikan Rp ${amount.toLocaleString('id-ID')} diajukan!`);
+        showToast(`Penarikan Rp ${amount.toLocaleString('id-ID')} diajukan!`, "success");
         document.getElementById("withdrawModal").classList.remove("active");
         document.getElementById("withdrawAccount").value = "";
         document.querySelectorAll(".amount-card").forEach(c => c.classList.remove("selected"));
@@ -2319,7 +2506,7 @@
             rewardCalculator = null;
             document.getElementById("mainContent").classList.add("hidden");
             document.getElementById("authContainer").classList.remove("hidden");
-            showToast("Logout berhasil");
+            showToast("Logout berhasil", "success");
         };
         
         document.getElementById("profileNavBtnHeader").onclick = () => showSection("profile");
@@ -2346,7 +2533,7 @@
                 currentUser.fullname = newName;
                 document.getElementById("userNameDisplay").innerText = newName;
                 document.getElementById("profileFullname").innerText = newName;
-                showToast("Profil diperbarui!");
+                showToast("Profil diperbarui!", "success");
             }
             document.getElementById("editProfileModal").classList.remove("active");
         };
@@ -2399,7 +2586,7 @@
                 document.getElementById("bannedModal").classList.add("active");
             } else {
                 document.getElementById("loginError").innerHTML = `<i class="fas fa-exclamation-circle"></i> ${res.msg}`;
-                showToast(res.msg, true);
+                showToast(res.msg, "error");
             }
         };
         
@@ -2407,14 +2594,14 @@
             const res = await register(document.getElementById("regUsername").value.trim(), document.getElementById("regPassword").value, document.getElementById("regName").value.trim());
             if (res.success) {
                 document.getElementById("registerSuccess").innerHTML = "✅ Pendaftaran berhasil! Silakan login.";
-                showToast("Registrasi berhasil!");
+                showToast("Registrasi berhasil!", "success");
                 setTimeout(() => {
                     document.querySelector(".auth-tab[data-tab='login']").click();
                     document.getElementById("loginUsername").value = document.getElementById("regUsername").value;
                 }, 1500);
             } else {
                 document.getElementById("registerError").innerHTML = `<i class="fas fa-exclamation-circle"></i> ${res.msg}`;
-                showToast(res.msg, true);
+                showToast(res.msg, "error");
             }
         };
         
